@@ -1,0 +1,1127 @@
+
+I. CONCEPTUAL FOUNDATION
+
+1. The Commons Game
+
+From collective intelligence to collective action.
+
+The Commons Game is a multiplayer, state-changing experiment in collective organization.
+
+Players inhabit an evolving ecosystem of:
+
+* Actors and organizations
+* Relationships
+* Capacities and expertise
+* Needs
+* Resources
+* Agreements
+* Commitments
+* Governance arrangements
+* Collective objectives
+* Evidence and verified outcomes
+
+Players can discover, connect, negotiate, assemble coalitions, establish commitments, and attempt collective actions.
+
+The objective is not to maximize connectivity.
+
+The objective is to transform the collective into a configuration capable of accomplishing something that was previously impossible.
+
+Fundamental question
+
+What makes a collection of individuals capable of acting together?
+
+The engine must support experiments addressing this question without imposing a predetermined answer.
+
+⸻
+
+II. THE FUNDAMENTAL DISTINCTION
+
+2. Commitment versus Commit
+
+This distinction is frozen and must be reflected explicitly in the architecture.
+
+2.1 Commitment
+
+A commitment is a social, institutional, or contractual undertaking.
+
+It represents a promise, agreement, or accepted responsibility.
+
+It may involve:
+
+* One or several actors
+* An object or objective
+* Conditions
+* Responsibilities
+* Resources
+* Deadlines
+* Authorization requirements
+* Verification criteria
+
+Commitments emphasize:
+
+Trust, reciprocity, responsibility, and cooperation.
+
+A commitment does not automatically guarantee fulfillment.
+
+2.2 Commit
+
+A commit is an authorized and validated modification of the authoritative collective state.
+
+Formally:
+
+[
+S_{t+1}=T(S_t,a_t)
+]
+
+where the transition is accepted only when its preconditions and authorization requirements are satisfied.
+
+A commit must have:
+
+* A unique identifier
+* A reference to its initiating action
+* An identifiable author or initiating actor
+* An authorization record
+* A previous state or version reference
+* A resulting state or version reference
+* A timestamp
+* An auditable event record
+
+A commit is not synonymous with successful real-world execution.
+
+For example:
+
+* Accepting an agreement can produce a commit.
+* Reserving a resource can produce a commit.
+* Establishing a governance rule can produce a commit.
+* Recording evidence of fulfillment can produce a commit.
+
+These are different kinds of state transitions.
+
+2.3 The central invariant
+
+[
+\boxed{
+\text{Accepted commitment}
+\not\Rightarrow
+\text{Verified fulfillment}
+}
+]
+
+The engine must never silently collapse intentions, promises, authorizations, actions, and verified outcomes.
+
+⸻
+
+III. THE COLLECTIVE STATE
+
+3. State representation
+
+The initial conceptual representation is:
+
+[
+\boxed{
+S_t=(V_t,E_t,C_t,N_t,R_t,K_t)
+}
+]
+
+where:
+
+* (V_t): actors
+* (E_t): relationships
+* (C_t): capacities
+* (N_t): needs
+* (R_t): resources
+* (K_t): commitments
+
+This is a conceptual state decomposition, not a mandatory Python data structure.
+
+The implementation must also accommodate:
+
+* Agreements
+* Governance rules
+* Permissions and authorizations
+* Scenarios and objectives
+* Evidence
+* Event history
+
+Do not overload the state tuple with unrelated implementation details.
+
+Prefer a typed, extensible domain model.
+
+3.1 State versus knowledge
+
+Distinguish:
+
+1. The simulated collective state.
+2. The observed or documented state.
+3. The declared state.
+4. Hypothetical or inferred possibilities.
+
+For example, a relationship may be declared but unverified.
+
+A capacity may be reported without being demonstrated.
+
+A potential collaboration may be inferred without being accepted.
+
+Every relevant assertion should preserve its epistemic status and provenance.
+
+Discovery of information is not necessarily a modification of the underlying collective.
+
+The engine must support both changes in knowledge and changes in collective organization.
+
+⸻
+
+IV. THE MULTIPLEX ECOSYSTEM
+
+4. Network structure
+
+Represent the collective as an evolving multiplex network:
+
+[
+\mathcal G_t=(V_t,E_t^{(1)},\ldots,E_t^{(L)})
+]
+
+Different layers may represent:
+
+* Documented relationships
+* Declared affiliations
+* Shared domains
+* Potential complementarities
+* Proposed collaborations
+* Accepted commitments
+* Operational partnerships
+* Verified exchanges
+
+Preserve the distinction between observed and derived relationships.
+
+4.1 From edges to agreement objects
+
+An agreement is not merely an edge with an increased weight.
+
+An agreement is a first-class domain object with its own lifecycle.
+
+For a bilateral agreement:
+
+[
+A\longrightarrow K\longleftarrow B
+]
+
+where (K) represents the agreement or commitment object.
+
+This representation must generalize to agreements involving multiple actors.
+
+The engine should support both:
+
+* Graph projections for visualization and analysis.
+* Explicit agreement objects for governance and state transitions.
+
+The graph is a representation of the collective, not necessarily the authoritative storage format.
+
+⸻
+
+V. AGREEMENTS AND CONTRACTS
+
+5. The agreement primitive
+
+Introduce a general agreement model.
+
+A minimal agreement contains:
+
+Field   Meaning
+ID  Stable agreement identifier
+Parties Participating actors
+Object  Subject of the agreement
+Terms   Responsibilities and conditions
+Resources   Resources involved, if any
+Validity    Temporal conditions
+Authorization   Required approvals
+Verification    Fulfillment criteria
+Status  Current lifecycle state
+Evidence    Supporting records
+
+An agreement may be bilateral or multilateral.
+
+A contract is a particular form of agreement, potentially carrying legal obligations.
+
+Do not assume that every agreement is legally enforceable.
+
+5.1 Agreement lifecycle
+
+Support a lifecycle including:
+
+[
+\text{Draft}
+\rightarrow
+\text{Proposed}
+\rightarrow
+\text{Negotiating}
+\rightarrow
+\text{Accepted}
+\rightarrow
+\text{Authorized}
+\rightarrow
+\text{Active}
+]
+
+Possible subsequent states include:
+
+* Fulfilled
+* Expired
+* Withdrawn
+* Suspended
+* Terminated
+* Disputed
+
+Not every agreement requires every intermediate state.
+
+Transitions must be governed by explicit rules.
+
+An agreement can be accepted before the required institutional authorization has been obtained.
+
+Acceptance and authorization must remain separate.
+
+5.2 Agreement versioning
+
+Negotiation modifies proposed terms.
+
+The engine must preserve:
+
+* Agreement versions
+* Proposed amendments
+* Party acceptance of specific versions
+* Superseded versions
+* Evidence of authorization
+
+Acceptance of version (n) must not silently authorize version (n+1).
+
+⸻
+
+VI. ACTIONS, TRANSITIONS AND COMMITS
+
+6. Authoritative state transitions
+
+The existing game engine should remain the authoritative mechanism for resolving actions.
+
+Players submit proposed actions.
+
+The engine determines whether the action is admissible.
+
+A successful action produces a state transition and an auditable commit.
+
+Conceptually:
+
+[
+(S_t,a_t,\omega_t)
+\xrightarrow{\text{validation}}
+(S_{t+1},e_t)
+]
+
+where:
+
+* (a_t): submitted action
+* (\omega_t): explicitly modeled uncertainty or external event
+* (e_t): resulting event or commit record
+
+Not every submitted action produces a commit.
+
+Rejected actions should return an explicit reason.
+
+6.1 Required properties
+
+The transition mechanism must support:
+
+Atomicity
+
+A transition either completes or leaves the authoritative state unchanged.
+
+Authorization
+
+Only permitted actors may initiate or approve protected operations.
+
+Consistency
+
+State invariants must remain satisfied.
+
+Auditability
+
+Accepted transformations must be traceable.
+
+Idempotency
+
+Retrying the same action must not create duplicate effects.
+
+Concurrency control
+
+Simultaneous actions must not silently violate shared constraints.
+
+Deterministic replay
+
+Given the same initial state, ordered actions, and recorded external inputs, the engine should reconstruct the same resulting state.
+
+These are requirements of the upgraded engine, not claims about the current implementation.
+
+⸻
+
+VII. DECENTRALIZED COORDINATION
+
+7. Principles
+
+The Commons Game borrows coordination primitives associated with decentralized systems and Web3.
+
+However:
+
+Decentralized governance does not require blockchain infrastructure.
+
+Separate three questions:
+
+1. Who may propose?
+2. Who may authorize?
+3. Who records and validates the resulting transition?
+
+The first implementation may retain a centralized authoritative engine while enforcing decentralized authorization rules.
+
+7.1 Digital signatures
+
+Support an abstraction for signed acceptance of specific agreement versions.
+
+Initially, a simpler authenticated approval mechanism may be used.
+
+Do not equate a UI confirmation with a cryptographic signature.
+
+7.2 Multisignature authorization
+
+Support policies requiring multiple approvals.
+
+Examples:
+
+* All parties must accept.
+* A threshold of participants must approve.
+* Specific institutional representatives must authorize.
+* Different stakeholder categories must consent.
+
+Authorization policies must be explicit and inspectable.
+
+7.3 Escrow
+
+Introduce escrow as a future-capable resource-management primitive.
+
+An escrow reserves or holds resources subject to release conditions.
+
+Do not implement cryptocurrency custody or financial transfers in the initial milestone.
+
+The initial abstraction should support simulated or internally managed resources.
+
+7.4 Resource conservation
+
+The engine must prevent incompatible reservations of resources it controls.
+
+For a resource (r):
+
+[
+\boxed{
+\sum_{K\in\mathcal K_t}q_{rK}\leq Q_r
+}
+]
+
+where:
+
+* (Q_r) is the available resource quantity.
+* (q_{rK}) is the quantity reserved by agreement (K).
+
+The invariant must be enforced atomically under concurrent submissions.
+
+Externally controlled resources require a distinct verification or reconciliation mechanism.
+
+7.5 Distributed ledgers
+
+Do not introduce a blockchain dependency without a demonstrated requirement.
+
+Provide architectural interfaces that could eventually support:
+
+* External signatures
+* Verifiable credentials
+* Independent audit records
+* Distributed authorization
+* External settlement
+
+Sensitive information must not be published to immutable public infrastructure.
+
+⸻
+
+VIII. THREE GAME MODES
+
+The Commons Game contains three interconnected modes.
+
+They share one authoritative state model.
+
+8.1 ECOSYSTEM
+
+Who can act together?
+
+Players explore:
+
+* Actors
+* Relationships
+* Expertise
+* Needs
+* Resources
+* Potential complementarities
+
+Possible actions:
+
+* Discover
+* Inspect
+* Declare
+* Connect
+* Propose an exchange
+
+The engine distinguishes discovery from creation.
+
+8.2 SCENARIOS
+
+What can we accomplish together?
+
+Players:
+
+* Establish objectives
+* Assemble coalitions
+* Negotiate responsibilities
+* Allocate resources
+* Establish agreements
+* Accept commitments
+* Attempt actions
+* Verify outcomes
+
+This mode provides the principal setting for contractual primitives.
+
+8.3 GATHERING
+
+How does a collective come into existence?
+
+Players organize a gathering.
+
+They may:
+
+* Invite participants
+* Allocate roles
+* Coordinate resources
+* Organize encounters
+* Manage uncertainties
+* Record emerging agreements
+* Transform encounters into subsequent actions
+
+Gathering is not merely an interface for the ecosystem.
+
+It is a game mode with its own objectives, constraints, and transitions.
+
+⸻
+
+IX. THE FIRST EMPIRICAL WORLD
+
+9. Montréal
+
+The Commons Game originates from the Montréal workshop on cultural and digital commons, October 2026.
+
+The empirical material includes:
+
+* An ecosystem of organizations and relationships
+* Questionnaire responses
+* Expertise and needs matrices
+* Potential complementarities
+* Scenarios
+* Action trajectories
+* Collective texts
+* Workshop organization and interactions
+
+These materials constitute the initial world.
+
+Preserve provenance.
+
+Distinguish:
+
+* Questionnaire declarations
+* Interviews
+* Independent documentary research
+* Derived mathematical relationships
+* Hypothetical scenarios
+* Actual commitments
+* Verified outcomes
+
+Do not convert inferred relationships into documented collaborations.
+
+9.1 Existing mathematical objects
+
+The earlier analysis includes:
+
+[
+B=O\lor N
+]
+
+where (O) and (N) are the offered and requested expertise incidence matrices.
+
+The directed complementarity matrix is:
+
+[
+\boxed{W=ON^\top}
+]
+
+with:
+
+[
+W_{ij}=\sum_k O_{ik}N_{jk}.
+]
+
+It counts declared expertise domains offered by participant (i) and requested by participant (j).
+
+Missing responses must remain distinguishable from known zeros.
+
+The engine should permit these derived structures to inform gameplay without treating potential complementarity as an accepted agreement.
+
+⸻
+
+X. FIRST PLAYABLE SCENARIO
+
+10. Montréal → Geneva
+
+The initial scenario concerns transforming an initiative emerging from Montréal into an actionable collective undertaking.
+
+A possible objective is establishing an international mentoring network helping public institutions understand and govern AI and digital commons.
+
+Players must:
+
+1. Identify a shared objective.
+2. Identify relevant actors.
+3. Assemble a coalition.
+4. Negotiate responsibilities.
+5. Establish an agreement.
+6. Authorize commitments.
+7. Record a concrete action.
+8. Provide evidence of progress or fulfillment.
+
+Producing a manifesto is not sufficient to establish operational success.
+
+The scenario should distinguish:
+
+* A drafted collective text
+* An accepted agreement
+* A committed responsibility
+* An initiated action
+* A verified outcome
+
+10.1 Minimal bilateral agreement example
+
+A second, smaller scenario should exercise the agreement engine.
+
+Situation: A researcher requests access to server logs for studying AI-agent activity.
+
+The parties discuss:
+
+* Research purpose
+* Data-access conditions
+* Duration
+* Privacy requirements
+* Institutional authorization
+* Verification of delivery
+
+The Montréal conversation concerning Gallica server logs is an illustrative real-world motivation.
+
+Do not encode it as a finalized contract.
+
+The existing oral agreement in principle does not establish that access has been institutionally authorized.
+
+Use synthetic data and fictional actors in automated tests and public demonstrations.
+
+The scenario should exercise:
+
+* Proposal
+* Negotiation
+* Acceptance
+* Authorization
+* Activation
+* Fulfillment
+* Verification
+
+⸻
+
+XI. AI PARTICIPATION
+
+11. AI as an instrument
+
+AI may assist players in:
+
+* Discovering relevant information
+* Identifying potential complementarities
+* Exploring alternative scenarios
+* Challenging assumptions
+* Drafting agreements
+* Examining contradictions
+* Suggesting possible actions
+
+AI must not silently exercise governance authority.
+
+AI-generated proposals must be distinguishable from human decisions.
+
+An AI suggestion does not become an accepted commitment merely because it has been generated.
+
+The engine must preserve the distinction between:
+
+[
+\text{Suggestion}
+\neq
+\text{Authorization}
+\neq
+\text{Commit}
+]
+
+Any delegated AI authority must be explicit, bounded, and auditable.
+
+⸻
+
+XII. MECHANICAL INTERPRETATION
+
+12. An evolving collective
+
+The network may be visualized as a deformable structure.
+
+Nodes represent actors.
+
+Connections represent relationships or interactions.
+
+Changes in the network may modify its geometry.
+
+An illustrative energy functional is:
+
+[
+\mathcal E(x,t)
+
+\frac12\sum_{i,j}k_{ij}(t)
+\left(|x_i-x_j|-\ell_{ij}\right)^2.
+]
+
+This is a visualization and modeling hypothesis.
+
+It is not a calibrated mechanical description of social behavior.
+
+The architecture should permit future exploration of:
+
+* Structural sensitivity
+* Network reorganization
+* Stability
+* Bifurcation
+* Irreversible transformations
+* Collective capacity
+
+Do not embed mechanical assumptions into the core transition engine.
+
+Mechanical visualization and analysis must remain optional modules.
+
+⸻
+
+XIII. ARCHITECTURAL AUDIT OF game_hube
+
+13. Mandatory first operation
+
+Locate and inspect the sibling application:
+
+game_hube
+
+Do not assume its directory structure or internal architecture.
+
+Determine:
+
+1. Repository structure.
+2. Game-engine modules.
+3. State representation.
+4. Action submission format.
+5. Transition resolution.
+6. Multiplayer architecture.
+7. Persistence mechanisms.
+8. Scenario configuration.
+9. Validation rules.
+10. Existing tests.
+11. UI and visualization dependencies.
+12. Application-specific coupling.
+
+Inspect the existing implementation of GameRunner, ActionSubmission, and related interfaces if they are present.
+
+Identify what can be reused directly.
+
+13.1 Produce an architecture inventory
+
+Classify components into:
+
+A. Reusable without modification
+
+Stable primitives already suitable for multiple games.
+
+B. Reusable after refactoring
+
+Components whose responsibilities need to be generalized.
+
+C. Application-specific
+
+Components that should remain within game_hube.
+
+D. Missing
+
+Capabilities required by the Commons Game.
+
+E. Inconsistent or defective
+
+Architectural problems, broken invariants, missing validation, or insufficient tests.
+
+Every finding must refer to actual source files.
+
+Do not invent architectural problems.
+
+13.2 Preserve the sibling application
+
+game_hube must remain functional.
+
+Do not overwrite its scenarios or data.
+
+Do not silently change existing game semantics.
+
+Where shared interfaces change, provide compatibility mechanisms or explicit migrations.
+
+⸻
+
+XIV. TARGET ARCHITECTURE
+
+14. One engine, multiple worlds
+
+The intended separation is:
+
+Core engine
+
+Responsible for:
+
+* Authoritative state
+* Action validation
+* State transitions
+* Commit records
+* Event history
+* Replay
+* Concurrency and consistency
+
+Domain primitives
+
+Responsible for:
+
+* Actors
+* Relationships
+* Capacities
+* Needs
+* Resources
+* Agreements
+* Commitments
+* Governance policies
+* Evidence
+
+Scenario definitions
+
+Responsible for:
+
+* Initial conditions
+* Player roles
+* Available actions
+* Constraints
+* Objectives
+* Success conditions
+* External events
+
+Application layer
+
+Responsible for:
+
+* User interactions
+* Multiplayer sessions
+* Authentication
+* Persistence adapters
+* Notifications
+
+Visualization layer
+
+Responsible for:
+
+* Multiplex graphs
+* Matrices
+* Timelines
+* Agreement lifecycles
+* Collective state transitions
+
+The visualization layer must not determine authoritative game outcomes.
+
+14.1 Architectural principle
+
+[
+\boxed{
+\text{Game rules}
+\perp
+\text{Rendering}
+\perp
+\text{Persistence}
+}
+]
+
+The notation expresses architectural separation, not statistical independence.
+
+The engine must be independently testable without launching a web interface.
+
+⸻
+
+XV. IMPLEMENTATION MILESTONE
+
+15. Minimum viable upgrade
+
+The first milestone must demonstrate:
+
+A. Shared engine
+
+Both game_hube and the Commons Game can use the reusable engine.
+
+B. Actors
+
+Two or more actors exist in an authoritative shared state.
+
+C. Agreements
+
+One actor proposes an agreement to another.
+
+D. Negotiation
+
+The agreement can be revised and versioned.
+
+E. Authorization
+
+The relevant parties approve the same agreement version.
+
+F. Commit
+
+The engine validates and records the resulting state transformation.
+
+G. Resources
+
+A resource reservation cannot exceed available capacity.
+
+H. Verification
+
+Fulfillment and verification remain distinct operations.
+
+I. Replay
+
+The recorded event history reconstructs the resulting state.
+
+J. Compatibility
+
+Existing game_hube functionality remains operational.
+
+15.1 Explicitly excluded from this milestone
+
+Do not implement:
+
+* Cryptocurrency transfers
+* Blockchain deployment
+* Real financial escrow
+* Token-based governance
+* Automated legal enforcement
+* Production identity verification
+* Real institutional data exchange
+
+These may become future adapters or application features.
+
+⸻
+
+XVI. TESTING AND INVARIANTS
+
+16. Required tests
+
+Include tests for:
+
+1. Successful bilateral agreement.
+2. Rejected agreement.
+3. Conflicting agreement versions.
+4. Unauthorized approval.
+5. Missing institutional authorization.
+6. Resource overcommitment.
+7. Concurrent conflicting reservations.
+8. Duplicate action submission.
+9. Agreement expiration.
+10. Amendment after acceptance.
+11. Fulfillment without verification.
+12. Verified fulfillment.
+13. Deterministic replay.
+14. Invalid state transition.
+15. Preservation of existing game_hube behavior.
+
+Tests must distinguish domain failures from infrastructure failures.
+
+Where concurrency or persistence guarantees depend on a specific adapter, test those guarantees at the relevant integration boundary.
+
+⸻
+
+XVII. DELIVERABLES
+
+Produce the following outputs.
+
+Deliverable 1: Existing engine audit
+
+A precise report describing:
+
+* Current architecture
+* Existing capabilities
+* Reusable components
+* Coupling and limitations
+* Defects, if any
+* Compatibility constraints
+
+Include source-file references.
+
+Deliverable 2: Conceptual architecture
+
+A documented model of:
+
+* Collective state
+* Actors
+* Relationships
+* Agreements
+* Commitments
+* Commits
+* Governance
+* Resources
+* Evidence
+* State transitions
+
+Define the invariants explicitly.
+
+Deliverable 3: Upgrade plan
+
+A staged implementation plan identifying:
+
+* Components to retain
+* Components to refactor
+* New modules
+* Interface changes
+* Data migrations, if required
+* Compatibility tests
+
+Deliverable 4: Engine implementation
+
+Implement the agreed minimum viable upgrade using the existing project conventions.
+
+Prefer small, reviewable changes.
+
+Avoid introducing unnecessary dependencies.
+
+Deliverable 5: Playable demonstration
+
+Provide a minimal Commons Game scenario demonstrating a bilateral agreement and an authoritative commit.
+
+The demonstration must run without external institutional credentials or sensitive data.
+
+Deliverable 6: Documentation
+
+Document:
+
+* How the engine works
+* How to define a new game
+* How actions become commits
+* How agreement authorization works
+* How state is reconstructed
+* How to run tests
+* How to run the demonstration
+
+⸻
+
+XVIII. EXECUTION INSTRUCTIONS
+
+Proceed in the following order.
+
+Phase 1: Inspect
+
+Examine game_hube and the existing shared engine.
+
+Run the available tests and establish a baseline.
+
+Phase 2: Specify
+
+Produce the architectural audit, conceptual domain model, transition invariants, and proposed module boundaries.
+
+Do not begin a large refactor before this specification is coherent.
+
+Phase 3: Implement
+
+Introduce the minimal agreement, authorization, commitment, and commit primitives.
+
+Preserve existing interfaces wherever possible.
+
+Phase 4: Integrate
+
+Connect the Commons Game scenario to the shared engine.
+
+Phase 5: Validate
+
+Run the new and existing tests.
+
+Demonstrate the agreement lifecycle and replay.
+
+Phase 6: Report
+
+Provide:
+
+1. A detailed list of changes, defects discovered, and repairs.
+2. The resulting architecture and implemented code.
+3. Test results and any remaining limitations.
+
+Clearly distinguish completed implementation from proposed future capabilities.
+
+⸻
+
+XIX. FROZEN PRINCIPLES
+
+The following principles define Commons Game V0.1.
+
+1. The game investigates the emergence of collective agency.
+2. The collective is represented as an evolving, partially observed system.
+3. Potential relationships, intentions, commitments, and verified outcomes are distinct.
+4. A commitment is a social or institutional undertaking emphasizing trust and reciprocity.
+5. A commit is an authorized, validated, auditable transformation of the authoritative collective state.
+6. Agreements are first-class objects with explicit parties, terms, authorization, and lifecycle.
+7. Collective governance is represented through explicit decision and authorization rules.
+8. Decentralized authority does not require decentralized infrastructure.
+9. Resources and obligations must respect enforceable state invariants.
+10. AI assists exploration but does not silently govern the collective.
+11. The authoritative engine is independent of visualization, persistence, and application-specific interfaces.
+12. The existing game_hube implementation is the starting point, not disposable scaffolding.
+13. The Commons Game must remain grounded in empirical material while distinguishing evidence from inference and simulation.
+14. Mechanical analogies are exploratory models, not established laws of collective behavior.
+15. The objective is not simply to represent cooperation, but to make its conditions, transformations, and consequences experimentally accessible.
+
+⸻
+
+FINAL DIRECTIVE
+
+Do not build a new game engine from scratch.
+
+Inspect the existing implementation, preserve its strengths, and extend its conceptual and technical foundations.
+
+The immediate milestone is deliberately modest:
+
+Two actors negotiate an agreement, authorize a commitment, and produce a verifiable commit that changes the authoritative collective state.
+
+Everything else builds upon this primitive.
+
+The broader objective is a reusable experimental infrastructure for collective organization.
+
+A questionnaire describes a collective.
+
+A network reveals possible relationships.
+
+A scenario proposes a transformation.
+
+A commitment expresses an undertaking.
+
+A commit changes the collective state.
+
+And a game allows us to investigate how these transformations become possible.
+
+WE HEREBY DECLARE THE RIGHT OF THE COMMONS.

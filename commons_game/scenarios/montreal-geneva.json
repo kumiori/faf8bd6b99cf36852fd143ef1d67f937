@@ -1,0 +1,215 @@
+{
+  "id": "montreal-geneva",
+  "title": "Montréal → Geneva",
+  "description": "A fictional mentoring pilot inspired by the Montréal commons workshop. Convene a coalition, agree responsibilities and verify one mentoring session.",
+  "mode": "scenarios",
+  "world_time": "2026-11-02T00:00:00+00:00",
+  "actors": [
+    {
+      "id": "researcher",
+      "label": "Mira · researcher",
+      "roles": [
+        "participant"
+      ],
+      "category": "community"
+    },
+    {
+      "id": "custodian",
+      "label": "Atlas · data cooperative",
+      "kind": "organisation",
+      "roles": [
+        "participant"
+      ],
+      "category": "community"
+    },
+    {
+      "id": "institution",
+      "label": "Civic Lab · public institution",
+      "kind": "organisation",
+      "roles": [
+        "participant"
+      ],
+      "category": "institutional"
+    },
+    {
+      "id": "officer",
+      "label": "Noor · authorisation officer",
+      "roles": [
+        "authorizer"
+      ],
+      "category": "institutional"
+    },
+    {
+      "id": "verifier",
+      "label": "Iris · independent reviewer",
+      "roles": [
+        "verifier",
+        "resource_verifier"
+      ],
+      "category": "review"
+    },
+    {
+      "id": "facilitator",
+      "label": "Sam · simulation facilitator",
+      "roles": [
+        "facilitator"
+      ],
+      "category": "facilitation"
+    }
+  ],
+  "governance": [
+    {
+      "id": "institutional",
+      "label": "Institutional approval after every party accepts",
+      "eligible_actors": [
+        "officer"
+      ],
+      "threshold": 1,
+      "required_actors": [
+        "officer"
+      ],
+      "required_categories": [
+        "institutional"
+      ]
+    },
+    {
+      "id": "coalition",
+      "label": "Community + institution · two approvals",
+      "eligible_actors": [
+        "researcher",
+        "custodian",
+        "institution",
+        "officer"
+      ],
+      "threshold": 2,
+      "required_actors": [
+        "officer"
+      ],
+      "required_categories": [
+        "community",
+        "institutional"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "mentoring-slot",
+      "label": "Mentoring session capacity",
+      "owner_id": "custodian",
+      "quantity": 1,
+      "unit": "session"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "relation-seed",
+      "source_id": "researcher",
+      "target_id": "custodian",
+      "kind": "knows",
+      "status": "reported",
+      "created_by": "researcher",
+      "provenance": {
+        "kind": "fictional_fixture",
+        "reference": "Synthetic acquaintance; no empirical collaboration implied."
+      }
+    }
+  ],
+  "capacities": [
+    {
+      "id": "capacity-seed",
+      "actor_id": "custodian",
+      "domain": "digital commons",
+      "quantity": 1,
+      "unit": "session",
+      "status": "reported",
+      "provenance": {
+        "kind": "fictional_fixture"
+      }
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-seed",
+      "actor_id": "researcher",
+      "domain": "digital commons",
+      "quantity": 1,
+      "unit": "session",
+      "status": "reported",
+      "provenance": {
+        "kind": "fictional_fixture"
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "id": "objective-main",
+      "label": "Establish and deliver one mentoring session on governing AI and digital commons.",
+      "mode": "scenarios",
+      "status": "open",
+      "support_ids": [],
+      "success": {
+        "verified_agreements": 1,
+        "minimum_parties": 3,
+        "minimum_attendees": 0
+      },
+      "provenance": {
+        "kind": "fictional_scenario"
+      }
+    }
+  ],
+  "proposal": {
+    "id": "agreement-main",
+    "label": "Mentoring coalition agreement",
+    "parties": [
+      "researcher",
+      "custodian",
+      "institution"
+    ],
+    "objective_id": "objective-main",
+    "terms": {
+      "purpose": "Establish and deliver one mentoring session on governing AI and digital commons.",
+      "responsibilities": [
+        {
+          "actor_id": "researcher",
+          "description": "Prepare mentoring materials."
+        },
+        {
+          "actor_id": "custodian",
+          "description": "Facilitate the mentoring session."
+        },
+        {
+          "actor_id": "institution",
+          "description": "Participate and document institutional feedback."
+        }
+      ],
+      "conditions": [
+        "Agree a shared objective before booking a session.",
+        "Document responsibilities of all three fictional partners.",
+        "A collective text alone does not establish operational success."
+      ]
+    },
+    "resources": [
+      {
+        "resource_id": "mentoring-slot",
+        "quantity": 1
+      }
+    ],
+    "valid_until": "2026-12-01T00:00:00+00:00",
+    "policy_id": "coalition",
+    "verification": {
+      "verifier_ids": [
+        "verifier"
+      ],
+      "criteria": [
+        "Session delivered",
+        "Mentoring materials shared",
+        "Institutional feedback recorded"
+      ],
+      "independent": true
+    }
+  },
+  "demo_authorizers": [
+    "researcher",
+    "officer"
+  ]
+}

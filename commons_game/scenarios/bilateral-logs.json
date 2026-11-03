@@ -1,0 +1,209 @@
+{
+  "id": "bilateral-logs",
+  "title": "A commons of knowledge",
+  "description": "Negotiate access to a synthetic server-log sample. An agreement in principle does not grant institutional access.",
+  "mode": "scenarios",
+  "world_time": "2026-11-02T00:00:00+00:00",
+  "actors": [
+    {
+      "id": "researcher",
+      "label": "Mira · researcher",
+      "roles": [
+        "participant"
+      ],
+      "category": "community"
+    },
+    {
+      "id": "custodian",
+      "label": "Atlas · data cooperative",
+      "kind": "organisation",
+      "roles": [
+        "participant"
+      ],
+      "category": "community"
+    },
+    {
+      "id": "institution",
+      "label": "Civic Lab · public institution",
+      "kind": "organisation",
+      "roles": [
+        "participant"
+      ],
+      "category": "institutional"
+    },
+    {
+      "id": "officer",
+      "label": "Noor · authorisation officer",
+      "roles": [
+        "authorizer"
+      ],
+      "category": "institutional"
+    },
+    {
+      "id": "verifier",
+      "label": "Iris · independent reviewer",
+      "roles": [
+        "verifier",
+        "resource_verifier"
+      ],
+      "category": "review"
+    },
+    {
+      "id": "facilitator",
+      "label": "Sam · simulation facilitator",
+      "roles": [
+        "facilitator"
+      ],
+      "category": "facilitation"
+    }
+  ],
+  "governance": [
+    {
+      "id": "institutional",
+      "label": "Institutional approval after every party accepts",
+      "eligible_actors": [
+        "officer"
+      ],
+      "threshold": 1,
+      "required_actors": [
+        "officer"
+      ],
+      "required_categories": [
+        "institutional"
+      ]
+    },
+    {
+      "id": "coalition",
+      "label": "Community + institution · two approvals",
+      "eligible_actors": [
+        "researcher",
+        "custodian",
+        "institution",
+        "officer"
+      ],
+      "threshold": 2,
+      "required_actors": [
+        "officer"
+      ],
+      "required_categories": [
+        "community",
+        "institutional"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "synthetic-logs",
+      "label": "Synthetic log sample",
+      "owner_id": "custodian",
+      "quantity": 1,
+      "unit": "sample"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "relation-seed",
+      "source_id": "researcher",
+      "target_id": "custodian",
+      "kind": "knows",
+      "status": "reported",
+      "created_by": "researcher",
+      "provenance": {
+        "kind": "fictional_fixture",
+        "reference": "Synthetic acquaintance; no empirical collaboration implied."
+      }
+    }
+  ],
+  "capacities": [
+    {
+      "id": "capacity-seed",
+      "actor_id": "custodian",
+      "domain": "digital commons",
+      "quantity": 1,
+      "unit": "session",
+      "status": "reported",
+      "provenance": {
+        "kind": "fictional_fixture"
+      }
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-seed",
+      "actor_id": "researcher",
+      "domain": "digital commons",
+      "quantity": 1,
+      "unit": "session",
+      "status": "reported",
+      "provenance": {
+        "kind": "fictional_fixture"
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "id": "objective-main",
+      "label": "Study aggregate AI-agent activity using synthetic, non-identifying server logs.",
+      "mode": "scenarios",
+      "status": "open",
+      "support_ids": [],
+      "success": {
+        "verified_agreements": 1,
+        "minimum_parties": 2,
+        "minimum_attendees": 0
+      },
+      "provenance": {
+        "kind": "fictional_scenario"
+      }
+    }
+  ],
+  "proposal": {
+    "id": "agreement-main",
+    "label": "Synthetic log access agreement",
+    "parties": [
+      "researcher",
+      "custodian"
+    ],
+    "objective_id": "objective-main",
+    "terms": {
+      "purpose": "Study aggregate AI-agent activity using synthetic, non-identifying server logs.",
+      "responsibilities": [
+        {
+          "actor_id": "researcher",
+          "description": "Conduct and document the agreed research."
+        },
+        {
+          "actor_id": "custodian",
+          "description": "Prepare and deliver the synthetic dataset."
+        }
+      ],
+      "conditions": [
+        "Use only the synthetic sample; no real institutional data.",
+        "Access lasts fourteen simulated days.",
+        "Publish aggregate findings only; do not attempt re-identification."
+      ]
+    },
+    "resources": [
+      {
+        "resource_id": "synthetic-logs",
+        "quantity": 1
+      }
+    ],
+    "valid_until": "2026-12-01T00:00:00+00:00",
+    "policy_id": "institutional",
+    "verification": {
+      "verifier_ids": [
+        "verifier"
+      ],
+      "criteria": [
+        "Research purpose documented",
+        "Synthetic sample delivered",
+        "Privacy conditions checked"
+      ],
+      "independent": true
+    }
+  },
+  "demo_authorizers": [
+    "officer"
+  ]
+}
