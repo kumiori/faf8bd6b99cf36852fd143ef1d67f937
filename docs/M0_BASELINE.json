@@ -1,0 +1,21 @@
+{
+  "milestone": "M0",
+  "date": "2026-11-03",
+  "commons_checkpoint": "f082967d47c87e97f4a62dbe7536b6f3743c097b",
+  "hube_checkpoint": "52fbfe1d74c1c46d804b45a39e25231399f090bc",
+  "original_extraction_changes": [
+    "game/engine.py",
+    "game/model.py",
+    "game/persistence.py",
+    "pyproject.toml"
+  ],
+  "compatibility_boundary": "Hube API, scenario IDs, six-condition threshold, canonical final state, local role checks, verification rules and append-only log format",
+  "frozen_artifacts": {
+    "game/fixtures/hube-stop-01.json": "299f1e3912576614d8321a78b46e4db07de9448e008c465eb74fe31f315ebc99",
+    "game/scenarios/hube_stop_01.json": "835e34ebf50eb567be0b3d2ce663b2d4a84d09e8243eb241df79fb08cfb8413e",
+    "tests/scenarios/hube_stop_01.expected.json": "94c32a25eb047cd80d57d1b2d3d7f20d7b61fff12b8e3dece56c57251ea06491",
+    "tests/scenarios/hube_stop_01.stdin": "6b4518acef9ea83a16ada71cec8065ee7477444783207ebf143dcbc5f5e25199",
+    "tests/scenarios/hube_stop_01.yaml": "835e34ebf50eb567be0b3d2ce663b2d4a84d09e8243eb241df79fb08cfb8413e",
+    "tests/scenarios/funding_two_beds.stdin": "e141b57c20a45e3343ae9a5c4d774aa5118a0707cac6fdf823ae6f0c0f70e3c4"
+  }
+}

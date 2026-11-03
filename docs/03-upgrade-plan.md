@@ -1,5 +1,9 @@
 # Upgrade plan and migration boundary
 
+This is the original implementation sequence. The later [M0–M5 roadmap](MILESTONES.md)
+now governs milestone order and acceptance; work described here is not necessarily
+complete merely because its scaffold exists.
+
 1. Establish Hube's 58-test baseline and source hashes; retain the supplied frozen
    specification verbatim in `COMMONS_SPEC_V0.1.txt`.
 2. Extract Hube's mutation, history, replay and append-only storage into
