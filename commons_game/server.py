@@ -10,7 +10,11 @@ from urllib.parse import urlsplit, parse_qs
 
 from commons_engine.store import SQLiteStore
 from .engine import CommonsGame
-from .scenario import SCENARIOS, load_scenario
+from .scenario import SCENARIOS, load_scenario, definition
+
+# Empirical play is terminal-only until the browser supports its onboarding and
+# free proposals. Preserve the three existing browser fixtures and their flows.
+BROWSER_SCENARIOS = tuple(name for name in SCENARIOS if definition(name)['proposal'] is not None)
 
 WEB_ROOT = Path(__file__).parent / 'web'
 
@@ -23,7 +27,7 @@ class CommonsServer(ThreadingHTTPServer):
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.sessions = {}
         self.session_lock = threading.Lock()
-        for name in SCENARIOS:
+        for name in BROWSER_SCENARIOS:
             store = SQLiteStore(self.data_dir / f'{name}.sqlite', CommonsGame)
             if not store.path.exists():
                 store.initialise(load_scenario(name))
@@ -52,7 +56,7 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(payload)
 
     def selected_store(self, name):
-        if name not in SCENARIOS:
+        if name not in BROWSER_SCENARIOS:
             raise ValueError('unknown_scenario')
         return SQLiteStore(self.server.data_dir / f'{name}.sqlite', CommonsGame)
 
@@ -62,7 +66,7 @@ class Handler(SimpleHTTPRequestHandler):
             try:
                 scenario = parse_qs(parsed.query).get('scenario', ['bilateral-logs'])[0]
                 game = self.selected_store(scenario).load()
-                self.reply({'ok': True, **game.project('now'), 'scenarios': list(SCENARIOS),
+                self.reply({'ok': True, **game.project('now'), 'scenarios': list(BROWSER_SCENARIOS),
                             'commits': game.project('log')})
             except ValueError as error:
                 self.reply({'ok': False, 'errors': [str(error)]}, 400)

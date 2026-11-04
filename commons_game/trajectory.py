@@ -70,13 +70,13 @@ def project_trajectory(game, *, trajectory_id='commons-history', branches=()):
         'authority': 'commons_event_history', 'access': 'read_only_projection',
         'package': {key: LOCK[key] for key in ('repository', 'commit', 'version')},
         'provenance': {'history_kind': 'recorded',
-                       'world_kind': 'synthetic_simulation' if config.get('synthetic') is True else 'unspecified',
+                       'world_kind': 'synthetic_simulation' if config.get('synthetic') is True else 'empirical_ecosystem_simulation',
                        'scenario': config['scenario'],
                        'note': 'Record-level epistemic status and evidence remain in the unmodified events.'},
         'events': events, 'history_digest': digest(events), 'branches': deepcopy(list(branches)),
     }
     document = api.build_trajectory_document(plan={
-        'id': trajectory_id, 'title': 'Subtle Pathways / ' + config['title'],
+        'id': trajectory_id, 'title': 'SADDLE PATHWAYS / ' + config['title'],
         'initial_condition': 'Initial collective state recorded by Commons.',
         'goal_statement': objective['label'], 'created_at': timestamp,
         'commons_trajectory': envelope,
@@ -176,8 +176,13 @@ def frames(document, *, branch_id=None):
             'timestamp': entry['occurred_at'], 'time_kind': 'commons_logical_transaction_time',
             'history_kind': 'hypothetical' if parent is not None and entry['sequence'] > parent else 'recorded_prefix' if parent else 'recorded',
             'world_kind': envelope['provenance']['world_kind'],
-            'actor_id': entry['actor_id'], 'kind': entry['command']['kind'] if entry['command'] else 'initialize',
+            'actor_id': entry['actor_id'], 'kind': entry['command']['kind'] if entry['command'] else
+                'initialize' if entry['kind'] == 'world.initialized' else entry['kind'],
+            'event_kind': entry['kind'],
             'state_hash': digest(world),
+            'invitations': [{key: item[key] for key in ('id','source_id','target_id','status','event_refs')}
+                            for item in world['relationships'].values() if item['kind']=='contact_invitation'],
+            'connections': [item['id'] for item in world['relationships'].values() if item['kind']=='acknowledged_connection'],
             'agreements': [{key: agreement[key] for key in ('id', 'current_version', 'status', 'outcome_status')}
                            for agreement in world['agreements'].values()],
         }

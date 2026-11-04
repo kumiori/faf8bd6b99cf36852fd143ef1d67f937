@@ -38,10 +38,10 @@ explicit update.
 | Principal structures | Python mappings and sequences, canonical `trajectory-plan/v2` documents, shared goals, independently authored contribution records and `trajectory-bundle/v2` bundles. `ControlNode` is an internal frozen dataclass for spline geometry. |
 | State | A plan snapshot with initial condition, goal, primitives, uncertainty intervals and view metadata. It is not a general graph-world state, contract state machine or event-sourced game state. |
 | Trajectory | Discrete authored primitives with stable IDs and semantic fields, plus derived continuous piecewise Hermite geometry. Native coordinates are `(normalised time, uncertainty state, energy)`. |
-| Events | Primitives include event/action/update/milestone and planning moves such as sharing resources or delegating. These are descriptive planning categories, not executable authorization or resource rules. |
+| Events | Primitives include event/action/update/milestone and planning moves such as sharing resources or delegating. These are descriptive planning categories, not executable authorisation or resource rules. |
 | Time | Authored `time_parameter` is clamped to `[0,1]`. Qualitative anchors run from Now to Landing. Linear date horizons, relative-unit labels, optional ISO calendar anchors, authored actual timestamps and time expressions coexist. A calendar pin adds a constraint without changing the authored parameter. |
 | Uncertainty | Named interval modifiers with start/end parameters, Light/Marked/Strong strengths and balanced/expands/contracts evolution. Geometry generates uncertainty radii/envelopes/tubes. This is not a probability distribution or a model of empirical evidence confidence. |
-| Serialization | `trajectory_yaml` uses safe YAML encoding; `load_trajectory_yaml` loads, validates and normalises. Canonical version is v2; unversioned/v1 imports have compatibility handling; unknown versions fail explicitly. Dates become ISO strings. |
+| Serialisation | `trajectory_yaml` uses safe YAML encoding; `load_trajectory_yaml` loads, validates and normalises. Canonical version is v2; unversioned/v1 imports have compatibility handling; unknown versions fail explicitly. Dates become ISO strings. |
 | Reconstruction | Reconstructs a normalised plan document and derives geometry. It does not replay authoritative Commons commands or reconstruct game state from transitions. |
 | Analysis/view interfaces | Pure geometry sampling, time-display ticks, time–energy display projection, event points, uncertainty meshes and binary branch stems. The optional example app uses Plotly/Streamlit; the package core imports neither. No general governance analytics or game-history analysis API exists. |
 | Branching | Explicit branching topology, two labelled branch identities and an optional branch-parent field. The branch renderer uses the **first** branch point and keeps later primitives common to both stems. It does not provide arbitrary branching world histories or independent per-branch game states. |
@@ -73,7 +73,7 @@ The root package re-exports the following through
 `uncertainty_tube_mesh`, `contributions.goal_bundle_yaml` and
 `load_goal_bundle_yaml`; they are not root re-exports. Contribution revisions
 check the contributing agent ID, but this is not a substitute for Commons
-actor-bound authorization. Bundle v2 permits one contribution per agent per
+actor-bound authorisation. Bundle v2 permits one contribution per agent per
 goal; it must not be mistaken for a common authoritative collective history.
 
 [pyproject.toml](https://github.com/kumiori/3868a1d2cf7234d3bb44ffc5455adc18/blob/757c2baeb17e9864eeff0900b5ad9ea3cec23d9d/pyproject.toml)
@@ -88,7 +88,7 @@ with that notice and a recorded source revision; do not vendor the dirty tree.
 
 ## Smallest compatible boundary
 
-Use the existing package as a read-only **document/serialization boundary**,
+Use the existing package as a read-only **document/serialisation boundary**,
 with a versioned Commons projection nested at `plan.commons_trajectory`.
 Keep `primitives=[]` and `uncertainty=[]` until participants author genuine
 trajectory semantics. Do not manufacture energy, uncertainty or normalized
@@ -155,5 +155,5 @@ synthetic Commons events and hypothetical branch metadata, serialized it with
 `trajectory_yaml`, and reconstructed it with `load_trajectory_yaml`. Exact
 nested payload equality passed. It also confirmed the outer source-kind
 normalisation described above. This establishes feasibility of the boundary;
-Commons replay, authorization, lifecycle and branch-isolation tests remain
+Commons replay, authorisation, lifecycle and branch-isolation tests remain
 the integration's responsibility.

@@ -1,0 +1,97 @@
+[
+  {
+    "id": "montreal-geneva-workshop",
+    "title": "Montréal → Geneva: a future for data commons",
+    "description": "Explore a desirable future for data commons by working backwards from possible outcomes to necessary steps, actors and contributions.",
+    "status": "SOURCE MATERIAL / INSPECTABLE; strategy and coalition gameplay not implemented",
+    "provenance": {
+      "kind": "authored_workshop_scenario",
+      "source_project": "app_protocol_hack",
+      "source_path": "question_sets/montreal_communs_2026/short.yaml",
+      "source_sha256": "c636437817ff7ba47f4a24b330315fc90ba6a9cdc2dd68f3d5ea2aa5372b903f",
+      "questionnaire_id": "montreal_communs_data_ai_short_2026",
+      "revision": 5,
+      "source_sections": [
+        "future_intro",
+        "future_outcome",
+        "future_conditions",
+        "future_contribution",
+        "scenario_position"
+      ]
+    },
+    "context": "The workshop uses a prospective Genève 2027 framing. It is an exercise in backcasting, not evidence of a future event or successful collective outcome.",
+    "possible_objectives": [
+      {
+        "source_code": "political_commitment",
+        "title": "A political commitment"
+      },
+      {
+        "source_code": "new_policy",
+        "title": "A new public policy"
+      },
+      {
+        "source_code": "coalition",
+        "title": "A coalition"
+      },
+      {
+        "source_code": "protocol_standard",
+        "title": "A protocol or standard"
+      },
+      {
+        "source_code": "infrastructure_tool",
+        "title": "An infrastructure or tool"
+      },
+      {
+        "source_code": "funding",
+        "title": "Funding"
+      },
+      {
+        "source_code": "shared_resource",
+        "title": "A shared resource"
+      },
+      {
+        "source_code": "collaboration",
+        "title": "A new collaboration"
+      },
+      {
+        "source_code": "experiment",
+        "title": "A concrete experiment"
+      },
+      {
+        "source_code": "practice_change",
+        "title": "A change in organisational practice"
+      },
+      {
+        "source_code": "clearer_disagreement",
+        "title": "A clearer disagreement"
+      },
+      {
+        "source_code": "new_question",
+        "title": "A newly visible question"
+      },
+      {
+        "source_code": "learning_from_failure",
+        "title": "Learning from failure"
+      },
+      {
+        "source_code": "public_mobilisation",
+        "title": "Public mobilisation"
+      },
+      {
+        "source_code": "unexpected_initiative",
+        "title": "An unexpected initiative"
+      }
+    ],
+    "conditions": [
+      "Identify necessary steps and who might carry them.",
+      "Distinguish desired outcomes, proposed contributions and actual commitments.",
+      "Agreements may support a step; signatures do not prove that the desired future occurred."
+    ],
+    "world_bindings": {
+      "montreal-commons": {
+        "montreal-collaboration": "Simulation collaboration context; not a completed workshop objective."
+      }
+    },
+    "source_review": "The source marks future summit claims for verification before production; this catalogue does not assert those claims as facts."
+  }
+]

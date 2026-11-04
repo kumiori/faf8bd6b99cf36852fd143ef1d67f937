@@ -67,7 +67,7 @@ def test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome
     assert game.project('objectives')[0]['status'] == 'verified'
 
 
-@pytest.mark.parametrize('scenario', SCENARIOS)
+@pytest.mark.parametrize('scenario', [name for name in SCENARIOS if definition(name)['proposal'] is not None])
 def test_all_scenarios_replay_and_independent_mode_objectives(scenario):
     game = run_demo(scenario)
     assert game.get_world() == game.replay().get_world()

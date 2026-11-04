@@ -1,10 +1,86 @@
 # Commons development milestones
 
 Roadmap adopted on 3 November 2026; supplemented on 4 November 2026 for
-**Subtle Pathways**, trajectory compatibility and terminal-first development.
+**SADDLE PATHWAYS**, trajectory compatibility and terminal-first development.
 The accepted conceptual foundations and M0–M5 order are preserved. M0's Hube
 freeze remains intact. The small terminal/trajectory integration below is an
 architectural checkpoint, not completion of every later gameplay milestone.
+
+## 4 November sprint — playable terminal and complete scoped capture
+
+The subsequent [relational playtest correction](12-relational-playtest.md) makes
+the fixed-scale heatmap the default, preserves separate player/focus/relation
+contexts and extracts Hack's existing terminal raster into a neutral component.
+Network is now a selectable typed diagram with contract/objective/policy links.
+Scenarios distinguishes authored workshop framing from registered objectives
+and contracts. Gathering exposes the existing invitation/activation gates without
+claiming Hube feasibility integration or a registered Montréal event objective.
+
+Jeanne's complete observation/navigation sequence passed in local PTY and real
+ttyd transports on private copies of the 41-person saved world, following an
+actual matching counterparty's existing contract. No contract or consent was
+invented for that acceptance, and the copied state/history remained unchanged.
+The proposal/negotiation/restart acceptance also remains operational. These
+corrections preserve engine semantics and do not close unimplemented gameplay gates.
+
+The subsequent [matrix-first navigation sprint](11-matrix-first-navigation.md)
+adds a full-screen POSIX/ttyd viewport, persistent screen stack, explicit mode
+selection, the directed expertise matrix with strict missingness, negotiated
+contribution forms, typed policy links and a perspective-specific grouped inbox.
+The authorised capture now retains minimal offer/need answer states and domain
+codes in a read-only source mapping. All 41 eligible people are reconciled;
+40 off-diagonal matrix cells remain unknown because one needs response was skipped.
+
+Local PTY and real ttyd acceptance exercise proposal, initial acceptance,
+counterparty negotiation, renewed acceptance, historical inspection, native
+trajectory/replay, mode switching, resize and restart. They end
+**accepted / unverified**. Montréal's missing gathering objective and the absence
+of coalition strategy search are explicitly labelled. These presentation changes
+do not close later M1–M5 governance or planning gates.
+
+Current player entry point: `saddle-pathways`, with no subcommand. The ordinary
+simulation interface uses the full imported person catalogue, name search,
+organisation filtering, numbered/cursor navigation, connected-object inspection,
+contract short references, an inbox and contextual command help. No mock manifest
+or production-login entry is required. Developer fixtures remain separate.
+
+The complete authorised source capture inspected 99 records (41 people, 58
+responses). All 41 eligible named person records appear in the default world.
+The capture includes 28 source-local organisation mentions, 211 capacities and
+290 needs. One submitted inventory lacks a resolvable person record; it is reported
+without inventing an actor. Organisations are not merged by label.
+
+The player-facing demonstration selects a person, discovers an inferred peer,
+proposes, switches simulated participants, responds, inspects consequences,
+restarts and replays using names/numbers only. It ends accepted/unverified.
+The default private world preserves the earlier five-event checkpoint and contract.
+
+The shared presentation vocabulary, source reconciliation, command audit and
+regression/standalone-install evidence are recorded in
+[10-playable-terminal.md](10-playable-terminal.md). These are interaction and
+capture improvements; the remaining M1–M5 gates are not retroactively closed.
+
+## Earlier 4 November checkpoint — inhabitable collective play
+
+The definitive title is **SADDLE PATHWAYS**. All new prose and interface labels use
+British English; existing API/schema identifiers remain compatible. The first
+empirical world is **Montréal Commons**. Montréal-to-Geneva remains a possible
+scenario; Hube remains the frozen regression world.
+
+| Deliverable | Current status and evidence boundary |
+|---|---|
+| Contract visibility | Implemented and exercised in terminal: proposal reference, graph neighbourhood, parties, objective, resources, policy, evidence, lifecycle and separate outcome; historical projection and replay agree |
+| Read-only ecosystem import | Implemented for people, organisations, affiliations, relationships, capacities, needs and documented resources; connector capture of a controlled Montréal subset imported and inspected locally |
+| Identity binding | Implemented and tested with an explicit local mock provider; bindings are independent of Notion, and organisational grants are explicit; genuine authentication is not implemented |
+| Onboarding | Exploration, mock sign-in, profile inspection, sign-out and pending claims; unverified claims grant no actor or acceptance authority and do not duplicate actors |
+| Inbox | Derived from authoritative state and engine permissions: responses/amendments, authorisation, obligations and independent verification requests |
+| Persistence and trajectories | Separate mock players negotiate in one SQLite log; stale writes fail, exact retries are idempotent; restart and native package round-trip recover the same world |
+
+All actions remain simulated. The empirical two-player demonstration ends at
+**accepted / unverified**: no fulfilment or independent verification is fabricated.
+Production OAuth/OIDC, verified claim adjudication, institutional delegation and
+public deployment remain preparatory. See [the sprint evidence](09-montreal-collective-play.md).
+These deliverables do not close all of M1–M5.
 
 ## Checkpoints and scope
 
@@ -95,7 +171,7 @@ governance boundary. Do not label all of M1 complete from a successful demo alon
 
 Trajectory gate: contract creation, exact-version acceptance, authorisation,
 execution, reported fulfilment and independent verification must survive native
-package serialization as distinct events and states. No generic package `Done`
+package serialisation as distinct events and states. No generic package `Done`
 status may replace the Commons lifecycle or imply verified reality.
 
 ## M2 — Governance and resource constraints
@@ -131,15 +207,16 @@ never itself create accepted collaboration or a verified fact. Keep local
 empirical material separate from synthetic public demonstrations.
 
 Existing scaffold: synthetic ecosystem projections and strict missingness-aware
-matrix derivation. Actual empirical import and match-to-contract navigation are
-not implemented. Candidate source package: sibling `app_protocol_hack`, including
+matrix derivation. The current sprint adds a controlled empirical snapshot importer
+and actor-to-contract navigation. Broader coverage and identity reconciliation
+remain open. Source package: sibling `app_protocol_hack`, including
 `protocol/ecosystem.py`, `protocol/multiplex_v2.py`, and its temporal capture/export
 boundary. Inspect that package's contracts before choosing an import format.
 
 The first exploration is terminal-based: actor/relationship/capacity/need inspection,
 provenance-aware discovery and contact-to-contract proposal. The new TUI can
-inspect and act in synthetic fixtures; this is not yet the empirical Montréal
-import. Preserve missingness and uncertainty in both terminal output and exported
+inspect and act in synthetic fixtures and the controlled Montréal Commons import.
+Preserve missingness and uncertainty in both terminal output and exported
 trajectory metadata. Do not turn inferred complementarity into documented cooperation.
 
 ## M4 — Gathering: first fully playable Commons mode
@@ -236,3 +313,29 @@ state equality after replay; lifecycle distinction; actor-bound submission;
 branch isolation; event identity/order/provenance retention; and all original Hube
 tests. See [07-terminal-architecture.md](07-terminal-architecture.md) and the
 checkpoint validation report for actual results and remaining work.
+
+
+## Complementarity to collective action — implemented checkpoint
+
+O/N/W share one bounded arithmetic projection, with explicit partial observations.
+The reported 4/5 discrepancy also exposed two distinct people sharing the first
+name Nathalie: presentation collision labels now retain first-name privacy while
+distinguishing their identities. Every cell of the pinned empirical prefix agrees
+across arithmetic, heatmap and inspector.
+
+Contact invitations now use existing authoritative relationship records and atomic
+commits, with drafts, send, accept/decline, withdrawal and explicit-clock expiry.
+Accepted contact creates an acknowledged connection, never a contract. Direct
+contract proposals remain independent; versioned acceptance, institutional approval
+and outcome verification gates are unchanged. Both paths are demonstrated in PTY
+and ttyd with restart and native trajectory replay.
+
+Implemented presentation: O/N/W explorer, compact contextual profiles/inspectors,
+canonical inbox rows and filters, direct valid contract decisions, graph scope,
+layer controls, visible rendering coverage and stable Back navigation.
+**Experimental:** optional genuine 3D layout and yaw/pitch camera; no social or
+physical meaning is assigned to layout geometry. Production identity, real delivery
+and institutional/legal enforcement remain outside this milestone.
+
+See [13-complementarity-to-collective-action.md](13-complementarity-to-collective-action.md)
+for the source audit, API additions, migration boundary, file list and validation.

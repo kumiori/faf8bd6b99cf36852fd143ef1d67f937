@@ -39,7 +39,7 @@ No trajectory-package algorithm or serializer is copied into Commons.
 | External inputs | Recorded commands such as `advance_time`, plus any future explicitly recorded external-input fields, remain intact |
 | Alternative branch | Named hypothetical suffix from an explicit parent sequence, commit and state hash; source prefix is shared by reference |
 | Rejected branch action | Rejection reason and attempted command retained in branch diagnostics; it creates no canonical event |
-| Serialization | Native `trajectory-plan/v2` YAML containing `subtle-trajectory/v1` envelope; package version and source commit recorded |
+| Serialisation | Native `trajectory-plan/v2` YAML containing `subtle-trajectory/v1` envelope; package version and source commit recorded |
 
 Keep K's meaning explicit: the accepted model uses K for commitments. Commits are
 transaction/audit records. The new task's use of K for commits does not silently

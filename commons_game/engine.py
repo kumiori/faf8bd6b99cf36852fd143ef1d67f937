@@ -8,6 +8,7 @@ import json
 from commons_engine import WorldEngine
 from .model import (TABLES, ENTITY_TABLES, Agreement, AgreementVersion, Approval,
                     Commitment, DomainError, require)
+from . import invitations
 
 
 def digest(value):
@@ -31,8 +32,9 @@ def text(value, code='text_required'):
 
 
 FIELDS = {
-    'draft': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, set()),
-    'propose': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, set()),
+    **invitations.FIELDS,
+    'draft': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, {'interaction_context'}),
+    'propose': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, {'interaction_context'}),
     'publish_proposal': ({'agreement_id', 'version'}, set()),
     'amend': ({'agreement_id', 'version', 'terms'}, {'resources', 'valid_until', 'policy_id', 'verification'}),
     'accept': ({'agreement_id', 'version'}, set()),
@@ -75,7 +77,9 @@ class CommonsGame(WorldEngine):
             'previous_version': event['sequence'] - 1, 'resulting_version': event['sequence'],
             'previous_state': digest(before), 'resulting_state': digest(after),
             'authorization': deepcopy(action.get('authorization', {
-                'decision': 'allowed', 'rule': 'synthetic_scenario_initialisation', 'actor_id': 'system'})),
+                'decision': 'allowed', 'rule': {'ecosystem.imported': 'read_only_ecosystem_import',
+                    'identity_binding.requested': 'pending_identity_claim'}.get(event['kind'], 'synthetic_scenario_initialisation'),
+                'actor_id': 'system'})),
         }
 
     def _validate_event(self, entry, before):
@@ -101,13 +105,23 @@ class CommonsGame(WorldEngine):
             require(kind in FIELDS, 'unknown_command')
             required, optional = FIELDS[kind]
             require(required <= command.keys(), 'missing_field')
-            require(not (command.keys() - required - optional - {'key', 'kind', 'actor'}), 'unsupported_field')
+            require(not (command.keys() - required - optional - {'key', 'kind', 'actor', 'session'}), 'unsupported_field')
+            if 'session' in command:
+                session = command['session']
+                require(isinstance(session, dict) and set(session) ==
+                        {'mode', 'provider', 'subject', 'binding_actor', 'authority', 'authenticated'}, 'invalid_session_context')
+                require(session['mode'] == 'simulation' and session['authenticated'] is False, 'live_identity_unavailable')
+                require(session['binding_actor'] == command['actor'], 'actor_mismatch')
+                text(session['provider']); text(session['subject'])
+                require(session['authority'] in {'personal', 'organisation'}, 'invalid_binding_authority')
             prior = self._prior(command)
             if prior:
                 require(prior['command'] == command, 'key_conflict')
                 return []
             require(command['actor'] in self._world['actors'], 'unknown_actor')
             require(self._world['actors'][command['actor']]['status'] == 'active', 'inactive_actor')
+            if 'session' in command and self._world['actors'][command['actor']]['kind'] == 'organisation':
+                require(command['session']['authority'] == 'organisation', 'organisation_binding_required')
             self._prepare(command)
             return []
         except DomainError as error:
@@ -188,10 +202,13 @@ class CommonsGame(WorldEngine):
         seq = len(self._log) + 1
         action_id, timestamp = f'action_{seq:06}', self._timestamp()
         authorization = {'decision': 'allowed', 'actor_id': actor, 'rule': kind}
+        if 'session' in command:
+            authorization['session'] = deepcopy(command['session'])
         action = {'id': action_id, 'kind': kind, 'submitted_by': actor,
                   'submitted_at': timestamp, 'status': 'accepted', 'payload': deepcopy(command),
                   'authorization': authorization, 'target_ids': []}
         agreement = version = None
+        summary = f'{kind}.accepted'
         if 'agreement_id' in command:
             text(command['agreement_id'])
             agreement = world['agreements'].get(command['agreement_id'])
@@ -217,7 +234,9 @@ class CommonsGame(WorldEngine):
                                       'status': 'reported', 'provenance': {'kind': 'synthetic_gameplay'}, **extra}
             return eid
 
-        if kind in {'draft', 'propose'}:
+        if kind in invitations.KINDS:
+            summary = invitations.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
+        elif kind in {'draft', 'propose'}:
             gid = text(command['id'])
             require(gid not in world['agreements'], 'agreement_exists')
             parties = command['parties']
@@ -231,6 +250,16 @@ class CommonsGame(WorldEngine):
                                          objective_id=command['objective_id'], versions=[v],
                                          created_by=actor, created_at=timestamp,
                                          status='draft' if kind == 'draft' else 'proposed'))
+            if 'interaction_context' in command:
+                context=command['interaction_context']
+                require(isinstance(context,dict) and set(context)=={'relationship','invitation_id'}
+                        and isinstance(context['relationship'],dict), 'invalid_interaction_context')
+                invitations.validate_context(world,context['relationship'],seq)
+                if context['invitation_id'] is not None:
+                    invitation=world['relationships'].get(context['invitation_id'],{})
+                    require(invitation.get('kind')=='contact_invitation' and
+                            {invitation['source_id'],invitation['target_id']} <= set(parties), 'invalid_invitation_context')
+                agreement['interaction_context']=deepcopy(context)
             world['agreements'][gid] = agreement
             action['target_ids'] = [gid]
         elif kind == 'publish_proposal':
@@ -249,6 +278,9 @@ class CommonsGame(WorldEngine):
             require(actor not in version['acceptances'], 'already_accepted')
             version['acceptances'][actor] = asdict(Approval(actor_id=actor, agreement_id=agreement['id'],
                 version=version['number'], content_digest=version['content_digest'], action_id=action_id, recorded_at=timestamp))
+            if 'session' in command:
+                version['acceptances'][actor]['method'] = ('development_role_simulation'
+                    if command['session']['provider']=='development_simulation' else 'mock_identity_simulation')
             if set(agreement['parties']) <= version['acceptances'].keys():
                 agreement['status'] = 'accepted'
         elif kind == 'authorize':
@@ -352,6 +384,7 @@ class CommonsGame(WorldEngine):
             require('facilitator' in world['actors'][actor]['roles'], 'facilitator_required')
             require(instant(command['time']) > instant(world['configuration']['clock']['now']), 'time_must_advance')
             world['configuration']['clock']['now'] = command['time']
+            invitations.expire(world, command['time'], f'commit_{seq:06}')
             for item in world['agreements'].values():
                 if item['status'] not in TERMINAL and item['outcome_status'] != 'verified' and instant(self._version(item)['valid_until']) <= instant(command['time']):
                     self._close(world, item, 'expired')
@@ -404,7 +437,7 @@ class CommonsGame(WorldEngine):
             agreements = [a for a in world['agreements'].values() if a['objective_id'] == objective['id']]
             objective['support_ids'] = [a['id'] for a in agreements if a['outcome_status'] == 'verified']
             objective['status'] = 'verified' if len(objective['support_ids']) >= objective['success']['verified_agreements'] else 'open'
-        return world, action_id, f'{kind}.accepted'
+        return world, action_id, summary
 
     def project(self, view='now', *, at=None, time=None):
         world = self.world_at(event=at, time=time) if at is not None or time is not None else self.get_world()
@@ -425,10 +458,5 @@ class CommonsGame(WorldEngine):
 
     def derive_possibilities(self, world=None):
         world = world if world is not None else self.get_world()
-        return [{'id': f"potential:{capacity['id']}:{need['id']}", 'kind': 'potential_complementarity',
-                 'source_id': capacity['actor_id'], 'target_id': need['actor_id'],
-                 'domain': capacity['domain'], 'status': 'inferred', 'generator': 'exact_domain_match',
-                 'source_record_ids': [capacity['id'], need['id']]}
-                for capacity in world['capacities'].values() for need in world['needs'].values()
-                if capacity['domain'] == need['domain'] and capacity['unit'] == need['unit']
-                and capacity['actor_id'] != need['actor_id'] and capacity['status'] == need['status'] == 'reported']
+        from .projections import potential_complementarities
+        return potential_complementarities(world)

@@ -1,4 +1,4 @@
-# Subtle Pathways — terminal architecture
+# SADDLE PATHWAYS — terminal architecture
 
 The terminal is the first playable laboratory. Existing browser files are legacy
 scaffolding and are neither expanded nor required by this checkpoint.

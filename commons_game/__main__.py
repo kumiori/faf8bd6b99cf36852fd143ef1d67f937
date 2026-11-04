@@ -1,24 +1,39 @@
-"""Subtle Pathways terminal entry point; domain rules stay in the shared engine."""
+"""SADDLE PATHWAYS terminal entry point; domain rules stay in the shared engine."""
 import argparse
 import json
 from pathlib import Path
 import sys
+import os
+import tomllib
 from commons_engine.store import SQLiteStore
 from .engine import CommonsGame
 from .scenario import SCENARIOS, load_scenario, demo_commands
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='Subtle Pathways / The Commons Game · V0.1')
-    parser.add_argument('--db', default='.commons.sqlite')
-    commands = parser.add_subparsers(dest='operation', required=True)
+    parser = argparse.ArgumentParser(description='SADDLE PATHWAYS / The Commons Game · V0.1')
+    parser.add_argument('--db', help='Saved world; ordinary play defaults to the private SADDLE data directory')
+    commands = parser.add_subparsers(dest='operation')
     for name in ('start', 'demo'):
         command = commands.add_parser(name)
         command.add_argument('scenario', choices=SCENARIOS, nargs='?', default='bilateral-logs')
-    play = commands.add_parser('play', help='Actor-bound terminal laboratory')
+    play = commands.add_parser('play', help='Interactive simulation game (the default operation)')
     play.add_argument('scenario', choices=SCENARIOS, nargs='?')
     play.add_argument('--actor', help='Active local actor ID; identity selection is not authentication')
     play.add_argument('--hot-seat', action='store_true', help='Explicitly enable development identity switching')
+    play.add_argument('--mock-identities', type=Path, help='Trusted local simulation identity/binding manifest')
+    play.add_argument('--mock-player', help='Simulate sign-in as one provisioned mock subject')
+    play.add_argument('--explore', action='store_true', help='Explore without assuming an actor role')
+    play.add_argument('--plain', action='store_true', help='Use portable text decorations')
+    play.add_argument('--line-mode', action='store_true', help='Use the scripted text fallback instead of the full-screen viewport')
+    play.add_argument('--developer-ui', action='store_true', help='Use the previous scripted laboratory surface')
+    play.add_argument('--choose-world', action='store_true', help='Select another simulation world explicitly')
+    imp = commands.add_parser('import-ecosystem', help='Import a read-only ecosystem snapshot into this world')
+    imp.add_argument('snapshot', type=Path)
+    capture = commands.add_parser('capture-notion', help='Read allowlisted Notion sources using the existing sibling transport')
+    capture.add_argument('--source-mapping', type=Path, required=True)
+    capture.add_argument('--protocol-project', type=Path, default=Path('../app_protocol_hack'))
+    capture.add_argument('--output', type=Path, required=True)
     trajectory = commands.add_parser('trajectory', help='Read-only native trajectory-package projection')
     trajectory.add_argument('--export', type=Path)
     inspect = commands.add_parser('inspect-trajectory', help='Inspect exported package YAML without loading it into a live world')
@@ -36,11 +51,57 @@ def main(argv=None):
     serve = commands.add_parser('serve', help='Legacy browser scaffold; not required for terminal development')
     serve.add_argument('--port', type=int, default=8765)
     serve.add_argument('--data-dir', default='.commons-worlds')
-    args = parser.parse_args(argv)
+    supplied = sys.argv[1:] if argv is None else argv
+    args = parser.parse_args(supplied)
+    if args.operation is None:
+        args = parser.parse_args([*supplied,'play'])
+    data_dir = Path(os.getenv('SADDLE_DATA_DIR',str(Path.home()/'.local/share/saddle-pathways'))).expanduser()
+    explicit_db = args.db is not None
+    args.db = str(Path(args.db).expanduser()) if args.db else str(data_dir/'commons.sqlite')
     try:
         store = SQLiteStore(args.db, CommonsGame)
-        if args.operation == 'play':
-            from .tui import Terminal, run_play
+        if args.operation == 'capture-notion':
+            from .ecosystem_import import sibling_client, capture_snapshot
+            secrets_path = args.protocol_project / '.streamlit/secrets.toml'
+            configured = tomllib.loads(secrets_path.read_text()).get('notion', {}) if secrets_path.exists() else {}
+            token = (os.getenv('PROTOHACK_NOTION_TOKEN') or configured.get('protohack_token')
+                     or configured.get('api_key') or configured.get('token') or os.getenv('NOTION_TOKEN'))
+            if not token:
+                raise ValueError('Configure PROTOHACK_NOTION_TOKEN or NOTION_TOKEN; credentials are never stored in snapshots')
+            mapping = json.loads(args.source_mapping.read_text())
+            snapshot = capture_snapshot(sibling_client(args.protocol_project, token), mapping['sources'])
+            # Do not overwrite an earlier reproducible observation.
+            with args.output.open('x') as target:
+                json.dump(snapshot, target, ensure_ascii=False, indent=2)
+            args.output.chmod(0o600)
+            print('Captured read-only ecosystem snapshot:', args.output)
+        elif args.operation == 'import-ecosystem':
+            from .ecosystem_import import import_snapshot
+            snapshot = json.loads(args.snapshot.read_text())
+            print(json.dumps(store.transact(lambda game: import_snapshot(game, snapshot)), indent=2))
+        elif args.operation == 'play':
+            from .tui import Terminal, run_play, Cancelled
+            primary = not (args.developer_ui or args.actor or args.mock_identities or args.hot_seat)
+            from .fullscreen import supported
+            interactive_primary = primary and not args.line_mode and supported(sys.stdin,sys.stdout)
+            if interactive_primary and args.scenario is None and not args.choose_world:
+                args.scenario = 'montreal-commons' if not explicit_db else None
+            splash_done = False
+            multiple_saved_worlds = not explicit_db and len(list(data_dir.glob('*.sqlite'))) > 1
+            if primary and (args.choose_world or args.scenario is None and (not store.path.exists() or multiple_saved_worlds)):
+                from .play import PlayableTerminal
+                chooser = PlayableTerminal(load_scenario('montreal-commons'),plain=args.plain)
+                chooser.splash();splash_done=True
+                choices = ['montreal-commons',*(name for name in SCENARIOS if name!='montreal-commons')]
+                try:
+                    selected = chooser.choose('WORLD / COMMONS IS THE DEFAULT',choices,
+                        lambda name: 'Commons · Montréal ecosystem' if name=='montreal-commons' else load_scenario(name).get_world()['configuration']['world']['title']+' · synthetic fixture')
+                except (EOFError,Cancelled):
+                    return 0
+                args.scenario = selected
+                if not explicit_db:
+                    args.db = str(data_dir/('commons.sqlite' if selected=='montreal-commons' else selected+'.sqlite'))
+                    store = SQLiteStore(args.db,CommonsGame)
             if store.path.exists():
                 game = store.load()
                 saved_scenario = game.get_world()['configuration']['world']['scenario']
@@ -52,14 +113,36 @@ def main(argv=None):
                     from .tui import Cancelled
                     chooser = Terminal(load_scenario())
                     try:
-                        selected = chooser.choose('SUBTLE PATHWAYS / Select a synthetic scenario:', list(SCENARIOS))
+                        selected = chooser.choose('SADDLE PATHWAYS / Select a world:', list(SCENARIOS))
                     except (Cancelled, EOFError):
                         return 0
                 game = load_scenario(selected)
                 if args.actor is not None and args.actor not in game.get_world()['actors']:
                     raise ValueError('unknown_actor')
+                store.path.parent.mkdir(parents=True,exist_ok=True)
                 store.initialise(game)
-            run_play(game, actor=args.actor, store=store, hot_seat=args.hot_seat)
+            if args.mock_player and not args.mock_identities:
+                raise ValueError('mock_identities_manifest_required')
+            if args.mock_identities and (args.actor or args.hot_seat):
+                raise ValueError('mock_bindings_use_sign_out_instead_of_hot_seat')
+            provider = identity = None
+            if args.mock_identities:
+                from .identity import MockIdentityProvider
+                provider = MockIdentityProvider(json.loads(args.mock_identities.read_text()))
+                if args.mock_player:
+                    identity = provider.sign_in(args.mock_player)
+            if primary:
+                from .fullscreen import supported, run_fullscreen
+                if not args.line_mode and supported(sys.stdin, sys.stdout):
+                    run_fullscreen(game,store=store,plain=args.plain,explore=args.explore)
+                    return 0
+                from .play import PlayableTerminal
+                terminal=PlayableTerminal(game,store=store,plain=args.plain,explore=args.explore)
+                terminal.splash_done=splash_done
+                terminal.run()
+            else:
+                run_play(game, actor=args.actor, store=store, hot_seat=args.hot_seat,
+                         provider=provider, identity=identity, plain=args.plain, explore=args.explore)
         elif args.operation in {'trajectory', 'inspect-trajectory', 'trajectory-demo'}:
             from .trajectory import (project_trajectory, reconstruct, simulate_branch,
                                      trajectory_yaml, load_trajectory_yaml)
@@ -75,7 +158,7 @@ def main(argv=None):
                 game = load_scenario(args.scenario)
                 script = demo_commands(args.scenario)
                 session = ActorSession(game, script[0]['actor'], hot_seat=True)
-                print('SUBTLE PATHWAYS / EXPLICIT SYNTHETIC HOT-SEAT DEMONSTRATION')
+                print('SADDLE PATHWAYS / EXPLICIT SYNTHETIC HOT-SEAT DEMONSTRATION')
                 for command in script:
                     session.switch(command['actor'])
                     result = session.submit(command)
@@ -112,6 +195,7 @@ def main(argv=None):
         elif args.operation == 'start':
             if Path(args.db).exists():
                 raise ValueError('world_exists_choose_another_db')
+            store.path.parent.mkdir(parents=True,exist_ok=True)
             store.initialise(load_scenario(args.scenario))
             print(f'World started: {args.scenario} · {args.db}')
         elif args.operation == 'demo':
@@ -143,6 +227,11 @@ def main(argv=None):
     except KeyboardInterrupt:
         print('Interrupted. Accepted history is preserved.', file=sys.stderr)
         return 130
+    except ModuleNotFoundError as error:
+        if error.name != 'notion_client':
+            raise
+        print('Install the notion extra to use capture-notion; snapshot import remains available offline.', file=sys.stderr)
+        return 1
     except (ValueError, OSError, RuntimeError, json.JSONDecodeError) as error:
         print(str(error), file=sys.stderr)
         return 1

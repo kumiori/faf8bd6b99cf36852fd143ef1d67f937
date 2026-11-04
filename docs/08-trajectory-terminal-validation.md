@@ -1,4 +1,4 @@
-# Subtle Pathways — trajectory/terminal checkpoint
+# SADDLE PATHWAYS — trajectory/terminal checkpoint
 
 Validated 4 November 2026. The source audit and compatibility assessment were
 written before implementation. This is the minimal integration checkpoint,

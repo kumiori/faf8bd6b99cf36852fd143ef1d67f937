@@ -1,0 +1,6 @@
+{
+  "note": "Replace the explicit source ID before use. This is a mapping example, not a capture or a credential.",
+  "sources": [
+    {"kind": "person", "data_source_id": "REPLACE_WITH_AUTHORISED_SOURCE_ID", "properties": {"label": "Name"}}
+  ]
+}

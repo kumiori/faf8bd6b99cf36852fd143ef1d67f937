@@ -1,0 +1,8 @@
+{
+  "mode": "simulation",
+  "players": {
+    "player-a": {"label": "Player A (mock)", "bindings": [{"actor_id": "researcher", "authority": "personal"}]},
+    "player-b": {"label": "Player B (mock)", "bindings": [{"actor_id": "custodian", "authority": "organisation"}]},
+    "unbound": {"label": "Unbound player (mock)", "bindings": []}
+  }
+}

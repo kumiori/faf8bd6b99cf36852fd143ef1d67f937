@@ -5,7 +5,7 @@ from pathlib import Path
 from .engine import CommonsGame
 from .model import Actor, Resource, GovernancePolicy, require
 
-SCENARIOS = ('bilateral-logs', 'montreal-geneva', 'commons-gathering')
+SCENARIOS = ('bilateral-logs', 'montreal-geneva', 'commons-gathering', 'montreal-commons')
 
 
 def definition(name):
@@ -27,7 +27,7 @@ def load_scenario(name='bilateral-logs'):
         for item in spec.get(table, []):
             world[table][item['id']] = item
     world['configuration']['world'] = {'id': 'world', 'status': 'active', 'scenario': name,
-        'title': spec['title'], 'description': spec['description'], 'synthetic': True,
+        'title': spec['title'], 'description': spec['description'], 'synthetic': spec.get('synthetic', True),
         'mode': spec['mode'], 'proposal': spec['proposal'], 'schema_version': 'commons.0.1'}
     world['configuration']['clock'] = {'id': 'clock', 'status': 'active', 'now': spec['world_time']}
     game._commit(game.get_world(), world, 'world.initialized')
@@ -37,6 +37,7 @@ def load_scenario(name='bilateral-logs'):
 def demo_commands(name='bilateral-logs'):
     """A transparent command script; interactive play never calls it implicitly."""
     spec = definition(name)
+    require(spec['proposal'] is not None, 'empirical_world_requires_explicit_play')
     proposal = spec['proposal']
     first, second = proposal['parties'][:2]
     commands = []

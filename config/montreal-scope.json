@@ -1,0 +1,28 @@
+{
+  "probe_id": "montreal_communs_data_ai_short_2026",
+  "session_id": "montreal_communs_2026",
+  "people_data_source_id": "d3932ca7-289a-40f1-b30e-1ed839c40f8b",
+  "people_database_id": "f2b49db9-d1cc-41bc-93b2-2b473ff5be4f",
+  "responses_data_source_id": "9eee785d-3b00-4dba-a6ce-2b2279dd02ac",
+  "responses_database_id": "67ffe200-2692-448a-845c-0622a0f32381",
+  "topics": {
+    "commons_principles": "Digital commons principles and values",
+    "governance_models": "Data governance models",
+    "institutional_pooling": "Institutional forms of data pooling",
+    "socio_environmental_ai": "Socio-environmental issues of AI",
+    "open_data_evolution": "Evolution of the open-data paradigm",
+    "open_licenses_ai": "Open licences in the context of AI",
+    "differentiated_access": "Use-based data access control",
+    "reciprocity": "Data-use reciprocity models",
+    "ai_ready_datasets": "Structuring datasets for use by AI systems",
+    "apis_ai": "APIs and AI-related uses",
+    "agentic_protocols": "Protocols and standards for the agentic Web (e.g. MCP)",
+    "bot_traffic": "Management of intensive web-crawling bot traffic",
+    "cloud_sovereignty": "Trade-offs between commercial cloud infrastructures and sovereign solutions",
+    "coalitions": "Building coalitions",
+    "ai_contracts": "Negotiating data-use contracts with AI industries",
+    "public_action": "Available public-policy levers",
+    "advocacy": "Communication, mobilisation and advocacy for public-policy change",
+    "__empty__": "[empty]"
+  }
+}

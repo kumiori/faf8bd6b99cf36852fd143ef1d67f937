@@ -11,9 +11,12 @@ dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
+terminal-test = ["pyte>=0.8.2,<1", "websockets>=10,<17"]
+notion = ["notion-client>=3,<4"]
 trajectory = ["trajectory-engine @ git+https://github.com/kumiori/3868a1d2cf7234d3bb44ffc5455adc18.git@757c2baeb17e9864eeff0900b5ad9ea3cec23d9d"]
 
 [project.scripts]
+saddle-pathways = "commons_game.__main__:main"
 commons = "commons_game.__main__:main"
 subtle-pathways = "commons_game.__main__:main"
 

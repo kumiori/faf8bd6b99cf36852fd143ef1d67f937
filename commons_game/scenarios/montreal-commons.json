@@ -1,0 +1,22 @@
+{
+  "id": "montreal-commons",
+  "title": "Montréal Commons",
+  "description": "A read-only empirical ecosystem explored through explicitly simulated agreements. Montréal-to-Geneva is a possible trajectory; it is not an observed outcome.",
+  "mode": "ecosystem",
+  "synthetic": false,
+  "world_time": "2026-11-04T00:00:00+00:00",
+  "actors": [
+    {"id": "simulation-facilitator", "label": "Simulation facilitator (synthetic)", "roles": ["facilitator"], "category": "facilitation"},
+    {"id": "simulation-verifier", "label": "Independent reviewer (synthetic)", "roles": ["verifier", "resource_verifier"], "category": "review"}
+  ],
+  "resources": [],
+  "governance": [{"id": "simulation-personal", "label": "Simulated personal agreement: every party must explicitly accept", "eligible_actors": [], "threshold": 0}],
+  "objectives": [{
+    "id": "montreal-collaboration", "label": "Explore a possible Montréal Commons collaboration through a simulated agreement.",
+    "mode": "scenarios", "status": "open", "support_ids": [],
+    "success": {"verified_agreements": 1, "minimum_parties": 2, "minimum_attendees": 0},
+    "provenance": {"kind": "synthetic_supplement", "note": "A playground objective, not a source-recorded commitment or outcome."}
+  }],
+  "proposal": null,
+  "demo_authorizers": []
+}
