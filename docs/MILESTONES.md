@@ -1,7 +1,10 @@
 # Commons development milestones
 
-Roadmap adopted on 3 November 2026. M0 is the current acceptance gate. No new
-gameplay is introduced by this roadmap checkpoint.
+Roadmap adopted on 3 November 2026; supplemented on 4 November 2026 for
+**Subtle Pathways**, trajectory compatibility and terminal-first development.
+The accepted conceptual foundations and M0–M5 order are preserved. M0's Hube
+freeze remains intact. The small terminal/trajectory integration below is an
+architectural checkpoint, not completion of every later gameplay milestone.
 
 ## Checkpoints and scope
 
@@ -42,6 +45,17 @@ Contracts contain declarative data. A registered, restricted governance rule
 interpreter resolves them. No player-provided Python, JavaScript, callable,
 expression evaluation or arbitrary predicate execution is permitted.
 
+**One authoritative engine.** The trajectory package consumes read-only
+projections of Commons history; it never decides governance outcomes, writes a
+saved world, or independently applies authoritative transitions. K in the frozen
+state decomposition denotes commitments. Commits remain transaction records;
+the trajectory integration does not silently redefine that distinction.
+
+**Terminal first.** The initial interactive environment is the terminal laboratory.
+No Streamlit application, web dashboard or graphical network is required for any
+M0–M5 acceptance gate. Existing browser files are preliminary legacy scaffolding;
+they are not extended in this checkpoint.
+
 ## M0 — Audit and freeze Hube
 
 Objective: establish and preserve the actual functioning baseline. Deliverables:
@@ -51,6 +65,15 @@ simulation, provider consent, independent verification, quantity allocation,
 six-condition feasibility, history, persistence, replay and locale equivalence.
 
 No new gameplay. A test failure or unexplained canonical-state drift blocks M1.
+
+Add the actual trajectory-package audit, [05-trajectory-audit.md](05-trajectory-audit.md):
+the supplied address is a repository, release `0.2.0`, pinned commit
+`757c2baeb17e9864eeff0900b5ad9ea3cec23d9d`. Record its public interfaces, Python /
+PyYAML dependency, native `trajectory-plan/v2` representation, authored geometry,
+time/uncertainty and branch limits. Preserve dirty upstream work by installing
+the committed source. [06-trajectory-compatibility.md](06-trajectory-compatibility.md)
+defines the versioned read-only adapter. Original Hube tests and frozen hashes
+remain acceptance requirements for the integration.
 
 ## M1 — Contracts as first-class nodes
 
@@ -70,6 +93,11 @@ execution/evidence and a synthetic bilateral demo. Remaining work includes the
 named lifecycle presentation, explicit cancellation semantics and a standalone
 governance boundary. Do not label all of M1 complete from a successful demo alone.
 
+Trajectory gate: contract creation, exact-version acceptance, authorisation,
+execution, reported fulfilment and independent verification must survive native
+package serialization as distinct events and states. No generic package `Done`
+status may replace the Commons lifecycle or imply verified reality.
+
 ## M2 — Governance and resource constraints
 
 Extract scenario-independent contract rules into a governance module. Support
@@ -84,6 +112,12 @@ Existing scaffold: all-party acceptance, named/threshold/category approval rules
 managed reservations and a real SQLite competing-process test. Missing: scoped
 delegation, a condition registry, and extraction from the current Commons domain
 dispatcher. No tokens, wallets, settlement or blockchain are required.
+
+Governance trajectory gate: preserve authorisation decisions, actor identities,
+reservation quantities and release, future delegation scope/revocation, and
+verification evidence without lossy status normalisation. Branches run the same
+rules against detached event prefixes. Adapter operations must leave both the
+authoritative in-memory world and its SQLite history unchanged.
 
 ## M3 — Ecosystem
 
@@ -102,6 +136,12 @@ not implemented. Candidate source package: sibling `app_protocol_hack`, includin
 `protocol/ecosystem.py`, `protocol/multiplex_v2.py`, and its temporal capture/export
 boundary. Inspect that package's contracts before choosing an import format.
 
+The first exploration is terminal-based: actor/relationship/capacity/need inspection,
+provenance-aware discovery and contact-to-contract proposal. The new TUI can
+inspect and act in synthetic fixtures; this is not yet the empirical Montréal
+import. Preserve missingness and uncertainty in both terminal output and exported
+trajectory metadata. Do not turn inferred complementarity into documented cooperation.
+
 ## M4 — Gathering: first fully playable Commons mode
 
 Upgrade Hube through an explicit, opt-in compatibility path. Preserve the original
@@ -119,6 +159,12 @@ Existing scaffold: Hube and Commons share transaction/replay/storage machinery.
 The separate synthetic gathering fixture is **not** yet a contract-backed Hube
 upgrade. M4 remains open until that integration and its terminal traversal pass.
 
+The first complete Commons mode must be terminal-playable through actor-bound
+sessions over shared governance. Verify the entire unresolved-need → offer →
+contract → independently verified support → feasible-ending trajectory. Normal
+play binds one identity; switching is explicitly development hot-seat only.
+Graphical visualisation is not an acceptance prerequisite.
+
 ## M5 — Scenarios
 
 Begin with the Montréal-to-Geneva mentoring network and a limited action vocabulary.
@@ -129,6 +175,13 @@ including unmet objectives and partial progress.
 Existing scaffold: a synthetic mentoring fixture with one prescribed objective.
 It is not evidence of open-ended strategy/outcome support. Freeze alternative
 strategies and their constraints before implementing outcome rules.
+
+Use the trajectory package to inspect recorded histories and explicitly
+hypothetical alternative strategies from a common state. Authoritative replay
+and simulated alternatives remain distinct. A terminal trajectory inspector and
+package YAML export suffice; native spline geometry is not required and no
+physical quantities are fabricated. The current adapter supports isolated branch
+simulation, but does not itself supply alternative mentoring strategies or complete M5.
 
 ## First vertical slice — the Gallica agreement
 
@@ -163,3 +216,23 @@ visible in state and replay. It crosses the modes using one authoritative world.
 
 The engine decides whether a transition is valid. Decision rights belong to the
 actors under the explicit governance rules they have accepted.
+
+## Trajectory and terminal checkpoint — minimal implemented boundary
+
+The source-grounded compatibility assessment precedes adapter implementation.
+The pinned package supplies document construction, normalization and YAML I/O.
+Lossless Commons events, provenance and branch lineage live in its supported
+`plan.commons_trajectory` namespace (`subtle-trajectory/v1`); native geometric
+primitives remain empty. Commons performs every state reconstruction.
+
+`play` provides actor-bound terminal navigation, state/contract inspection,
+negotiation and evidence entry, available actions validated by the engine,
+history, trajectory export, replay and isolated branch inspection. The
+`trajectory-demo` command is explicitly synthetic development hot-seat play.
+It is separate from interactive play and never runs implicitly.
+
+Required compatibility checks: native document round-trip without loss; Commons
+state equality after replay; lifecycle distinction; actor-bound submission;
+branch isolation; event identity/order/provenance retention; and all original Hube
+tests. See [07-terminal-architecture.md](07-terminal-architecture.md) and the
+checkpoint validation report for actual results and remaining work.

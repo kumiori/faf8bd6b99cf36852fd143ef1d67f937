@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/kumiori/3868a1d2cf7234d3bb44ffc5455adc18",
+  "commit": "757c2baeb17e9864eeff0900b5ad9ea3cec23d9d",
+  "version": "0.2.0",
+  "files": {
+    "__init__.py": "81c0242f8c10677e593a23eaa2232ecf595a4171cad6c59574944afc1fe58219",
+    "public.py": "2049a1ab5e74697944ac305b57a932cab1dd4f7f6301a5ca2cca4ab894bdf0bc",
+    "schema.py": "4c960e93e367ce4a5f241fec9e70b8d7fceea396cf4fde3dcbb9a2261a0a8e27",
+    "planning.py": "de79728759b42d8ec3f6c70045fc8c9007ca875f1cbca056ead9538b4e7adc66",
+    "geometry.py": "1f6ee8b05b3da72afefe23a9932698153d8a2d8714030cdf263fe16301127d22",
+    "contributions.py": "759ac2289a10bcade4b6c0affe1df59a0c5557e68acb573f6248726e1e9f57fc"
+  }
+}

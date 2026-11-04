@@ -1,0 +1,910 @@
+╔══════════════════════════════════════════════╗
+║               SUBTLE PATHWAYS                ║
+║               THE COMMONS GAME               ║
+║ We hereby declare the right of the commons   ║
+╚══════════════════════════════════════════════╝
+A central authoritative engine enforcing decentralised decision rules.
+Local simulation: selecting an identity is not authentication.
+EXPLICIT DEVELOPMENT HOT-SEAT ENABLED.
+
+World: A commons of knowledge / synthetic simulation / Actor: researcher / State 001
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+No contracts yet. An inferred possibility has not become an agreement.
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for researcher:
+[1] Propose a contract
+Choice? 0 cancels.
+Purpose? [Study aggregate AI-agent activity using synthetic, non-identifying server logs.]
+Conditions, separated by |? [Use only the synthetic sample; no real institutional data. | Access lasts fourteen simulated days. | Publish aggregate findings only; do not attempt re-identification.]
+Quantity for synthetic-logs? [1]
+{
+  "kind": "propose",
+  "id": "agreement-main",
+  "label": "Synthetic log access agreement",
+  "parties": [
+    "researcher",
+    "custodian"
+  ],
+  "objective_id": "objective-main",
+  "terms": {
+    "purpose": "Study aggregate AI-agent activity using synthetic, non-identifying server logs.",
+    "responsibilities": [
+      {
+        "actor_id": "researcher",
+        "description": "Conduct and document the agreed research."
+      },
+      {
+        "actor_id": "custodian",
+        "description": "Prepare and deliver the synthetic dataset."
+      }
+    ],
+    "conditions": [
+      "Use only the synthetic sample; no real institutional data.",
+      "Access lasts fourteen simulated days.",
+      "Publish aggregate findings only; do not attempt re-identification."
+    ]
+  },
+  "resources": [
+    {
+      "resource_id": "synthetic-logs",
+      "quantity": 1
+    }
+  ],
+  "valid_until": "2026-12-01T00:00:00+00:00",
+  "policy_id": "institutional",
+  "verification": {
+    "verifier_ids": [
+      "verifier"
+    ],
+    "criteria": [
+      "Research purpose documented",
+      "Synthetic sample delivered",
+      "Privacy conditions checked"
+    ],
+    "independent": true
+  }
+}
+Acting as researcher. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000002 / state 002
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 1 / proposed
+Outcome: unverified / content digest: fdae7a9ef47bb6b189dada3f05f95150101dc0e7d034d69a6fb096403b7ad7b6
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Use only the synthetic sample; no real institutional data.
+  Condition: Access lasts fourteen simulated days.
+  Condition: Publish aggregate findings only; do not attempt re-identification.
+Accepted by: nobody
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: researcher / State 002
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Atlas · data cooperative (custodian)
+
+World: A commons of knowledge / synthetic simulation / Actor: custodian / State 002
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 1 / proposed
+Outcome: unverified / content digest: fdae7a9ef47bb6b189dada3f05f95150101dc0e7d034d69a6fb096403b7ad7b6
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Use only the synthetic sample; no real institutional data.
+  Condition: Access lasts fourteen simulated days.
+  Condition: Publish aggregate findings only; do not attempt re-identification.
+Accepted by: nobody
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for custodian:
+[1] Accept this exact version / agreement-main
+[2] Reject the proposal / agreement-main
+[3] Withdraw before activation / agreement-main
+[4] Negotiate revised terms / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 1 / proposed
+Outcome: unverified / content digest: fdae7a9ef47bb6b189dada3f05f95150101dc0e7d034d69a6fb096403b7ad7b6
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Use only the synthetic sample; no real institutional data.
+  Condition: Access lasts fourteen simulated days.
+  Condition: Publish aggregate findings only; do not attempt re-identification.
+Accepted by: nobody
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Purpose? [Study aggregate AI-agent activity using synthetic, non-identifying server logs.]
+Conditions, separated by |? [Use only the synthetic sample; no real institutional data. | Access lasts fourteen simulated days. | Publish aggregate findings only; do not attempt re-identification.]
+Quantity for synthetic-logs? [1]
+{
+  "kind": "amend",
+  "agreement_id": "agreement-main",
+  "version": 1,
+  "terms": {
+    "purpose": "Study aggregate AI-agent activity using synthetic, non-identifying server logs.",
+    "responsibilities": [
+      {
+        "actor_id": "researcher",
+        "description": "Conduct and document the agreed research."
+      },
+      {
+        "actor_id": "custodian",
+        "description": "Prepare and deliver the synthetic dataset."
+      }
+    ],
+    "conditions": [
+      "Synthetic logs only",
+      "Institutional approval required"
+    ]
+  },
+  "resources": [
+    {
+      "resource_id": "synthetic-logs",
+      "quantity": 1
+    }
+  ]
+}
+Acting as custodian. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000003 / state 003
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / negotiating
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: nobody
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: custodian / State 003
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Mira · researcher (researcher)
+
+World: A commons of knowledge / synthetic simulation / Actor: researcher / State 003
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / negotiating
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: nobody
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for researcher:
+[1] Accept this exact version / agreement-main
+[2] Reject the proposal / agreement-main
+[3] Withdraw before activation / agreement-main
+[4] Negotiate revised terms / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / negotiating
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: nobody
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Acting as researcher. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000004 / state 004
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / negotiating
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: researcher / State 004
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Atlas · data cooperative (custodian)
+
+World: A commons of knowledge / synthetic simulation / Actor: custodian / State 004
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / negotiating
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for custodian:
+[1] Accept this exact version / agreement-main
+[2] Reject the proposal / agreement-main
+[3] Withdraw before activation / agreement-main
+[4] Negotiate revised terms / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / negotiating
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Acting as custodian. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000005 / state 005
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / accepted
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: custodian / State 005
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Noor · authorisation officer (officer)
+
+World: A commons of knowledge / synthetic simulation / Actor: officer / State 005
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / accepted
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for officer:
+[1] Record institutional authorisation / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / accepted
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: nobody
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Acting as officer. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000006 / state 006
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / authorized
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: officer / State 006
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Mira · researcher (researcher)
+
+World: A commons of knowledge / synthetic simulation / Actor: researcher / State 006
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / authorized
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for researcher:
+[1] Activate and reserve resources / agreement-main
+[2] Withdraw before activation / agreement-main
+[3] Negotiate revised terms / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / authorized
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Acting as researcher. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000007 / state 007
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for researcher:
+[1] Record a concrete action / agreement-main
+[2] Suspend the active contract / agreement-main
+[3] Terminate and release reservations / agreement-main
+[4] Record a dispute / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Evidence reference or concrete action note?
+Acting as researcher. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000008 / state 008
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for researcher:
+[1] Report fulfilment with evidence / agreement-main
+[2] Suspend the active contract / agreement-main
+[3] Terminate and release reservations / agreement-main
+[4] Record a dispute / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Does your report address: Research purpose documented? y/N [n]
+Does your report address: Synthetic sample delivered? y/N [n]
+Does your report address: Privacy conditions checked? y/N [n]
+Evidence reference or concrete action note?
+Acting as researcher. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000009 / state 009
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+EVIDENCE evidence_000009: fulfilment_report / researcher / Synthetic research artefacts delivered
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: researcher / State 009
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Atlas · data cooperative (custodian)
+
+World: A commons of knowledge / synthetic simulation / Actor: custodian / State 009
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+EVIDENCE evidence_000009: fulfilment_report / researcher / Synthetic research artefacts delivered
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for custodian:
+[1] Record a concrete action / agreement-main
+[2] Suspend the active contract / agreement-main
+[3] Terminate and release reservations / agreement-main
+[4] Record a dispute / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Evidence reference or concrete action note?
+Acting as custodian. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000010 / state 010
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+EVIDENCE evidence_000009: fulfilment_report / researcher / Synthetic research artefacts delivered
+EVIDENCE evidence_000010: execution_record / custodian / Synthetic delivery action initiated
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for custodian:
+[1] Report fulfilment with evidence / agreement-main
+[2] Suspend the active contract / agreement-main
+[3] Terminate and release reservations / agreement-main
+[4] Record a dispute / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / active
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Does your report address: Research purpose documented? y/N [n]
+Does your report address: Synthetic sample delivered? y/N [n]
+Does your report address: Privacy conditions checked? y/N [n]
+Evidence reference or concrete action note?
+Acting as custodian. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000011 / state 011
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / fulfilled
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+EVIDENCE evidence_000009: fulfilment_report / researcher / Synthetic research artefacts delivered
+EVIDENCE evidence_000010: execution_record / custodian / Synthetic delivery action initiated
+EVIDENCE evidence_000011: fulfilment_report / custodian / Synthetic sample and privacy checklist delivered
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: custodian / State 011
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Select your local actor identity:
+[1] Mira · researcher
+[2] Atlas · data cooperative
+[3] Civic Lab · public institution
+[4] Noor · authorisation officer
+[5] Iris · independent reviewer
+[6] Sam · simulation facilitator
+Choice? 0 cancels.
+ACTOR: Iris · independent reviewer (verifier)
+
+World: A commons of knowledge / synthetic simulation / Actor: verifier / State 011
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / fulfilled
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+EVIDENCE evidence_000009: fulfilment_report / researcher / Synthetic research artefacts delivered
+EVIDENCE evidence_000010: execution_record / custodian / Synthetic delivery action initiated
+EVIDENCE evidence_000011: fulfilment_report / custodian / Synthetic sample and privacy checklist delivered
+[a] Available actions  [w] Full world  [b] Back
+>
+Available actions for verifier:
+[1] Independently verify the outcome / agreement-main
+Choice? 0 cancels.
+CONTRACT agreement-main / VERSION 2 / fulfilled
+Outcome: unverified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+Evidence reference or concrete action note?
+Acting as verifier. Acceptance, authorisation, execution and verification are different transitions.
+Submit this action? y/N [n]
+COMMITTED commit_000012 / state 012
+
+SUBTLE PATHWAYS / SCENARIOS
+CONTRACT agreement-main / VERSION 2 / fulfilled
+Outcome: verified / content digest: 097e0fb0ad809bb8c3f2b10b3fc27b4293f19f804f3bccce0218dd8601a89ff3
+Parties: researcher, custodian
+Purpose: Study aggregate AI-agent activity using synthetic, non-identifying server logs.
+  Obligation / researcher: Conduct and document the agreed research.
+  Obligation / custodian: Prepare and deliver the synthetic dataset.
+  Condition: Synthetic logs only
+  Condition: Institutional approval required
+Accepted by: researcher, custodian
+Authorised by: officer
+Designated independent verifier(s): verifier
+Requested resources: [{"resource_id": "synthetic-logs", "quantity": 1}]
+Valid until: 2026-12-01T00:00:00+00:00
+EVIDENCE evidence_000008: execution_record / researcher / Synthetic research action initiated
+EVIDENCE evidence_000009: fulfilment_report / researcher / Synthetic research artefacts delivered
+EVIDENCE evidence_000010: execution_record / custodian / Synthetic delivery action initiated
+EVIDENCE evidence_000011: fulfilment_report / custodian / Synthetic sample and privacy checklist delivered
+EVIDENCE evidence_000012: independent_verification / verifier / Independent review of all agreed synthetic evidence
+[a] Available actions  [w] Full world  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: verifier / State 012
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+
+HISTORY & TRAJECTORIES
+[h] History  [t] Current trajectory  [p] Past state  [s] Simulate branch
+[v] Inspect branches  [e] Export package YAML  [r] Replay  [b] Back
+>
+SUBTLE PATHWAYS / TRAJECTORY
+World: bilateral-logs
+Context: synthetic_simulation / RECORDED HISTORY
+STATE 001 [recorded] World initialised
+  actor=system event=log_000001 commit=commit_000001
+STATE 002 [recorded] Contract proposed
+  actor=researcher event=log_000002 commit=commit_000002
+  agreement-main v1: proposed / outcome=unverified
+STATE 003 [recorded] Conditions negotiated
+  actor=custodian event=log_000003 commit=commit_000003
+  agreement-main v2: negotiating / outcome=unverified
+STATE 004 [recorded] Party acceptance recorded
+  actor=researcher event=log_000004 commit=commit_000004
+  agreement-main v2: negotiating / outcome=unverified
+STATE 005 [recorded] Party acceptance recorded
+  actor=custodian event=log_000005 commit=commit_000005
+  agreement-main v2: accepted / outcome=unverified
+STATE 006 [recorded] Institutional authorisation recorded
+  actor=officer event=log_000006 commit=commit_000006
+  agreement-main v2: authorized / outcome=unverified
+STATE 007 [recorded] Resources reserved; obligations active
+  actor=researcher event=log_000007 commit=commit_000007
+  agreement-main v2: active / outcome=unverified
+STATE 008 [recorded] Execution recorded
+  actor=researcher event=log_000008 commit=commit_000008
+  agreement-main v2: active / outcome=unverified
+STATE 009 [recorded] Fulfilment reported
+  actor=researcher event=log_000009 commit=commit_000009
+  agreement-main v2: active / outcome=unverified
+STATE 010 [recorded] Execution recorded
+  actor=custodian event=log_000010 commit=commit_000010
+  agreement-main v2: active / outcome=unverified
+STATE 011 [recorded] Fulfilment reported
+  actor=custodian event=log_000011 commit=commit_000011
+  agreement-main v2: fulfilled / outcome=unverified
+STATE 012 [recorded] Outcome independently verified
+  actor=verifier event=log_000012 commit=commit_000012
+  agreement-main v2: fulfilled / outcome=verified
+CURRENT STATE: 012
+No geometric coordinates or physical quantities inferred.
+
+HISTORY & TRAJECTORIES
+[h] History  [t] Current trajectory  [p] Past state  [s] Simulate branch
+[v] Inspect branches  [e] Export package YAML  [r] Replay  [b] Back
+>
+REPLAY CONSISTENT: True
+
+HISTORY & TRAJECTORIES
+[h] History  [t] Current trajectory  [p] Past state  [s] Simulate branch
+[v] Inspect branches  [e] Export package YAML  [r] Replay  [b] Back
+>
+
+World: A commons of knowledge / synthetic simulation / Actor: verifier / State 012
+[1] ECOSYSTEM — Who can act together?
+[2] GATHERING — Can we make it happen?
+[3] SCENARIOS — What can we accomplish together?
+[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT
+[s] Switch local actor — explicit hot-seat
+>
+Session closed. Accepted history is preserved.
