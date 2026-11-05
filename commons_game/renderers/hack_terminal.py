@@ -34,13 +34,14 @@ def project(coordinates, width, height, *, angle=0., axis='y', zoom=1., perspect
 
 def raster(frame, width, height, *, layers, mode='structural', selected=None, ascii_only=False,
            angle=0., axis='y', zoom=1., perspective=True, separation='superposed', backbone=False,
-           phase=1., positions=None, removed=None, visual=None):
+           phase=1., positions=None, removed=None, visual=None, projected=None):
     width, height = max(8, width), max(3, height)
     visual = view(frame, layers=layers, separation=separation, backbone=backbone) if visual is None else visual
     coords = {n['visual_id']: n['position'] for n in visual['nodes']}
     if positions and separation != 'exploded':
         coords = {key: value['position'] for key, value in positions.items() if value['opacity'] > .05}
-    points = project(coords, width, height, angle=angle, axis=axis, zoom=zoom, perspective=perspective)
+    points = (project(coords, width, height, angle=angle, axis=axis, zoom=zoom, perspective=perspective)
+              if projected is None else projected)
     cells = {}
     def put(x, y, z, character, color, bold=False):
         ix, iy = int(round(x)), int(round(y))

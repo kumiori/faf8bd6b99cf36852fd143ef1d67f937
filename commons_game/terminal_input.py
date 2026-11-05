@@ -54,4 +54,5 @@ def navigation(source, output):
 
 
 def decode(value):
-    return {'\x1b[A':'up','\x1b[B':'down','\x1b[C':'next','\x1b[D':'prev','\x1b':'b'}.get(value,value.strip())
+    return {'\x1b[A':'up','\x1b[B':'down','\x1b[C':'next','\x1b[D':'prev','\x1b':'b',
+            '\t':'tab','\x1b[Z':'backtab'}.get(value,value.strip())

@@ -23,6 +23,8 @@ from .tui import ACTION_NAMES, EVENT_NAMES, Cancelled
 MODES = {'ecosystem': 'Explore offers, needs and potential complementarities.',
          'gathering': 'Inspect gathering conditions and registered invitation actions.',
          'scenarios': 'Inspect source scenarios, linked objectives and recorded trajectories.'}
+DECISION_KEYS = {'accept': ('y', 'Accept'), 'amend': ('j', 'Negotiate'),
+                 'reject': ('R', 'Reject'), 'withdraw': ('X', 'Withdraw')}
 
 
 def score_text(detail):
@@ -41,6 +43,9 @@ class Route:
     column: int = 0
     query: str = ''
     extra: dict = field(default_factory=dict)
+    region: str = 'explore'
+    decision_index: int = 0
+    reveal: bool = False
 
 
 @dataclass
@@ -58,6 +63,13 @@ class Screen:
     show_entries: bool = True
     breadcrumb: str = ''
     wrap_entries: bool = False
+    decisions: list[tuple[str, object]] = field(default_factory=list)
+    details: list[str] = field(default_factory=list)
+    region: str = 'explore'
+    decision_index: int = 0
+    reveal: bool = False
+    split_regions: bool = False
+    raster_start: int | None = None
 
 
 class FullScreenTerminal(PlayableTerminal):
@@ -68,6 +80,7 @@ class FullScreenTerminal(PlayableTerminal):
         self.viewport = viewport
         self.stack = [Route('matrix')]
         self.mode_routes = {'ecosystem': self.stack[0], 'gathering': Route('gathering'), 'scenarios': Route('scenarios')}
+        self.mode_stacks = {mode: [route] for mode, route in self.mode_routes.items()}
         self.notice = ''
         self.width, self.height = 80, 24
 
@@ -163,11 +176,20 @@ class FullScreenTerminal(PlayableTerminal):
 
     def choose_mode(self):
         mode = self.choose('CHOOSE YOUR PATH', list(MODES), lambda name: name.upper()+' · '+MODES[name])
-        self.switch_mode(mode)
+        self.resume_mode(mode)
 
     def switch_mode(self, mode):
+        """Explicitly reopen a mode root (for example x → Matrix)."""
+        self.mode_stacks[self.mode_name] = self.stack
         self.mode_name = mode
         self.stack = [self.mode_routes[mode]]
+        self.mode_stacks[mode] = self.stack
+        self.selected = None
+
+    def resume_mode(self, mode):
+        self.mode_stacks[self.mode_name] = self.stack
+        self.mode_name = mode
+        self.stack = self.mode_stacks[mode]
         self.selected = None
 
     def push(self, kind, target=None, **extra):
@@ -178,7 +200,7 @@ class FullScreenTerminal(PlayableTerminal):
         if kind=='inspect' and target in self.world()['relationships']:
             context=self.world()['relationships'][target].get('context',{})
             if context:extra['relation']=(context['provider_id'],context['requester_id'])
-        self.stack.append(Route(kind, target, extra=extra))
+        self.stack.append(Route(kind, target, extra=extra, region='canvas' if kind == 'network' else 'explore'))
 
     def back(self):
         if len(self.stack) > 1:
@@ -201,9 +223,11 @@ class FullScreenTerminal(PlayableTerminal):
                 self.view.width = max(16, self.width-2)
                 screen = self.build_screen()
                 screen.breadcrumb = self.breadcrumbs()
-                screen.footer = (screen.footer+' | ' if screen.footer else '') + 'm Paths  e Ecosystem  g Gathering  s Scenarios  c Contracts  i Inbox  p Player  ? Help  b Back  q Quit'
+                screen.region = 'explore' if self.route.kind == 'network' and screen.show_entries else self.route.region
+                screen.reveal = self.route.reveal
                 scroll = self.viewport.draw(screen, self.context(at=self.route.extra.get('at')), self.notice)
-                if isinstance(scroll, int):
+                self.route.reveal = False
+                if isinstance(scroll, int) and screen.raster_start is None:
                     self.route.scroll = scroll
                 self.notice = ''
                 key = self.viewport.key()
@@ -343,8 +367,10 @@ class FullScreenTerminal(PlayableTerminal):
                 'Network: S scope; L layer filter; 3 toggles experimental 3D; r yaw and { / } pitch in 3D. Coordinates carry no social meaning.',
                 'Playing is your simulated agency. Focus and selected relationship never change your player.',
                 'Diagonal self-pairings are excluded from actions. Nothing in the matrix implies consent.',
-                'm chooses a path; e/g/s switch paths. The player and saved world are preserved.',
+                'm chooses a path; e/g/s resume paths with their previous navigation context.',
                 'b or Esc returns to the preceding screen with its selection and scroll position.',
+                'Up/Down select or scroll; Enter opens or confirms the selection. Tab changes regions.',
+                'Contract: Explore → Decisions → Details. Network: canvas ↔ object list.',
                 'PgUp/PgDn scroll long content. / searches lists and matrix participants.',
                 'a shows permitted actions for an inspected object. c contracts; i inbox; h object history.',
                 'In a relationship: j invites to connect; k proposes directly. Neither pathway requires the other.',
@@ -355,6 +381,8 @@ class FullScreenTerminal(PlayableTerminal):
                 ': opens typed commands, including open K-001, contract history and available actions.',
                 'd opens optional source and technical details. t trajectory. v verifies replay.',
                 'Network, People, Organisations and Resources: x alternative ecosystem views.',
+                'Network: S changes scope, L filters layers, [ ] pages, +/− zooms, r rotates.',
+                'Dark points are off-scope actors; rings are isolated in the full projection. 3D is experimental.',
                 'q quits; completed actions are already saved.'], scroll=route.scroll)
         if route.kind == 'details':
             lines = [self.world()['configuration']['world']['title'],
@@ -401,35 +429,42 @@ class FullScreenTerminal(PlayableTerminal):
             decision_entries.append((title, ('decision', action)))
         if node['kind'] == 'agreement':
             version = node['versions'][node['current_version']-1]
+            def acceptance(party):
+                role = 'Proposer' if party == node['created_by'] else 'Counterparty'
+                receipt = 'accepted' if party in version['acceptances'] else 'no acceptance recorded'
+                return f'{role}: {self.label(party)} · {receipt}'
             lines = [self.contract_title(node['id']), 'Purpose: '+version['terms']['purpose'],
                      'Proposed by: '+self.label(node['created_by']),
-                     'Participants: '+'; '.join(self.label(p)+': '+('proposer and party' if p==node['created_by'] else 'party') for p in node['parties']),
                      'Status: '+status(node['status'])+' · Outcome: '+status(node['outcome_status']),
-                     'WHAT DECISION CAN I MAKE NOW?']
+                     'Terms version: '+str(version['number'])+' · Amendments require renewed acceptance.',
+                     *(acceptance(p) for p in node['parties']),
+                     'Proposing does not accept the terms. Each party decides independently.',
+                     'Governing policy: '+self.label(version['policy_id'])]
             kinds = {a['kind'] for a in actions}
-            if kinds: lines.append(' / '.join(ACTION_NAMES[a['kind']] for a in actions[:4]))
-            if 'accept' not in kinds:
-                pending = [p for p in node['parties'] if p not in version['acceptances']]
-                lines.append('Awaiting '+', '.join(self.label(p) for p in pending)+"’s response." if pending and self.playing_actor in version['acceptances'] else
-                             'Acceptance unavailable for your role and this lifecycle state. Every party must decide independently.')
-            lines += ['Terms version: '+str(version['number'])+' · An amendment requires renewed acceptance.']
-            lines += [self.label(r['actor_id'])+': '+r['description'] for r in version['terms']['responsibilities']]
-            lines += ['Condition: '+c for c in version['terms']['conditions']]
-            lines += ['Resource: '+self.label(r['resource_id'])+f" × {r['quantity']}" for r in version['resources']]
-            lines += ['Valid until: '+version['valid_until'], 'Governing policy: '+self.label(version['policy_id']),
-                      'Party acceptance and institutional authorisation are separate.',
-                      'Evidence: '+str(len(node['evidence_ids']))+' record(s) · d Details / h History']
+            details = [self.label(r['actor_id'])+': '+r['description'] for r in version['terms']['responsibilities']]
+            details += ['Condition: '+c for c in version['terms']['conditions']]
+            details += ['Resource: '+self.label(r['resource_id'])+f" × {r['quantity']}" for r in version['resources']]
+            details += ['Valid until: '+version['valid_until'],
+                        'Party acceptance and institutional authorisation are separate.',
+                        'Reject declines a proposal; Withdraw closes it before activation under the current party rule.',
+                        'Evidence: '+str(len(node['evidence_ids']))+' record(s) · d Source details / h History']
             # One readable link per participant, despite proposer/party relations.
             linked = [*node['parties'],node['objective_id'],version['policy_id'],
                       *(r['resource_id'] for r in version['resources']),*node['evidence_ids']]
             entries = [(self.node_label(self.node(key)),key) for key in dict.fromkeys(linked)]
             entries += [('Relevant scenario · '+r['title'],('scenario',r['id'])) for r in scenarios_for(node['objective_id'],world)]
-            # Keep connected-object numbers stable; decisions remain direct shortcuts.
-            self._decisions = decision_entries
-            shortcuts={'accept':'y Accept','amend':'j Negotiate','reject':'R Reject','withdraw':'X Withdraw'}
-            footer='  '.join(text for kind,text in shortcuts.items() if kind in kinds)
+            decision_entries = [
+                (f'[{DECISION_KEYS[a["kind"]][0]}] {label}' if a['kind'] in DECISION_KEYS else label, ('decision', a))
+                for label, (_, a) in decision_entries]
+            route.index = min(route.index, max(0, len(entries)-1))
+            route.decision_index = min(route.decision_index, max(0, len(decision_entries)-1))
+            if route.region == 'decisions' and not decision_entries:
+                route.region = 'explore'
+            footer = '  '.join(' '.join(key) for kind, key in DECISION_KEYS.items() if kind in kinds)
             return Screen('CONTRACT INSPECTOR',lines,entries,
-                          footer+'  a All valid actions  Enter Follow link  h History',route.index,route.scroll)
+                          footer+'  Tab Regions  a Actions  h History',route.index,route.scroll,
+                          decisions=decision_entries, details=details, region=route.region,
+                          decision_index=route.decision_index, split_regions=True)
         if node['kind'] == 'invitation':
             lines = [self.aliases().get(node['id'],'Invitation')+' · Invitation to connect · '+status(node['status']),
                      'From '+self.label(node['source_id'])+' to '+self.label(node['target_id']),
@@ -443,7 +478,6 @@ class FullScreenTerminal(PlayableTerminal):
                 other = node['target_id'] if node['source_id']==self.playing_actor else node['source_id']
                 entries += [('Propose a contract directly',('propose_to',other))]
                 entries += [('Invite to connect again',('invite_to',other))]
-            self._decisions = decision_entries
             entries = decision_entries+entries
             return Screen('INVITATION / CONNECT',lines,entries,'Enter Choose  a Actions  h History  w Network  d Provenance',route.index,route.scroll)
         if node['id'] in world['actors']:
@@ -604,27 +638,35 @@ class FullScreenTerminal(PlayableTerminal):
                            three_d=route.extra.get('three_d',False))
         if not visual['nodes']:return Screen('NETWORK / HACK TERMINAL',['No matching graph nodes. / Search or b Back.'])
         route.index=min(route.index,len(visual['nodes'])-1);selected=visual['nodes'][route.index]
-        canvas_height=max(5,self.height-19);canvas_width=max(8,self.width-2)
-        canvas,spans=draw_graph(visual,canvas_width,canvas_height,selected=selected['id'],plain=self.plain,
-            angle=route.extra.get('angle',0.),zoom=route.extra.get('zoom',1.),
-            yaw=route.extra.get('yaw',0.),pitch=route.extra.get('pitch',0.),
-            labels={n['id']:self.aliases()[n['id']]+' '+display_label(n) for n in visual['nodes'] if n['kind']=='agreement'})
-        lines=['Hack terminal raster · Centre: '+self.label(route.target)+' · Selected: '+self.node_label(selected),
+        route.extra['offset'] = visual['offset']
+        canvas_width = self.width-2
+        zoom = route.extra.get('zoom', 1.)
+        rotation = route.extra.get('yaw' if route.extra.get('three_d') else 'angle', 0.)
+        lines=['Selected: '+self.node_label(selected)+' · Centre: '+self.label(route.target),
                'Scope: '+route.extra.get('scope_label','Player-centred neighbourhood' if route.target==self.playing_actor else 'Selected-actor neighbourhood')+
                (' · EXPERIMENTAL 3D' if route.extra.get('three_d') else ' · Planar'),
-               f"Showing {len(visual['nodes'])} of {visual['full_node_count']} nodes · {visual['rendered_relationship_count']} of {visual['full_relationship_count']} relationships · {len(visual['edges'])} visual bundles",
-               'Layers: '+(', '.join(route.extra['categories']) if route.extra.get('categories') else 'All')+' · S Scope / L Filter',
-               'Dotted: potential / invitations · solid: recorded / acknowledged · arrows: direction',
-               f"Neighbours {visual['offset']+1 if visual['total'] else 0}–{min(visual['total'],visual['offset']+limit)}/{visual['total']} · [ ] page; all remain reachable"]
-        styles=[(row+len(lines),column,length,fg,bg,bold) for row,column,length,fg,bg,bold in spans]
-        lines+=canvas
-        edges=[e for e in visual['edges'] if selected['id'] in (e['source'],e['target'])]
-        lines+=['Selected links: '+', '.join(sorted({e['kind'].replace('_',' ')+' ['+e['epistemic_status']+']' for e in edges}))]
+               f"Showing {len(visual['nodes'])}/{visual['full_node_count']} nodes · {visual['rendered_relationship_count']}/{visual['full_relationship_count']} edges ({len(visual['edges'])} bundles)",
+               'Layers: '+(', '.join(route.extra['categories']) if route.extra.get('categories') else 'All')+
+               f' · Zoom {zoom:.2f}x · Rotation {rotation:.1f} rad',
+               f"Context: {len(visual['context_actor_ids'])} off-scope actors · {'o' if self.plain else '∘'} isolated",
+               f"Neighbours {visual['offset']+1 if visual['total'] else 0}–{min(visual['total'],visual['offset']+limit)}/{visual['total']} · [ ] Page"]
+        # Four header and three footer rows are reserved by CursesViewport.
+        canvas_height = self.height-7-len(lines)
+        lines = [line if len(line) <= canvas_width else line[:max(0,canvas_width-3)]+'...' for line in lines]
         self._network=visual
-        return Screen('ECOSYSTEM / NETWORK / HACK RENDERER',lines,
-            [(self.node_label(n),n['id']) for n in visual['nodes']],
-            'Tab/Arrows Select  Enter Inspect  f Centre  [ ] Page  S Scope  L Layer  3 3D  r Rotate  { } Pitch  + - Zoom',route.index,0,
-            styles=styles,show_entries=False)
+        entries = [(self.node_label(n),n['id']) for n in visual['nodes']]
+        footer = 'Enter Inspect  Tab View  S Scope  L Layers  [ ] Page  f Centre  + - Zoom  r Rotate'
+        if route.region == 'explore' or canvas_height < 3 or canvas_width < 12:
+            return Screen('ECOSYSTEM / NETWORK / OBJECT LIST', lines, entries, footer,
+                          route.index, route.scroll)
+        canvas, spans = draw_graph(visual,canvas_width,canvas_height,selected=selected['id'],plain=self.plain,
+            angle=route.extra.get('angle',0.),zoom=zoom,
+            yaw=rotation,pitch=route.extra.get('pitch',0.),
+            labels={n['id']:self.aliases()[n['id']]+' '+display_label(n) for n in visual['nodes'] if n['kind']=='agreement'})
+        start = len(lines)
+        styles=[(row+start,column,length,fg,bg,bold) for row,column,length,fg,bg,bold in spans]
+        return Screen('ECOSYSTEM / NETWORK / HACK RENDERER',lines+canvas,entries,footer,route.index,0,
+                      styles=styles,show_entries=False,raster_start=start)
 
     def handle(self, key, screen):
         route = self.route
@@ -635,7 +677,7 @@ class FullScreenTerminal(PlayableTerminal):
         if key in {'b', 'esc'}:
             self.back(); return
         if key in {'e', 'g', 's'}:
-            self.switch_mode({'e': 'ecosystem', 'g': 'gathering', 's': 'scenarios'}[key]); return
+            self.resume_mode({'e': 'ecosystem', 'g': 'gathering', 's': 'scenarios'}[key]); return
         if key == 'm':
             self.choose_mode(); return
         if key == 'p':
@@ -676,6 +718,18 @@ class FullScreenTerminal(PlayableTerminal):
             self.open_network();return
         if key == 'z' and route.kind=='matrix':
             route.extra['numeric']=not route.extra.get('numeric',False);return
+        if key in {'tab', 'backtab'}:
+            if route.kind == 'network':
+                route.region = 'explore' if route.region == 'canvas' else 'canvas'
+            elif screen.entries:
+                regions = ['explore', *(['decisions'] if screen.decisions else []),
+                           *(['details'] if screen.lines else [])]
+                index = regions.index(route.region) if route.region in regions else 0
+                route.region = regions[(index + (1 if key == 'tab' else -1)) % len(regions)]
+                if route.region == 'details' and not screen.details:
+                    route.scroll = 0
+            route.reveal = True
+            return
         if route.kind=='network':
             if key=='S':
                 labels=['Whole graph','Player-centred neighbourhood','Selected-actor neighbourhood','Contract neighbourhood','Invitation and connection network']
@@ -695,8 +749,10 @@ class FullScreenTerminal(PlayableTerminal):
                 if route.extra.get('three_d'):route.extra['pitch']=route.extra.get('pitch',0.)+(-.2 if key=='{' else .2)
                 else:self.notice='3 enables the experimental yaw/pitch camera.'
                 return
-            if key in {'tab','backtab','up','down'}:
-                route.index=(route.index+(-1 if key in {'backtab','up'} else 1))%max(1,len(screen.entries));return
+            if key in {'up','down'}:
+                route.index=(route.index+(-1 if key=='up' else 1))%max(1,len(screen.entries))
+                route.reveal = True
+                return
             if key in {'[',']'}:
                 limit=6 if self.width<85 or self.height<26 else 8
                 route.extra['offset']=max(0,route.extra.get('offset',0)+(-limit if key=='[' else limit));route.index=0;return
@@ -794,13 +850,19 @@ class FullScreenTerminal(PlayableTerminal):
         if key in {'pageup', 'pagedown'}:
             route.scroll = max(0, route.scroll+(-1 if key == 'pageup' else 1)*max(1, self.height-10))
         elif key in {'up', 'down'}:
-            if screen.entries:
-                route.index = max(0, min(len(screen.entries)-1, route.index+(-1 if key == 'up' else 1)))
-                if screen.show_entries and len(screen.lines) >= self.height-6:
-                    wrapped = sum(max(1, len(textwrap.wrap(line, max(1,self.width-1)))) for line in screen.lines)
-                    route.scroll = max(0, wrapped+route.index-(self.height-7))
+            step = -1 if key == 'up' else 1
+            if route.region == 'decisions' and screen.decisions:
+                route.decision_index = max(0,min(len(screen.decisions)-1,route.decision_index+step))
+                route.reveal = True
+            elif screen.entries and route.region != 'details':
+                route.index = max(0, min(len(screen.entries)-1, route.index+step))
+                route.reveal = True
             else:
-                route.scroll = max(0, route.scroll+(-1 if key == 'up' else 1))
+                route.scroll = max(0, route.scroll+step)
+        elif key == 'enter' and route.region == 'decisions' and screen.decisions:
+            self.execute_action(screen.decisions[route.decision_index][1][1])
+        elif key == 'enter' and route.region == 'details':
+            self.notice = 'Reading details. Tab returns to selectable regions.'
         elif key == 'enter' and screen.entries:
             target = screen.entries[min(route.index, len(screen.entries)-1)][1]
             if route.kind == 'history':
@@ -820,6 +882,8 @@ class FullScreenTerminal(PlayableTerminal):
                 self.push('inspect', target)
         elif isinstance(key,str) and key.isdigit() and key != '0' and int(key) <= len(screen.entries):
             route.index = int(key)-1
+            if route.kind != 'network':
+                route.region = 'explore'
             self.handle('enter',screen)
         elif key not in {'enter', ''}:
             self.notice = 'Press ? for contextual help. Arrows select; Enter inspects.'
@@ -993,7 +1057,9 @@ class FullScreenTerminal(PlayableTerminal):
             self.notice = 'Unknown command. ? opens help.'; return
         name = command.name
         if name in MODES:
-            self.switch_mode(name)
+            self.resume_mode(name)
+        elif name == 'paths':
+            self.choose_mode()
         elif name in {'open', 'history', 'metadata', 'actions'}:
             target = resolve(self.world(), arg, selected=self.route.target) if arg else self.route.target
             if target is None:
@@ -1025,7 +1091,7 @@ class FullScreenTerminal(PlayableTerminal):
             self.contact_to(target)
         elif name == 'back': self.back()
         elif name == 'quit': self.finished = True
-        elif name == 'list': self.push('network')
+        elif name == 'list': self.open_network()
         elif name == 'replay': self.handle('v', Screen('Replay'))
         elif name == 'search':
             if self.route.kind == 'matrix':
@@ -1117,33 +1183,57 @@ class CursesViewport:
         if screen.breadcrumb:self.put(3,screen.breadcrumb)
         body_start=4 if screen.breadcrumb else 3
         body_height = max(1, height-body_start-3)
-        content = []
-        painted=[]
+        content, painted = [], []
+
+        def add_line(line, style=0, *, raster=False, indent=''):
+            safe = self.safe(line)
+            rows = [safe] if raster else textwrap.wrap(safe, max(1,width-1),
+                    replace_whitespace=False, subsequent_indent=indent) or ['']
+            content.extend((row, style) for row in rows)
+
         for i, line in enumerate(screen.lines):
             start=len(content)
-            for wrapped in textwrap.wrap(self.safe(line), max(1, width-1), replace_whitespace=False) or ['']:
-                content.append((wrapped, self.highlight if i in screen.highlights else 0))
+            add_line(line, self.highlight if i in screen.highlights else 0,
+                     raster=screen.raster_start is not None)
             # Raster/heatmap rows are bounded to viewport width and never wrap.
             if len(content)==start+1:
                 painted += [(start,column,length,fg,bg,bold) for row,column,length,fg,bg,bold in screen.styles if row==i]
-        entry_start = len(content)
+        decision_starts = []
+        if screen.split_regions:
+            add_line('DECISIONS' + ('  <' if screen.region == 'decisions' else ''), self.curses.A_BOLD)
+            if not screen.decisions:
+                add_line('No decision available for this actor and state.')
+            for i, (label, _) in enumerate(screen.decisions):
+                decision_starts.append(len(content))
+                selected = screen.region == 'decisions' and i == screen.decision_index
+                add_line(('> ' if selected else '  ')+label, self.curses.A_REVERSE if selected else 0, indent='  ')
+            add_line('EXPLORE' + ('  <' if screen.region == 'explore' else ''), self.curses.A_BOLD)
         entry_starts = []
         for i, (label, _) in enumerate(screen.entries if screen.show_entries else []):
             entry_starts.append(len(content))
-            prefix = '> ' if i == screen.selected else '  '
+            active = screen.region == 'explore' and i == screen.selected
+            prefix = '> ' if active else '  '
             text=prefix+f'[{i+1}] '+label
             parts=textwrap.wrap(self.safe(text),max(1,width-1),subsequent_indent='      ') if screen.wrap_entries else [text]
-            content.extend((part,self.curses.A_REVERSE if i==screen.selected else 0) for part in parts)
+            content.extend((part,self.curses.A_REVERSE if active else 0) for part in parts)
+        detail_start = len(content)
+        if screen.details:
+            add_line('DETAILS' + ('  <' if screen.region == 'details' else ''), self.curses.A_BOLD)
+            for line in screen.details:
+                add_line(line)
         scroll = min(screen.scroll, max(0, len(content)-body_height))
-        if screen.entries and screen.show_entries:
+        selected = None
+        if entry_starts and screen.region == 'explore' and screen.reveal:
             selected = entry_starts[min(screen.selected,len(entry_starts)-1)]
-            # Auto-reveal selection on short list screens. Long inspectors allow
-            # content scrolling independently; Tab is unnecessary to read terms.
-            if entry_start < body_height:
-                if selected < scroll:
-                    scroll = selected
-                elif selected >= scroll+body_height:
-                    scroll = selected-body_height+1
+        if screen.reveal and screen.region == 'decisions' and decision_starts:
+            selected = decision_starts[min(screen.decision_index,len(decision_starts)-1)]
+        if screen.reveal and screen.region == 'details' and screen.details:
+            scroll = min(detail_start, max(0,len(content)-body_height))
+        if selected is not None:
+            if selected < scroll:
+                scroll = selected
+            elif selected >= scroll+body_height:
+                scroll = selected-body_height+1
         for i, (line, style) in enumerate(content[scroll:scroll+body_height], body_start):
             self.put(i, line, style)
         for row,column,length,fg,bg,bold in painted:
@@ -1155,9 +1245,8 @@ class CursesViewport:
         if len(content) > body_height:
             self.put(height-3, f'Scroll {scroll+1}/{max(1,len(content)-body_height+1)} · PgUp/PgDn')
         self.put(height-2, notice, self.curses.A_BOLD)
-        # Rotate-free responsive wrapping gives every global command a discoverable
-        # place in Help even when a narrow terminal truncates this compact footer.
-        self.put(height-1, ('b Back  ? Help | ' if screen.navigation else '')+(screen.footer or 'Enter Continue'))
+        # Help lists the controls when a narrow terminal clips the footer.
+        self.put(height-1, ('Esc/b Back  ? Help | ' if screen.navigation else '')+(screen.footer or 'Enter Continue'))
         self.window.refresh()
         return scroll
 
@@ -1192,17 +1281,30 @@ class CursesViewport:
                 value += key
 
     def choose(self, title, items, label, context, *, preview=None):
-        index = 0; query = ''; scroll = 0
+        index = 0; query = ''; scroll = 0; region = 'explore'
         while True:
             filtered = [item for item in items if folded(query) in folded(label(item))]
             index = min(index, max(0, len(filtered)-1))
-            self.draw(Screen(title, ['Search: '+query, f'{len(filtered)} choices'],
-                [(label(item), item) for item in filtered], 'Arrows Select · Enter Confirm · / Search · '+('v Preview · ' if preview else '')+'b Back', index, scroll,
-                navigation=False), context)
+            lines = ['Search: '+query, f'{len(filtered)} choices']
+            if region == 'details':
+                lines += ['Up/Down selects an option in the list. Tab returns to choices.',
+                          '/ changes search; Enter confirms the current choice.', 'Esc/b goes back.']
+                if filtered:
+                    lines += ['Selected: '+label(filtered[index])]
+            self.draw(Screen(title, lines, [(label(item), item) for item in filtered],
+                'Enter Confirm · Tab Regions · / Search · '+('v Preview · ' if preview else '')+'Esc/b Back',
+                index, scroll if region == 'explore' else 0, navigation=False,
+                show_entries=region == 'explore', reveal=region == 'explore'), context)
             key = self.key()
             if key in {'b', 'q', 'esc'}: raise Cancelled
+            if key in {'tab', 'backtab', '?'}:
+                region = 'details' if region == 'explore' else 'explore'
+                continue
             if key == '/':
-                query = self.prompt('Search by name or organisation', [], context) or ''; index = scroll = 0
+                value = self.prompt('Search by name or organisation', [], context)
+                if value is not None:
+                    query = value; index = scroll = 0
+                    region = 'explore'
             elif key in {'up', 'down'}:
                 index = max(0, min(len(filtered)-1, index+(-1 if key == 'up' else 1)))
                 scroll = max(0, index-max(1,self.size()[1]-10))

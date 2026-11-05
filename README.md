@@ -51,14 +51,20 @@ invitations can be saved and sent later. No real message or email is delivered.
 `w` opens Hack's network renderer. **S** selects whole graph, player/person,
 contract or invitation/connection scope; **L** filters layers; `[ ]` pages hidden
 nodes. Counts distinguish rendered nodes/relationships from the full projection.
+Dark points mark people and organisations outside the visible foreground. A
+ring marks an actor with no incident edges in the full projection. Tab switches
+between the fitted canvas and its object list. **+/-** zooms and **r** rotates.
 `3` enables an **experimental** depth-aware 3D camera (`r` yaw; `{ }` pitch);
 planar mode remains the default. Coordinates carry no social or physical meaning.
 `x` also offers People, Organisations and Resources.
 
 The inbox has one entry per object, with decision badges and **F** filters. On a
-contract, **y** accepts the current version, **j** negotiates, **R** rejects and
-**X** withdraws where permitted. Amendments require renewed acceptance. Party
-acceptance, institutional authorisation and verified outcomes remain distinct.
+contract, **Decisions** lists only actions permitted for the playing actor.
+Tab moves between decisions, exploration links and details. **y** accepts the
+current version, **j** negotiates, **R** rejects and **X** withdraws where
+permitted. The proposer and counterparties each record their own acceptance.
+Amendments require renewed acceptance. Party acceptance, institutional
+authorisation and verified outcomes remain distinct.
 
 **Playing**, **Focus** and the selected relationship are separate contexts.
 Following a person or contract never changes the simulated player. Breadcrumbs
@@ -69,7 +75,8 @@ selected; the other party has not consented merely because terms were proposed.
 Use arrows and Enter, a displayed number, or `/` to search by first name. `a` shows
 engine-permitted actions, `c` contracts, `i` the inbox, `p` changes the simulated
 person, `h` shows history, and `?` explains the current screen. `m` chooses a path;
-`e`, `g` and `s` switch modes in the same saved world. Single-key shortcuts act
+`e`, `g` and `s` resume each mode's previous view in the same saved world.
+Use `x` and choose Matrix to reopen the ecosystem root. Single-key shortcuts act
 immediately in full-screen play; `b` or Esc returns, preserving selection and
 scroll. PgUp/PgDn scroll long content. Actor search also matches organisation
 labels; `v` previews a profile before selection.
@@ -83,6 +90,9 @@ source details on demand. Inferred complementarities remain labelled as potentia
 rather than documented collaboration or consent. A development-only simulation
 authority issues a role when the player explicitly selects it; imported presence
 or affiliation never grants real authority.
+
+See the [mechanics freeze and graph audit](docs/14-mechanics-freeze.md) and the
+[`game-gamer` extraction report](docs/15-game-gamer-extraction-readiness.md).
 
 Reproducible fictional demonstrations (fresh output directories):
 

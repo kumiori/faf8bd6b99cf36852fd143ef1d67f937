@@ -9,6 +9,7 @@
     "Neutral text spans replace Rich.Text; callers own colours and terminal output.",
     "Require an explicit visual graph instead of importing Hack history/visualisation adapters.",
     "Optional per-node glyph/colour and per-edge colour/solid-pattern extension; original defaults retained.",
-    "Optional unknown-direction question mark; no arrow is inferred for unknown source direction."
+    "Optional unknown-direction question mark; no arrow is inferred for unknown source direction.",
+    "Optional fitted screen positions supplied by the presentation adapter; the original camera path remains the default."
   ]
 }

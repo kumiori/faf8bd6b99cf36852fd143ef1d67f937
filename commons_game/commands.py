@@ -15,6 +15,7 @@ class Command:
 
 
 COMMANDS = (
+    Command('paths', ('m',), 'Choose a path', '', ('explorer','inspector','inbox'), 'cmd_paths', 'Choose a mode in the same saved world.'),
     Command('ecosystem', ('e',), 'Ecosystem mode', '', ('explorer','inspector','inbox'), 'cmd_ecosystem', 'Explore the current world; does not start or reset a simulation.'),
     Command('gathering', ('g',), 'Gathering mode', '', ('explorer','inspector','inbox'), 'cmd_gathering', 'Inspect collective event conditions in the same world.'),
     Command('scenarios', ('s',), 'Scenarios mode', '', ('explorer','inspector','inbox'), 'cmd_scenarios', 'Explore strategy and agreement possibilities without changing worlds.'),

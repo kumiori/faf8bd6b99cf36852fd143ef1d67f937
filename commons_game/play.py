@@ -285,7 +285,8 @@ class PlayableTerminal(Terminal):
             self.dispatch(raw)
 
     def footer(self):
-        shortcuts={'actions':'a','contracts':'c','inbox':'i','player':'p','history':'h','help':'?','back':'b','quit':'q'}
+        shortcuts={'paths':'m','ecosystem':'e','gathering':'g','scenarios':'s','actions':'a','contracts':'c',
+                   'inbox':'i','player':'p','history':'h','help':'?','back':'Esc/b','quit':'q'}
         self.write('\n↑↓ Select · Enter Inspect · / Search · '+ ' · '.join(shortcuts[c.name]+' '+c.description
                    for c in menu(self.screen) if c.name in shortcuts))
 
@@ -333,7 +334,7 @@ class PlayableTerminal(Terminal):
         return self.picker('CHOOSE AN OBJECT',nodes)['id']
 
     def inspector(self, node_id):
-        index=0;page_size=10
+        index=0;page_size=10;parents=[]
         while not self.finished:
             self.refresh()
             self.screen='inspector';self.selected=node_id
@@ -354,14 +355,20 @@ class PlayableTerminal(Terminal):
             self.post_action=False
             if raw in {'b','0','q'}:
                 if raw=='q':self.finished=True
+                elif parents:
+                    node_id,index=parents.pop()
+                    continue
                 return
             if raw in {'up','k','down','j','next','>','prev','<'}:
                 delta={'up':-1,'k':-1,'down':1,'j':1,'next':page_size,'>':page_size,'prev':-page_size,'<':-page_size}[raw]
                 index=max(0,min(max(0,len(neighbours)-1),index+delta));continue
             if raw.isdigit() and 0<int(raw)<=len(neighbours):
+                parents.append((node_id,int(raw)-1))
                 node_id=neighbours[int(raw)-1]['id'];index=0;continue
             if raw=='':
-                if neighbours:node_id=neighbours[index]['id'];index=0
+                if neighbours:
+                    parents.append((node_id,index))
+                    node_id=neighbours[index]['id'];index=0
                 else:self.write('No connected objects. a shows actions; b returns.')
                 continue
             outcome=self.dispatch(raw)
@@ -386,6 +393,11 @@ class PlayableTerminal(Terminal):
             version=node['versions'][node['current_version']-1]
             self.write('Proposed by: '+self.label(node['created_by'],world))
             self.write('Parties: '+', '.join(self.label(p,world) for p in node['parties']))
+            self.write('Proposing does not accept the terms. Each party decides independently.')
+            for party in node['parties']:
+                role='Proposer' if party==node['created_by'] else 'Counterparty'
+                receipt='accepted' if party in version['acceptances'] else 'no acceptance recorded'
+                self.write(f'{role}: {self.label(party,world)} · {receipt}')
             self.write('Linked objective: '+self.label(node['objective_id'],world))
             self.write('\nTERMS\n'+version['terms']['purpose'])
             for responsibility in version['terms']['responsibilities']:
@@ -707,6 +719,10 @@ class PlayableTerminal(Terminal):
     def cmd_ecosystem(self,arg):
         self.mode_name='ecosystem';self.kind_filter=None;self.focus_actor=None;self.query=''
         return 'back' if self.screen!='explorer' else None
+
+    def cmd_paths(self,arg):
+        mode=self.choose('CHOOSE YOUR PATH',['ecosystem','gathering','scenarios'],str.capitalize)
+        return getattr(self,'cmd_'+mode)('')
 
     def cmd_gathering(self,arg):
         self.mode_name='gathering';self.kind_filter='objective';self.focus_actor=None;self.query=''

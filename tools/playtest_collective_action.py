@@ -56,11 +56,17 @@ async def exercise(d):
     await d.send('w');await d.expect('HACK RENDERER');await d.expect('Showing ')
     await d.send('S');await d.expect('NETWORK SCOPE');await d.choose('Invitation and connection network')
     await d.expect('Scope: Invitation and connection network');d.snapshot('08-connection-network')
+    await d.send('\t');await d.expect('NETWORK / OBJECT LIST')
+    await d.enter();await d.expect('INSPECT / PERSON')
+    await d.send('b');await d.expect('NETWORK / OBJECT LIST')
+    await d.expect('Scope: Invitation and connection network')
+    await d.send('\t');await d.expect('HACK RENDERER')
     await d.send('3');await d.send('r');await d.send('}');await d.expect('EXPERIMENTAL 3D');d.snapshot('09-experimental-camera')
     await d.send('3');await d.send('b');await d.expect('INVITATION / CONNECT')
     # Pending decisions have gone; sender, recipient, then direct proposal link.
     await d.send('3')
     await agreement(d,'Learning exchange','Alex','Offer a workshop','Review a policy')
+    await d.expect('DECISIONS');await d.expect('EXPLORE')
     await d.send('y');await d.answer('Continue?','y');await d.expect('CONTRACT INSPECTOR')
     await player(d,'Alex');await d.send('j')
     for prompt,value in [('Revised shared purpose?','Learn through a jointly reviewed workshop'),
@@ -72,7 +78,8 @@ async def exercise(d):
     await player(d,'Casey');await d.send('y');await d.answer('Continue?','y')
     await d.expect('Status: ACCEPTED');await d.expect('Outcome: UNVERIFIED');d.snapshot('11-accepted-contract')
     await d.send('h');await d.expect('HISTORY /');d.snapshot('12-history')
-    await d.send('b');await d.send('e');await d.expect('COMPLEMENTARITY MATRIX')
+    await d.send('b');await d.send('x');await d.expect('ECOSYSTEM VIEWS');await d.choose('Matrix')
+    await d.expect('COMPLEMENTARITY MATRIX')
     # Independent alternative: Alex -> Morgan, with no invitation or connection.
     await player(d,'Alex')
     await d.send('/');await d.answer('Search by first name','Morgan');await d.expect('FIND MATRIX PARTICIPANT');await d.enter()
