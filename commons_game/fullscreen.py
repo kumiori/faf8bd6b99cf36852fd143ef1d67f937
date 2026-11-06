@@ -3,21 +3,23 @@
 All mutations pass through ActorSession and the existing command forms. The
 viewport owns keyboard/display concerns only; line-mode play remains available.
 """
-from dataclasses import dataclass, field
 from copy import deepcopy
 from io import StringIO
-import os
-import textwrap
-import unicodedata
+
+from game_gamer.projections.inbox import action_options
+from game_gamer.tui.matrix import AxisLabel, MatrixView, render_matrix
+from game_gamer.tui.navigation import MODE_KEYS, NavigationState, Route as Route
+from game_gamer.tui.screen import Screen as Screen, inspector, run_screens
+from game_gamer.tui.viewport import CursesViewport as CursesViewport, action_form, run_curses, supported as supported
 
 from .catalogue import affiliations, people
 from .commands import resolve
 from .expertise import cell, matrix
-from .heatmap import BANDS, band, mark
+from .heatmap import BANDS
 from .network_view import CATEGORIES, focus_graph, draw_graph
 from .scenario_catalogue import catalogue, objectives_for, scenarios_for
 from .play import ACTION_EFFECTS, PlayableTerminal
-from .presentation import OBJECTS, Presentation, clean, display_label, folded, status
+from .presentation import OBJECTS, clean, display_label, folded, status
 from .tui import ACTION_NAMES, EVENT_NAMES, Cancelled
 
 MODES = {'ecosystem': 'Explore offers, needs and potential complementarities.',
@@ -33,60 +35,28 @@ def score_text(detail):
     return f"Unknown ({detail['lower']}–{detail['upper']}; lower bound {detail['lower']})"
 
 
-@dataclass
-class Route:
-    kind: str
-    target: str | None = None
-    index: int = 0
-    scroll: int = 0
-    row: int = 0
-    column: int = 0
-    query: str = ''
-    extra: dict = field(default_factory=dict)
-    region: str = 'explore'
-    decision_index: int = 0
-    reveal: bool = False
-
-
-@dataclass
-class Screen:
-    title: str
-    lines: list[str] = field(default_factory=list)
-    entries: list[tuple[str, object]] = field(default_factory=list)
-    footer: str = ''
-    selected: int = 0
-    scroll: int = 0
-    # Matrix row and column highlights supplement textual markers.
-    highlights: set[int] = field(default_factory=set)
-    navigation: bool = True
-    styles: list = field(default_factory=list)
-    show_entries: bool = True
-    breadcrumb: str = ''
-    wrap_entries: bool = False
-    decisions: list[tuple[str, object]] = field(default_factory=list)
-    details: list[str] = field(default_factory=list)
-    region: str = 'explore'
-    decision_index: int = 0
-    reveal: bool = False
-    split_regions: bool = False
-    raster_start: int | None = None
-
-
 class FullScreenTerminal(PlayableTerminal):
     """A screen stack over one shared saved world and one simulated perspective."""
     def __init__(self, game, *, viewport, **options):
         options.pop('output', None)
         super().__init__(game, output=StringIO(), **options)
         self.viewport = viewport
-        self.stack = [Route('matrix')]
-        self.mode_routes = {'ecosystem': self.stack[0], 'gathering': Route('gathering'), 'scenarios': Route('scenarios')}
-        self.mode_stacks = {mode: [route] for mode, route in self.mode_routes.items()}
+        self.navigation = NavigationState()
+        self.mode_routes = self.navigation.roots
         self.notice = ''
         self.width, self.height = 80, 24
 
     @property
     def route(self):
-        return self.stack[-1]
+        return self.navigation.route
+
+    @property
+    def stack(self):
+        return self.navigation.stack
+
+    @stack.setter
+    def stack(self, value):
+        self.navigation.stack = value
 
     @property
     def playing_actor(self):
@@ -180,16 +150,13 @@ class FullScreenTerminal(PlayableTerminal):
 
     def switch_mode(self, mode):
         """Explicitly reopen a mode root (for example x → Matrix)."""
-        self.mode_stacks[self.mode_name] = self.stack
+        self.navigation.resume(mode, reset=True)
         self.mode_name = mode
-        self.stack = [self.mode_routes[mode]]
-        self.mode_stacks[mode] = self.stack
         self.selected = None
 
     def resume_mode(self, mode):
-        self.mode_stacks[self.mode_name] = self.stack
+        self.navigation.resume(mode)
         self.mode_name = mode
-        self.stack = self.mode_stacks[mode]
         self.selected = None
 
     def push(self, kind, target=None, **extra):
@@ -200,12 +167,10 @@ class FullScreenTerminal(PlayableTerminal):
         if kind=='inspect' and target in self.world()['relationships']:
             context=self.world()['relationships'][target].get('context',{})
             if context:extra['relation']=(context['provider_id'],context['requester_id'])
-        self.stack.append(Route(kind, target, extra=extra, region='canvas' if kind == 'network' else 'explore'))
+        self.navigation.push(kind, target, **extra)
 
     def back(self):
-        if len(self.stack) > 1:
-            self.stack.pop()
-        else:
+        if not self.navigation.back():
             self.choose_mode()
 
     def run(self):
@@ -217,29 +182,15 @@ class FullScreenTerminal(PlayableTerminal):
             if not self.explore and not self.session:
                 self.select_actor()
             self.choose_mode()
-            while not self.finished:
-                self.refresh()
-                self.width, self.height = self.viewport.size()
-                self.view.width = max(16, self.width-2)
-                screen = self.build_screen()
-                screen.breadcrumb = self.breadcrumbs()
-                screen.region = 'explore' if self.route.kind == 'network' and screen.show_entries else self.route.region
-                screen.reveal = self.route.reveal
-                scroll = self.viewport.draw(screen, self.context(at=self.route.extra.get('at')), self.notice)
-                self.route.reveal = False
-                if isinstance(scroll, int) and screen.raster_start is None:
-                    self.route.scroll = scroll
-                self.notice = ''
-                key = self.viewport.key()
-                try:
-                    self.handle(key, screen)
-                except Cancelled:
-                    self.notice = 'Cancelled. No incomplete form was submitted.'
-                except (ValueError, RuntimeError) as error:
-                    self.notice = 'Unavailable: '+str(error).replace('_', ' ')
+            run_screens(self)
         except (EOFError, KeyboardInterrupt, Cancelled):
             pass
         return self.current()
+
+    def prepare_screen(self):
+        self.refresh()
+        self.width, self.height = self.viewport.size()
+        self.view.width = max(16, self.width-2)
 
     def build_screen(self):
         route = self.route
@@ -381,7 +332,8 @@ class FullScreenTerminal(PlayableTerminal):
                 ': opens typed commands, including open K-001, contract history and available actions.',
                 'd opens optional source and technical details. t trajectory. v verifies replay.',
                 'Network, People, Organisations and Resources: x alternative ecosystem views.',
-                'Network: S changes scope, L filters layers, [ ] pages, +/− zooms, r rotates.',
+                'Network: S changes scope, L filters layers, B selects background, [ ] pages, +/− zooms, r rotates.',
+                'Matrix: +/− changes detail, Home returns to origin, f fits the viewport. A + in a numeric cell means inspect the exact value.',
                 'Dark points are off-scope actors; rings are isolated in the full projection. 3D is experimental.',
                 'q quits; completed actions are already saved.'], scroll=route.scroll)
         if route.kind == 'details':
@@ -461,10 +413,15 @@ class FullScreenTerminal(PlayableTerminal):
             if route.region == 'decisions' and not decision_entries:
                 route.region = 'explore'
             footer = '  '.join(' '.join(key) for kind, key in DECISION_KEYS.items() if kind in kinds)
-            return Screen('CONTRACT INSPECTOR',lines,entries,
-                          footer+'  Tab Regions  a Actions  h History',route.index,route.scroll,
-                          decisions=decision_entries, details=details, region=route.region,
-                          decision_index=route.decision_index, split_regions=True)
+            if self.session:
+                for option in action_options(self.current(), self.session.actor, include_attendance=False):
+                    action = option['action']
+                    if action.get('agreement_id') == route.target and option['errors']:
+                        details.append(ACTION_NAMES[action['kind']] + ' · ' +
+                                       ', '.join(error.replace('_', ' ') for error in option['errors']))
+            return inspector('CONTRACT INSPECTOR', lines, links=entries, decisions=decision_entries,
+                             details=details, route=route, footer=footer+'  Tab Regions  a Actions  h History',
+                             wrap_entries=False)
         if node['kind'] == 'invitation':
             lines = [self.aliases().get(node['id'],'Invitation')+' · Invitation to connect · '+status(node['status']),
                      'From '+self.label(node['source_id'])+' to '+self.label(node['target_id']),
@@ -537,16 +494,12 @@ class FullScreenTerminal(PlayableTerminal):
         if not count or not axis:
             return Screen('ECOSYSTEM / MATRIX EXPLORER', ['No eligible matrix observations in this world.', 'x opens alternative ecosystem views.'])
         route.row = min(route.row,count-1); route.column = min(route.column,len(axis)-1)
-        row_count = max(1,self.height-19); col_count = max(1,(self.width-23)//5)
-        first_row = route.row//row_count*row_count; first_col = route.column//col_count*col_count
-        columns = range(first_col,min(len(axis),first_col+col_count))
-        own = next((i for i,a in enumerate(roster) if a['id']==self.playing_actor),None)
         value = projection[kind][route.row][route.column]
         meaning = 'W = O N^T · Rows OFFER → columns REQUEST' if kind=='W' else ('O / OFFERS' if kind=='O' else 'N / NEEDS')+' · People × expertise domains'
         exact = score_text(cell(projection,route.row,route.column)) if kind=='W' else ('Unknown' if value is None else str(value))
         lines = [meaning,
             'Selected: '+display_label(roster[route.row])+' → '+display_label(axis[route.column])+' · Exact matches: '+exact,
-            '* Your row/column  [] Selection  ? Unknown  0 Known zero  - Self (excluded)' if kind=='W' else '* Current player  [] Selection  1 Selected  0 Not selected  ? Unknown',
+            '* Your row/column  > Selection  ? Unknown  0 Known zero  - Self (excluded)' if kind=='W' else '* Current player  > Selection  1 Selected  0 Not selected  ? Unknown',
             'Scale: '+' '.join((b.ascii if self.plain else b.glyph)+'='+b.label for b in BANDS)+' · z Heatmap/numbers' if kind=='W' else 'Fixed categories: 1 Selected / 0 Not selected / ? Unknown · z Numbers']
         styles=[]; highlights=set()
         if kind=='W' and not numeric:
@@ -554,28 +507,27 @@ class FullScreenTerminal(PlayableTerminal):
             for item in BANDS:
                 label=(item.ascii if self.plain else item.glyph)+'='+item.label
                 styles.append((3,column,len(label),'#111111' if item.maximum is None or item.maximum>=10 else '#eee8d5',item.colour,False));column+=len(label)+1
-        lines += [' '*20+''.join(f"{'*' if kind=='W' and j==own else ' '}{j+1:02}  " for j in columns),
-                  ' '*20+''.join(display_label(axis[j])[:4].center(5) for j in columns)]
-        for i in range(first_row,min(count,first_row+row_count)):
-            row=f"{'*' if i==own else ' '}{i+1:02} "+display_label(roster[i])[:14].ljust(16)
-            for j in columns:
-                current=projection[kind][i][j]; diagonal=kind=='W' and i==j
-                glyph=mark(current,diagonal=diagonal,numeric=numeric,plain=self.plain) if kind=='W' else ('?' if current is None else str(current) if numeric or self.plain else '●' if current else '·')
-                part=('['+glyph+']' if (i,j)==(route.row,route.column) else ('*'+glyph if kind=='W' and j==own else glyph)).center(5)
-                if current is not None and not diagonal and not numeric:
-                    colour=band(current).colour if kind=='W' else '#a3bd95' if current else '#172331'
-                    styles.append((len(lines),len(row),5,'#111111' if (current>=7 if kind=='W' else current==1) else '#eee8d5',colour,(i,j)==(route.row,route.column)))
-                row+=part
-            if i==own: highlights.add(len(lines))
-            lines.append(row)
-        lines += [f'Rows {first_row+1}–{min(count,first_row+row_count)}/{count} · Columns {first_col+1}–{min(len(axis),first_col+col_count)}/{len(axis)}']
+        def labels(records):
+            return [AxisLabel(item['id'], display_label(item)) for item in records]
+
+        view = MatrixView(labels(roster), labels(axis), projection[kind], exclude_self=kind == 'W')
+        grid = render_matrix(view, route.matrix, row=route.row, column=route.column, width=self.width-2,
+                             height=self.height-19, own_id=self.playing_actor, numeric=numeric,
+                             plain=self.plain, incidence=kind != 'W')
+        start = len(lines)
+        lines.extend(grid.lines)
+        styles.extend((r+start, c, n, fg, bg, bold) for r,c,n,fg,bg,bold in grid.styles)
+        highlights.update(r+start for r in grid.highlights)
+        lines.append(f'Rows {grid.rows.start+1}–{grid.rows.stop}/{count} · Columns {grid.columns.start+1}–{grid.columns.stop}/{len(axis)}')
+        lines.append(f'Matrix detail: {route.matrix.detail.name.title()} ({grid.cell_width} columns) · + overflow: inspect exact value')
         if kind=='W':
             detail=cell(projection,route.row,route.column)
             lines.append('Matching domains: '+(', '.join(detail['matching_domains']) or ('Unknown' if detail['value'] is None else 'None in the observed vocabulary')))
         else: lines.append('Domain: '+projection['vocabulary'][domains[route.column]])
         lines.append('World state '+str(len(self.current().project('log')))+' · Shared vocabulary and snapshot across O / N / W')
         return Screen('ECOSYSTEM / '+('COMPLEMENTARITY MATRIX' if kind=='W' else 'OFFERS O' if kind=='O' else 'NEEDS N')+' / '+('NUMERIC' if numeric else 'HEATMAP'),lines,
-            footer='O Offers  N Needs  W Matches  Arrows Cell  Enter Inspect  o/n Own axis  z Numbers  w Network  / Find',highlights=highlights,styles=styles)
+            footer='O/N/W  Arrows Cell  Enter Inspect  +/- Detail  Home Origin  f Fit  z Numbers  w Network',
+            highlights=highlights, styles=styles, fixed_rows=set(range(start,start+len(grid.lines))))
 
     def cell_screen(self):
         projection = matrix(self.world()); ids=[a['id'] for a in projection['actors']]
@@ -631,7 +583,7 @@ class FullScreenTerminal(PlayableTerminal):
         route=self.route;relation=self.focused_relation
         related=next((key for key in (relation or ()) if key!=route.target),None)
         if route.target in self.world()['agreements']:related=None
-        limit=6 if self.width<85 or self.height<26 else 8
+        limit = route.extra.setdefault('page_limit', 6 if self.width < 85 or self.height < 26 else 8)
         visual=focus_graph(self.graph_projection(),route.target,related=related,query=route.query,
                            offset=route.extra.get('offset',0),limit=limit,
                            scope=route.extra.get('scope','neighbourhood'),categories=route.extra.get('categories'),
@@ -648,20 +600,20 @@ class FullScreenTerminal(PlayableTerminal):
                f"Showing {len(visual['nodes'])}/{visual['full_node_count']} nodes · {visual['rendered_relationship_count']}/{visual['full_relationship_count']} edges ({len(visual['edges'])} bundles)",
                'Layers: '+(', '.join(route.extra['categories']) if route.extra.get('categories') else 'All')+
                f' · Zoom {zoom:.2f}x · Rotation {rotation:.1f} rad',
-               f"Context: {len(visual['context_actor_ids'])} off-scope actors · {'o' if self.plain else '∘'} isolated",
+               f"Context: {len(visual['context_actor_ids'])} off-scope actors · {route.extra.get('background','dim').title()} background · {'o' if self.plain else '∘'} isolated",
                f"Neighbours {visual['offset']+1 if visual['total'] else 0}–{min(visual['total'],visual['offset']+limit)}/{visual['total']} · [ ] Page"]
         # Four header and three footer rows are reserved by CursesViewport.
         canvas_height = self.height-7-len(lines)
         lines = [line if len(line) <= canvas_width else line[:max(0,canvas_width-3)]+'...' for line in lines]
         self._network=visual
         entries = [(self.node_label(n),n['id']) for n in visual['nodes']]
-        footer = 'Enter Inspect  Tab View  S Scope  L Layers  [ ] Page  f Centre  + - Zoom  r Rotate'
+        footer = 'Enter Inspect  Tab View  S Scope  L Layers  B Background  [ ] Page  f Centre  + - Zoom  r Rotate'
         if route.region == 'explore' or canvas_height < 3 or canvas_width < 12:
             return Screen('ECOSYSTEM / NETWORK / OBJECT LIST', lines, entries, footer,
                           route.index, route.scroll)
         canvas, spans = draw_graph(visual,canvas_width,canvas_height,selected=selected['id'],plain=self.plain,
             angle=route.extra.get('angle',0.),zoom=zoom,
-            yaw=rotation,pitch=route.extra.get('pitch',0.),
+            yaw=rotation,pitch=route.extra.get('pitch',0.),background=route.extra.get('background','dim'),
             labels={n['id']:self.aliases()[n['id']]+' '+display_label(n) for n in visual['nodes'] if n['kind']=='agreement'})
         start = len(lines)
         styles=[(row+start,column,length,fg,bg,bold) for row,column,length,fg,bg,bold in spans]
@@ -676,12 +628,16 @@ class FullScreenTerminal(PlayableTerminal):
             self.finished = True; return
         if key in {'b', 'esc'}:
             self.back(); return
-        if key in {'e', 'g', 's'}:
-            self.resume_mode({'e': 'ecosystem', 'g': 'gathering', 's': 'scenarios'}[key]); return
+        if key in MODE_KEYS:
+            self.resume_mode(MODE_KEYS[key]); return
         if key == 'm':
             self.choose_mode(); return
         if key == 'p':
             self.select_actor(); return
+        if route.kind == 'matrix' and route.matrix.handle(key):
+            if key == 'home':
+                route.row = route.column = 0
+            return
         if route.kind=='matrix' and key in {'O','N','W'}:
             previous = route.extra.get('matrix_kind','W')
             route.extra[previous+'_column'] = route.column
@@ -731,6 +687,9 @@ class FullScreenTerminal(PlayableTerminal):
             route.reveal = True
             return
         if route.kind=='network':
+            if key == 'B':
+                route.extra['background'] = self.choose('NETWORK BACKGROUND', ['dim', 'hidden', 'full'], str.title)
+                return
             if key=='S':
                 labels=['Whole graph','Player-centred neighbourhood','Selected-actor neighbourhood','Contract neighbourhood','Invitation and connection network']
                 choice=self.choose('NETWORK SCOPE',labels,str)
@@ -754,7 +713,7 @@ class FullScreenTerminal(PlayableTerminal):
                 route.reveal = True
                 return
             if key in {'[',']'}:
-                limit=6 if self.width<85 or self.height<26 else 8
+                limit = route.extra.setdefault('page_limit', 6 if self.width < 85 or self.height < 26 else 8)
                 route.extra['offset']=max(0,route.extra.get('offset',0)+(-limit if key=='[' else limit));route.index=0;return
             if key=='f' and screen.entries:
                 route.target=screen.entries[route.index][1];route.index=0
@@ -954,7 +913,6 @@ class FullScreenTerminal(PlayableTerminal):
         world = self.world()
         version, candidates = self.session.available_actions()
         if target in world['actors']:
-            template = world['configuration']['world'].get('proposal')
             permitted = self.proposal_permitted(target)
             candidates = [c for c in candidates if c['kind'] == 'propose'] if target != self.session.actor and permitted else []
             if target != self.session.actor and world['actors'][target]['kind']=='person' and world['actors'][self.session.actor]['kind']=='person':
@@ -1023,7 +981,8 @@ class FullScreenTerminal(PlayableTerminal):
             vocabulary=matrix(self.world())['vocabulary']
             self.write('Observed context: '+self.label(action['context']['provider_id'])+' → '+self.label(action['context']['requester_id']))
             self.write('Relevant declared domains: '+', '.join(vocabulary[c] for c in action['context']['matching_codes']))
-        payload = self.collect_action(action, self.current())
+        with action_form(self.viewport):
+            payload = self.collect_action(action, self.current())
         self.reset_buffer(); result = self.submit(payload, version)
         if result['ok']:
             self.post_action = False
@@ -1120,235 +1079,6 @@ class FullScreenTerminal(PlayableTerminal):
                 else: self.push('inbox')
 
 
-class CursesViewport:
-    """POSIX/ttyd viewport: bounded redraw, no growing transcript or raw ANSI input."""
-    def __init__(self, window, *, plain=False):
-        import curses
-        self.curses, self.window, self.plain = curses, window, plain
-        self.last_screen = None
-        self.pairs={}
-        window.keypad(True)
-        curses.curs_set(0)
-        self.colour=curses.has_colors() and not plain and 'NO_COLOR' not in os.environ
-        if self.colour:
-            curses.start_color(); curses.use_default_colors()
-            curses.init_pair(1, curses.COLOR_CYAN, -1)
-            self.highlight = curses.color_pair(1) | curses.A_BOLD
-        else:
-            self.highlight = curses.A_BOLD
-
-    def colour_style(self, foreground, background=None, bold=False):
-        attribute=self.curses.A_BOLD if bold else 0
-        if not self.colour:return attribute
-        def index(value):
-            if value is None:return -1
-            rgb=[int(value[i:i+2],16) for i in (1,3,5)]
-            if self.curses.COLORS>=256:
-                levels=[0,95,135,175,215,255]
-                r,g,b=(min(range(6),key=lambda j:abs(levels[j]-v)) for v in rgb)
-                return 16+36*r+6*g+b
-            return self.curses.COLOR_WHITE if sum(rgb)>360 else self.curses.COLOR_BLUE
-        colours=(index(foreground),index(background))
-        if colours not in self.pairs and len(self.pairs)+2<self.curses.COLOR_PAIRS:
-            number=len(self.pairs)+2
-            self.curses.init_pair(number,*colours);self.pairs[colours]=number
-        return attribute | self.curses.color_pair(self.pairs.get(colours,1))
-
-    def size(self):
-        height, width = self.window.getmaxyx()
-        return width, height
-
-    def safe(self, value):
-        value = clean(value)
-        if self.plain:
-            value = value.replace('→', '->').replace('–', '-').replace('·', '/').replace('…', '...')
-            value = unicodedata.normalize('NFKD',value).encode('ascii', 'ignore').decode('ascii')
-        return value
-
-    def put(self, row, text, style=0):
-        width, height = self.size()
-        if 0 <= row < height:
-            try:
-                self.window.addnstr(row, 0, self.safe(text), max(0, width-1), style)
-            except self.curses.error:
-                pass  # A resize or bottom-right cell can invalidate a draw.
-
-    def draw(self, screen, context='', notice=''):
-        self.last_screen = screen
-        width, height = self.size(); self.window.erase()
-        self.put(0, screen.title, self.curses.A_BOLD)
-        self.put(1, context)
-        if screen.navigation:
-            self.put(2, 'm Paths | e Ecosystem | g Gathering | s Scenarios | c Contracts | i Inbox | p Player')
-        if screen.breadcrumb:self.put(3,screen.breadcrumb)
-        body_start=4 if screen.breadcrumb else 3
-        body_height = max(1, height-body_start-3)
-        content, painted = [], []
-
-        def add_line(line, style=0, *, raster=False, indent=''):
-            safe = self.safe(line)
-            rows = [safe] if raster else textwrap.wrap(safe, max(1,width-1),
-                    replace_whitespace=False, subsequent_indent=indent) or ['']
-            content.extend((row, style) for row in rows)
-
-        for i, line in enumerate(screen.lines):
-            start=len(content)
-            add_line(line, self.highlight if i in screen.highlights else 0,
-                     raster=screen.raster_start is not None)
-            # Raster/heatmap rows are bounded to viewport width and never wrap.
-            if len(content)==start+1:
-                painted += [(start,column,length,fg,bg,bold) for row,column,length,fg,bg,bold in screen.styles if row==i]
-        decision_starts = []
-        if screen.split_regions:
-            add_line('DECISIONS' + ('  <' if screen.region == 'decisions' else ''), self.curses.A_BOLD)
-            if not screen.decisions:
-                add_line('No decision available for this actor and state.')
-            for i, (label, _) in enumerate(screen.decisions):
-                decision_starts.append(len(content))
-                selected = screen.region == 'decisions' and i == screen.decision_index
-                add_line(('> ' if selected else '  ')+label, self.curses.A_REVERSE if selected else 0, indent='  ')
-            add_line('EXPLORE' + ('  <' if screen.region == 'explore' else ''), self.curses.A_BOLD)
-        entry_starts = []
-        for i, (label, _) in enumerate(screen.entries if screen.show_entries else []):
-            entry_starts.append(len(content))
-            active = screen.region == 'explore' and i == screen.selected
-            prefix = '> ' if active else '  '
-            text=prefix+f'[{i+1}] '+label
-            parts=textwrap.wrap(self.safe(text),max(1,width-1),subsequent_indent='      ') if screen.wrap_entries else [text]
-            content.extend((part,self.curses.A_REVERSE if active else 0) for part in parts)
-        detail_start = len(content)
-        if screen.details:
-            add_line('DETAILS' + ('  <' if screen.region == 'details' else ''), self.curses.A_BOLD)
-            for line in screen.details:
-                add_line(line)
-        scroll = min(screen.scroll, max(0, len(content)-body_height))
-        selected = None
-        if entry_starts and screen.region == 'explore' and screen.reveal:
-            selected = entry_starts[min(screen.selected,len(entry_starts)-1)]
-        if screen.reveal and screen.region == 'decisions' and decision_starts:
-            selected = decision_starts[min(screen.decision_index,len(decision_starts)-1)]
-        if screen.reveal and screen.region == 'details' and screen.details:
-            scroll = min(detail_start, max(0,len(content)-body_height))
-        if selected is not None:
-            if selected < scroll:
-                scroll = selected
-            elif selected >= scroll+body_height:
-                scroll = selected-body_height+1
-        for i, (line, style) in enumerate(content[scroll:scroll+body_height], body_start):
-            self.put(i, line, style)
-        for row,column,length,fg,bg,bold in painted:
-            if scroll<=row<scroll+body_height:
-                try:
-                    text=content[row][0][column:column+length]
-                    self.window.addnstr(row-scroll+body_start,column,text,length,self.colour_style(fg,bg,bold))
-                except self.curses.error:pass
-        if len(content) > body_height:
-            self.put(height-3, f'Scroll {scroll+1}/{max(1,len(content)-body_height+1)} · PgUp/PgDn')
-        self.put(height-2, notice, self.curses.A_BOLD)
-        # Help lists the controls when a narrow terminal clips the footer.
-        self.put(height-1, ('Esc/b Back  ? Help | ' if screen.navigation else '')+(screen.footer or 'Enter Continue'))
-        self.window.refresh()
-        return scroll
-
-    def message(self, screen):
-        self.draw(screen)
-
-    def key(self):
-        key = self.window.get_wch()
-        mapping = {self.curses.KEY_UP: 'up', self.curses.KEY_DOWN: 'down', self.curses.KEY_LEFT: 'left',
-                   self.curses.KEY_RIGHT: 'right', self.curses.KEY_NPAGE: 'pagedown', self.curses.KEY_PPAGE: 'pageup',
-                   self.curses.KEY_RESIZE: 'resize', self.curses.KEY_ENTER: 'enter', '\n': 'enter', '\r': 'enter', '\x1b': 'esc'}
-        mapping.update({self.curses.KEY_BTAB:'backtab','\t':'tab'})
-        if key in {'\x03', '\x04'}:
-            raise EOFError
-        return mapping.get(key, key)
-
-    def prompt(self, title, lines, context):
-        value = ''
-        while True:
-            width, height = self.size()
-            screen = Screen(title, list(lines)+['', '> '+value[-max(1,width-4):]], footer='Enter Confirm · Esc Cancel', navigation=False)
-            screen.scroll = max(0, len(screen.lines)-(height-6))
-            self.draw(screen, context)
-            key = self.key()
-            # Esc and the letter b must remain distinct while entering text.
-            if key == 'enter': return value
-            if key == 'resize': continue
-            if key in {self.curses.KEY_BACKSPACE, '\x7f', '\b'}:
-                value = value[:-1]
-            elif key == 'esc': return None
-            elif isinstance(key, str) and len(key) == 1 and key.isprintable():
-                value += key
-
-    def choose(self, title, items, label, context, *, preview=None):
-        index = 0; query = ''; scroll = 0; region = 'explore'
-        while True:
-            filtered = [item for item in items if folded(query) in folded(label(item))]
-            index = min(index, max(0, len(filtered)-1))
-            lines = ['Search: '+query, f'{len(filtered)} choices']
-            if region == 'details':
-                lines += ['Up/Down selects an option in the list. Tab returns to choices.',
-                          '/ changes search; Enter confirms the current choice.', 'Esc/b goes back.']
-                if filtered:
-                    lines += ['Selected: '+label(filtered[index])]
-            self.draw(Screen(title, lines, [(label(item), item) for item in filtered],
-                'Enter Confirm · Tab Regions · / Search · '+('v Preview · ' if preview else '')+'Esc/b Back',
-                index, scroll if region == 'explore' else 0, navigation=False,
-                show_entries=region == 'explore', reveal=region == 'explore'), context)
-            key = self.key()
-            if key in {'b', 'q', 'esc'}: raise Cancelled
-            if key in {'tab', 'backtab', '?'}:
-                region = 'details' if region == 'explore' else 'explore'
-                continue
-            if key == '/':
-                value = self.prompt('Search by name or organisation', [], context)
-                if value is not None:
-                    query = value; index = scroll = 0
-                    region = 'explore'
-            elif key in {'up', 'down'}:
-                index = max(0, min(len(filtered)-1, index+(-1 if key == 'up' else 1)))
-                scroll = max(0, index-max(1,self.size()[1]-10))
-            elif key in {'pageup', 'pagedown'}:
-                index = max(0, min(len(filtered)-1, index+(-1 if key == 'pageup' else 1)*max(1,self.size()[1]-10)))
-                scroll = max(0, index-max(1,self.size()[1]-10))
-            elif key == 'enter' and filtered:
-                return filtered[index]
-            elif key == 'v' and preview and filtered:
-                details = preview(filtered[index]); offset = 0
-                while True:
-                    shown = self.draw(Screen('PROFILE PREVIEW',details,footer='PgUp/PgDn Scroll · Enter or b Return',
-                                             scroll=offset,navigation=False),context)
-                    key = self.key()
-                    if key in {'enter','b','esc','q'}: break
-                    if key in {'pageup','pagedown','up','down'}:
-                        step = max(1,self.size()[1]-8) if key in {'pageup','pagedown'} else 1
-                        offset = max(0,shown+(-step if key in {'pageup','up'} else step))
-            elif isinstance(key,str) and key.isdigit() and key != '0' and int(key) <= len(filtered):
-                return filtered[int(key)-1]
-
-
-def supported(source, output):
-    if os.getenv('TERM', 'dumb') == 'dumb' or not source.isatty() or not output.isatty():
-        return False
-    try:
-        import curses
-        return bool(curses)
-    except ImportError:
-        return False
-
-
 def run_fullscreen(game, *, store=None, plain=False, explore=False):
-    import curses
-    import locale
-    try:
-        locale.setlocale(locale.LC_ALL, '')
-    except locale.Error:
-        try:locale.setlocale(locale.LC_ALL,'en_US.UTF-8')
-        except locale.Error:plain=True
-    result = None
-    def start(window):
-        nonlocal result
-        result = FullScreenTerminal(game, viewport=CursesViewport(window, plain=plain),
-                                    store=store, plain=plain, explore=explore).run()
-    curses.wrapper(start)
-    return result
+    return run_curses(lambda viewport, plain: FullScreenTerminal(
+        game, viewport=viewport, store=store, plain=plain, explore=explore).run(), plain=plain)

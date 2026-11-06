@@ -1,9 +1,9 @@
 """Declarative fictional worlds, separate from shared transition rules."""
-from dataclasses import asdict
 import json
 from pathlib import Path
 from .engine import CommonsGame
-from .model import Actor, Resource, GovernancePolicy, require
+from game_gamer.schema.definitions import initialise_legacy
+from .model import require
 
 SCENARIOS = ('bilateral-logs', 'montreal-geneva', 'commons-gathering', 'montreal-commons')
 
@@ -14,24 +14,7 @@ def definition(name):
 
 
 def load_scenario(name='bilateral-logs'):
-    spec = definition(name)
-    game = CommonsGame()
-    world = game.get_world()
-    for item in spec['actors']:
-        world['actors'][item['id']] = asdict(Actor(**item))
-    for item in spec['resources']:
-        world['resources'][item['id']] = asdict(Resource(**item))
-    for item in spec['governance']:
-        world['governance'][item['id']] = asdict(GovernancePolicy(**item))
-    for table in ('relationships', 'capacities', 'needs', 'objectives'):
-        for item in spec.get(table, []):
-            world[table][item['id']] = item
-    world['configuration']['world'] = {'id': 'world', 'status': 'active', 'scenario': name,
-        'title': spec['title'], 'description': spec['description'], 'synthetic': spec.get('synthetic', True),
-        'mode': spec['mode'], 'proposal': spec['proposal'], 'schema_version': 'commons.0.1'}
-    world['configuration']['clock'] = {'id': 'clock', 'status': 'active', 'now': spec['world_time']}
-    game._commit(game.get_world(), world, 'world.initialized')
-    return game
+    return initialise_legacy(CommonsGame(), definition(name), name)
 
 
 def demo_commands(name='bilateral-logs'):

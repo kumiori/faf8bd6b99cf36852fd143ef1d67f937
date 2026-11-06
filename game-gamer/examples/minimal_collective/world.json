@@ -1,0 +1,32 @@
+{
+  "schema": "game-gamer/world/v1",
+  "scope_id": "fictional-rehearsal",
+  "revision": 1,
+  "execution_mode": "simulation",
+  "world_time": "2030-01-01T00:00:00+00:00",
+  "title": "A room for a community rehearsal",
+  "actors": [
+    {"id": "sam", "label": "Sam"},
+    {"id": "jo", "label": "Jo"},
+    {"id": "pat", "label": "Pat", "category": "steward"}
+  ],
+  "resources": [
+    {"id": "room", "label": "Rehearsal room", "owner_id": "jo", "quantity": 1, "unit": "slot"}
+  ],
+  "governance": [
+    {"id": "steward-approval", "label": "Steward approval", "eligible_actors": ["pat"], "threshold": 1}
+  ],
+  "capacities": [
+    {"id": "room-offer", "actor_id": "jo", "domain": "rehearsal", "unit": "slot",
+     "status": "reported", "provenance": {"kind": "fictional_fixture"}}
+  ],
+  "needs": [
+    {"id": "room-need", "actor_id": "sam", "domain": "rehearsal", "unit": "slot",
+     "status": "reported", "provenance": {"kind": "fictional_fixture"}}
+  ],
+  "objectives": [
+    {"id": "run-rehearsal", "label": "Run and review a rehearsal", "mode": "gathering",
+     "status": "open", "support_ids": [], "provenance": {"kind": "fictional_fixture"},
+     "success": {"minimum_parties": 2, "minimum_attendees": 2, "verified_agreements": 1}}
+  ]
+}

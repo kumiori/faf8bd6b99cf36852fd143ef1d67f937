@@ -8,12 +8,12 @@ import venv
 
 def test_core_wheel_installs_and_launches_without_neighbouring_projects(tmp_path):
     root=Path(__file__).resolve().parents[1];wheels=tmp_path/'wheels'
-    result=subprocess.run([sys.executable,'-m','pip','wheel','--no-deps','--no-build-isolation','--wheel-dir',str(wheels),str(root)],
+    result=subprocess.run([sys.executable,'-m','pip','wheel','--no-deps','--no-build-isolation','--wheel-dir',str(wheels),str(root / "game-gamer"),str(root),"wcwidth>=0.2.12,<1"],
                           capture_output=True,text=True,timeout=60)
     assert result.returncode==0,result.stdout+result.stderr
     environment=tmp_path/'isolated';venv.EnvBuilder(with_pip=True).create(environment)
     python=environment/'bin/python'
-    install=subprocess.run([str(python),'-m','pip','install','--no-deps','--no-index',str(next(wheels.glob('commons_game-*.whl')))],
+    install=subprocess.run([str(python),'-m','pip','install','--no-index','--find-links',str(wheels),str(next(wheels.glob('commons_game-*.whl')))],
                            capture_output=True,text=True,timeout=30)
     assert install.returncode==0,install.stderr
     env={**os.environ,'SADDLE_DATA_DIR':str(tmp_path/'data'),'PYTHONPATH':''}

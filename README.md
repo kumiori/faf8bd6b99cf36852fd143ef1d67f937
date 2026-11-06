@@ -43,13 +43,16 @@ person or domain. First names are used throughout; stable `(1)`, `(2)` labels
 distinguish different people sharing a first name without exposing surnames.
 
 Enter a cell to inspect both directions and matching domains; `d` expands source
-details. **j Invite to connect** records a simulated contact request; the recipient
+details. The matrix defaults to two display columns per cell. **+/-** changes
+detail, **Home** returns to the origin, and **f** fits the view around the
+selection. In numeric mode **+** within a cell means inspect the full score.
+**j Invite to connect** records a simulated contact request; the recipient
 can accept or decline through their inbox. **k Propose a contract** independently
 opens explicit contributions and terms, with no invitation requirement. Draft
 invitations can be saved and sent later. No real message or email is delivered.
 
 `w` opens Hack's network renderer. **S** selects whole graph, player/person,
-contract or invitation/connection scope; **L** filters layers; `[ ]` pages hidden
+contract or invitation/connection scope; **L** filters layers; **B** selects Hidden, Dim or Full background; `[ ]` pages hidden
 nodes. Counts distinguish rendered nodes/relationships from the full projection.
 Dark points mark people and organisations outside the visible foreground. A
 ring marks an actor with no incident edges in the full projection. Tab switches
@@ -170,7 +173,7 @@ Streamlit, Plotly, browser, graph renderer or numerical coordinates.
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install -e .
+.venv/bin/python -m pip install -e ./game-gamer -e .
 # Optional trajectory inspection and development tests:
 .venv/bin/python -m pip install -e '.[trajectory,test]'
 # Optional tooling for actual full-screen PTY/ttyd acceptance:
@@ -188,7 +191,7 @@ The build environment needs setuptools >=77 and PyYAML >=6,<7 for that route.
 ## Developer laboratory and retained scripted fixtures
 
 The player viewport uses standard-library `curses` on supported POSIX terminals,
-including ttyd. There is no new runtime dependency. `pyte` and `websockets` are
+including ttyd. `pyte` and `websockets` are
 optional test tools: they reconstruct terminal frames and exercise ttyd's real
 transport. The line interface remains available without either tool or curses.
 
@@ -305,10 +308,14 @@ SQLite adapter additionally serialises reload, rule checks, reservations and app
 
 ## Architecture
 
-* `commons_engine/`: transaction machinery extracted from Hube, canonical mutation
-  records, deterministic reconstruction and SQLite adapters.
-* `commons_game/model.py`, `engine.py`: preliminary typed Commons records and
-  domain rules. Reusable governance extraction remains an explicit M2 gate.
+* [Game-Gamer](game-gamer/README.md) owns collective records, transitions, governance,
+  event replay, neutral projections and persistence contracts. The
+  [terminal extension](game-gamer/docs/TUI.md) supplies the shared viewport,
+  navigation, matrix and graph renderer. See the [terminal extraction map](docs/TUI_EXTRACTION_MAP.md).
+* `commons_engine/` preserves the original Hube and Commons transaction and
+  SQLite imports. `commons_game/engine.py` adapts shared projections to Montréal.
+* The [extraction map](docs/EXTRACTION_MAP.md) documents the source boundaries
+  and golden behavioural baseline.
 * `commons_game/scenarios/`: fictional seed worlds and objective/proposal data.
 * `commons_game/projections.py`: multiplex view and missingness-aware `B`, `W`.
 * `commons_game/player.py`, `tui.py`: fixed-actor terminal sessions and interaction.
@@ -339,10 +346,11 @@ without it. HTTP integration tests open loopback sockets; a sandbox must
 permit those. The suite includes competing-process SQLite reservations and runs
 the original 58 Hube tests when the sibling checkout is available.
 
-Commons installs independently. To run the optional sibling Hube regression world, install both local projects:
+The Commons wheel depends on the independently built Game-Gamer wheel. For the
+optional sibling Hube regression world, install the three local projects:
 
 ```sh
-python3 -m pip install -e . -e ../game_hube
+python3 -m pip install -e ./game-gamer -e . -e ../game_hube
 ```
 
 No blockchain, tokens, wallets, real financial escrow, legal enforcement or real

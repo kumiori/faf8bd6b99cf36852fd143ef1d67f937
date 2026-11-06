@@ -2,6 +2,8 @@
 from copy import deepcopy
 from uuid import uuid4
 
+from game_gamer.projections.inbox import available_actions
+
 
 class ActorSession:
     def __init__(self, game, actor, *, store=None, hot_seat=False, identity=None, binding=None, provider=None):
@@ -54,48 +56,14 @@ class ActorSession:
         payload.setdefault('key', 'play-' + uuid4().hex)
         if self.store is not None:
             return self.store.submit(payload, expected_version=expected_version)
-        if expected_version is not None and expected_version != len(self._game.project('log')):
-            prior = self._game._prior(payload)
-            if prior is None:
-                return {'ok': False, 'errors': ['stale_version'], 'mutations': []}
-        return self._game.submit(payload)
+        return self._game.submit(payload, expected_version=expected_version)
 
     def available_actions(self):
         """Pure engine checks; probe evidence is never returned or submitted."""
         game = self.current()
         self._check_binding()
-        world = game.get_world()
-        candidates = []
-        proposal = world['configuration']['world']['proposal']
-        if proposal and proposal['id'] not in world['agreements']:
-            candidates.append({'kind': 'propose', **deepcopy(proposal)})
-        for agreement in world['agreements'].values():
-            version = agreement['versions'][agreement['current_version'] - 1]
-            base = {'agreement_id': agreement['id'], 'version': version['number']}
-            for kind in ('publish_proposal', 'accept', 'authorize', 'activate', 'initiate', 'fulfill', 'verify',
-                         'reject', 'withdraw', 'suspend', 'resume', 'terminate', 'dispute', 'amend'):
-                command = {'kind': kind, **base}
-                if kind in {'initiate', 'fulfill', 'verify'}:
-                    command['reference'] = 'Pure availability probe; never submitted.'
-                if kind in {'reject', 'withdraw', 'suspend', 'terminate', 'dispute'}:
-                    command['reason'] = 'Pure availability probe; never submitted.'
-                if kind == 'fulfill':
-                    command['criteria'] = deepcopy(version['verification']['criteria'])
-                if kind == 'amend':
-                    command['terms'] = deepcopy(version['terms'])
-                candidates.append(command)
-        from .invitations import records
-        for invitation in records(world):
-            base = {'invitation_id': invitation['id']}
-            candidates.extend([{'kind': 'publish_contact', **base}, {'kind': 'withdraw_contact', **base},
-                               {'kind': 'respond_contact', 'response': 'accept', **base},
-                               {'kind': 'respond_contact', 'response': 'decline', **base}])
-        result = []
-        for candidate in candidates:
-            command = {**candidate, 'actor': self.actor, 'key': 'probe-' + uuid4().hex}
-            if not game.validate(command):
-                result.append({key: value for key, value in candidate.items()
-                               if key in {'kind', 'agreement_id', 'version', 'invitation_id', 'response'}})
+        proposal = game.get_world()['configuration']['world']['proposal']
+        result = available_actions(game, self.actor, proposal=proposal, include_attendance=False)
         if proposal is None:
             result.insert(0, {'kind': 'propose'})
         return len(game.project('log')), result

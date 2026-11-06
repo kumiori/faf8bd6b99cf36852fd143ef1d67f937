@@ -3,7 +3,7 @@
   "source_module": "temporal_graph/renderers/terminal/projection.py",
   "source_commit": "74f0cfab96cebf1a7b453227423596b72bc7a802",
   "source_sha256": "a692f1520d8cc893445dd9e6fa4c2ba41ce7af7f951b655695629daec321073c",
-  "extracted_module": "commons_game/renderers/hack_terminal.py",
+  "extracted_module": "game-gamer/src/game_gamer/tui/renderers/hack_terminal.py",
   "adaptations": [
     "Scalar matrix multiplication replaces NumPy camera rotation without changing the formula.",
     "Neutral text spans replace Rich.Text; callers own colours and terminal output.",

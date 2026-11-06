@@ -1,5 +1,10 @@
 # game-gamer extraction readiness
 
+This records the pre-extraction assessment. The local extraction, current
+component boundaries and acceptance results are documented in the
+[extraction map](EXTRACTION_MAP.md). The independent package is in
+[game-gamer](../game-gamer/README.md).
+
 The freeze candidate gives extraction a reproducible source baseline. The
 [current mechanics and graph inventory](14-mechanics-freeze.md) define the
 behaviour to carry across a package boundary.

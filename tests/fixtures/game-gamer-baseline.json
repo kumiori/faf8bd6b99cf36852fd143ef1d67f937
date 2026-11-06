@@ -1,0 +1,1004 @@
+{
+  "source_commit": "a849cdb0a5d124c5776d1178db8e74611444962d",
+  "fixture_revision": 1,
+  "cases": {
+    "bilateral-logs": {
+      "definition_sha256": "ab8e97f8fcc457c03e41700acc92772e283fdb244565100f339b1e80dcabfc92",
+      "world_schema": "commons.0.1",
+      "initial": {
+        "world": "0ee92e8827c3537920b669e9fb8f5037efb3b895f87f329d255557f764922664",
+        "network": "87622a13c87e7401a3f853cf8fdb07f417080543e770bfc5feea5098d3d1209e",
+        "history": "9e4205f7cb03b6c34517de84b9490c94131298c0fbed438fb2dadc11e005c65a",
+        "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+      },
+      "steps": [
+        {
+          "command": {
+            "kind": "send_contact",
+            "key": "freeze-contact",
+            "actor": "researcher",
+            "id": "freeze-contact",
+            "recipient_id": "verifier",
+            "message": "Discuss a fictional case?"
+          },
+          "errors": [],
+          "world": "713ae5ab3c51e60f879075aefc43844b7266bff8bb194c6395670dcd573f77d0",
+          "network": "449760c0d84f53a2bcb06e8d7c6614ccb6b31153fa50b7a1412b13c897128176",
+          "history": "2217650e8ccda3c6d5430b1566c861dc183a7b2cf7ddb21a3e1700883064d472",
+          "inbox": "390b302a8cad83ad9dc72d7d458b2016c5c35c3c5b40731544ba79ad15c81919"
+        },
+        {
+          "command": {
+            "kind": "respond_contact",
+            "key": "freeze-not-recipient",
+            "actor": "researcher",
+            "invitation_id": "freeze-contact",
+            "response": "accept"
+          },
+          "errors": [
+            "recipient_required"
+          ],
+          "world": "713ae5ab3c51e60f879075aefc43844b7266bff8bb194c6395670dcd573f77d0",
+          "network": "449760c0d84f53a2bcb06e8d7c6614ccb6b31153fa50b7a1412b13c897128176",
+          "history": "2217650e8ccda3c6d5430b1566c861dc183a7b2cf7ddb21a3e1700883064d472",
+          "inbox": "390b302a8cad83ad9dc72d7d458b2016c5c35c3c5b40731544ba79ad15c81919"
+        },
+        {
+          "command": {
+            "kind": "respond_contact",
+            "key": "freeze-accept-contact",
+            "actor": "verifier",
+            "invitation_id": "freeze-contact",
+            "response": "accept"
+          },
+          "errors": [],
+          "world": "76c2b56056a9294aa37ebbff5a41f89a1ab3d48b384018abab065c3129013886",
+          "network": "e5498b3f2cb249a7aa623f1888eeeb6eb8445b28f53ca338ad14c9ff2cf3eff6",
+          "history": "03a17add6ee68ecb1ac59732e5e97ed4e5e128f19a4b21dbc3f2254a2052628f",
+          "inbox": "1f6b507b1b545f2b4c3484d19e1a29241091c14a2dc658043c96a817b718978d"
+        },
+        {
+          "command": {
+            "kind": "propose",
+            "actor": "researcher",
+            "key": "demo-bilateral-logs-001",
+            "id": "agreement-main",
+            "label": "Synthetic log access agreement",
+            "parties": [
+              "researcher",
+              "custodian"
+            ],
+            "objective_id": "objective-main",
+            "terms": {
+              "purpose": "Study aggregate AI-agent activity using synthetic, non-identifying server logs.",
+              "responsibilities": [
+                {
+                  "actor_id": "researcher",
+                  "description": "Conduct and document the agreed research."
+                },
+                {
+                  "actor_id": "custodian",
+                  "description": "Prepare and deliver the synthetic dataset."
+                }
+              ],
+              "conditions": [
+                "Use only the synthetic sample; no real institutional data.",
+                "Access lasts fourteen simulated days.",
+                "Publish aggregate findings only; do not attempt re-identification."
+              ]
+            },
+            "resources": [
+              {
+                "resource_id": "synthetic-logs",
+                "quantity": 1
+              }
+            ],
+            "valid_until": "2026-12-01T00:00:00+00:00",
+            "policy_id": "institutional",
+            "verification": {
+              "verifier_ids": [
+                "verifier"
+              ],
+              "criteria": [
+                "Research purpose documented",
+                "Synthetic sample delivered",
+                "Privacy conditions checked"
+              ],
+              "independent": true
+            }
+          },
+          "errors": [],
+          "world": "c8f8ef881831fcbec776ce0bc098503674dc5420ecfa8a68a6a717b62b5db7c5",
+          "network": "db9afd3fee8208dfd6f86b0c84f1556ae9c6d811b090b3f94955c843b5003358",
+          "history": "5df25f7f290c3f6c91b0e7d884d65da219ecb10024eaff1c82ac706321ac2d23",
+          "inbox": "cc29aa4610ed1d2078d2ed756e7c5ac0c58d06aab6c1a874285971c954870cee"
+        },
+        {
+          "command": {
+            "kind": "amend",
+            "actor": "custodian",
+            "key": "demo-bilateral-logs-002",
+            "agreement_id": "agreement-main",
+            "version": 1,
+            "terms": {
+              "purpose": "Study aggregate AI-agent activity using synthetic, non-identifying server logs.",
+              "responsibilities": [
+                {
+                  "actor_id": "researcher",
+                  "description": "Conduct and document the agreed research."
+                },
+                {
+                  "actor_id": "custodian",
+                  "description": "Prepare and deliver the synthetic dataset."
+                }
+              ],
+              "conditions": [
+                "Use only the synthetic sample; no real institutional data.",
+                "Access lasts fourteen simulated days.",
+                "Publish aggregate findings only; do not attempt re-identification.",
+                "All parties review the revised delivery note before activation."
+              ]
+            }
+          },
+          "errors": [],
+          "world": "fe55202a6de38d2f8cd85180e22fa2d63d38c519ff6e57b621c623eb1a6079d7",
+          "network": "8e5a3c2870982a00fe8a4312e35adc55a1e7d0b904ea4172ff3c72cf0a6bdde4",
+          "history": "0a5cf2c6bc0926a0b779195ee0fc9adb7c8980642fb01eb199139e37d8fd150f",
+          "inbox": "fa8d32bf88d4196604d7a1c2aebef2b2345dac1e1f06d81512883113a2810014"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "key": "freeze-stale-terms",
+            "actor": "custodian",
+            "agreement_id": "agreement-main",
+            "version": 1
+          },
+          "errors": [
+            "agreement_version_conflict"
+          ],
+          "world": "fe55202a6de38d2f8cd85180e22fa2d63d38c519ff6e57b621c623eb1a6079d7",
+          "network": "8e5a3c2870982a00fe8a4312e35adc55a1e7d0b904ea4172ff3c72cf0a6bdde4",
+          "history": "0a5cf2c6bc0926a0b779195ee0fc9adb7c8980642fb01eb199139e37d8fd150f",
+          "inbox": "fa8d32bf88d4196604d7a1c2aebef2b2345dac1e1f06d81512883113a2810014"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "researcher",
+            "key": "demo-bilateral-logs-003",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "f60de50bc95874c71b0dd193c2095e5496c13c67d8350a7b8692946b6fc9003e",
+          "network": "29de8fccc9b1c8b55fe82d4b373af7185a04d294e58da655357f6f8d70fbbe05",
+          "history": "cfc5a7827e226ee25389957d18e7ce44692cba717f951c37ee24c2fee6e8aba8",
+          "inbox": "314e9ea88ad8c83a14bf97dfdc5c5fe68a83fdb5c10050d02072abfd7fc98207"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "custodian",
+            "key": "demo-bilateral-logs-004",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "843bed4f4aad8b7ed4ee8678cfa345302d1d969d959ea0b2f27cac278968336c",
+          "network": "00c9f3a0be5d50b2127bce3fcd81e59378741fcca53aa761ce7310c55803ea73",
+          "history": "a4c0dca82e198fd40561b77564cf90765b14d670d276cd31aacd43077e14fe88",
+          "inbox": "8c267e127b175ac206832813ce29fe6c195ace4487eeb15ca4b519b2530e1bb9"
+        },
+        {
+          "command": {
+            "kind": "authorize",
+            "actor": "officer",
+            "key": "demo-bilateral-logs-005",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "107efbe37fdbe4445ab4b17a9ef2fa336686efc1a44b16ec58ddeeccd704b9fb",
+          "network": "258673d8691269d0d6a023f4fa79ec3a721e1e82e11f54bd61b43d8e2759dfab",
+          "history": "c521fc2f93006fcbd2ade319e08b87dbbbce51666800302faaa25d695754ac13",
+          "inbox": "84e4cb9e6c03a9d27fcdca9a6cbcdb4fb1c6caecba690050bec08fd1c6b3d54f"
+        },
+        {
+          "command": {
+            "kind": "activate",
+            "actor": "researcher",
+            "key": "demo-bilateral-logs-006",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "12c8887302f1da61d155a309147aa8dbbe96909f7f7ec478a69c11bf66e8f99c",
+          "network": "7fe9d133201973568d0d68234cac57d5b2373a06ece02e02737ed7ca496f1f8d",
+          "history": "583c2f5fd7c3d90b9542ce6e8b105cfd599ec81b48972c68b9daf1b67e7b4079",
+          "inbox": "7f1c8247b5d883c7213b0c50d0e5571f6b143dcf3334d395963ad27adaa6c945"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "researcher",
+            "key": "demo-bilateral-logs-007",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by researcher."
+          },
+          "errors": [],
+          "world": "a517cc27b84d06125c54e9e935c36ec4b1f6fc2e0248ea5a419aaba604859b87",
+          "network": "10749eea183aa155b6020705bb7bee98f2bc117fedfc2299c1906ee2d757a534",
+          "history": "e20254c4c91ef71c3e19519df908beec05898cad142c30aab00a9939e736e9ce",
+          "inbox": "37020e2950c4473375bec107dc4d0ee923c3ffff33a2cefcfb4a5d6f7e0ffe23"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "researcher",
+            "key": "demo-bilateral-logs-008",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by researcher.",
+            "criteria": [
+              "Research purpose documented",
+              "Synthetic sample delivered",
+              "Privacy conditions checked"
+            ]
+          },
+          "errors": [],
+          "world": "f8be048c80cb6adf413f844ae1e592e35830743553dc80d3e1ec28556b0b9284",
+          "network": "120533ad4d611baf857540f5b2ca1f1ad373028c2eef4e5c047edc38e3e89b26",
+          "history": "3071ed80680d7569a112ea71b02437b4f3fd358fe5c46dedcab63ef051a22afa",
+          "inbox": "bb7b9239f0370e34522a29a6e8f18c9aaa0290d1bb822d54874e26fd2deee457"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "custodian",
+            "key": "demo-bilateral-logs-009",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by custodian."
+          },
+          "errors": [],
+          "world": "783001380e2d4370006eab4cfc37fc021dc4d25d48ccf87ea4dedf88245f8486",
+          "network": "780bd51b89c24351a7afef76ea5d219539a99942e9279af90b39f7cae8cbce12",
+          "history": "98546441095e2d05c545401b9ee76882edd537c1ae61290eb1e1a91a02fc6bb8",
+          "inbox": "3d7b9c8f66f4e2cada932b6335818f2256ff96e3ff4f232f05245d8d0b03f27f"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "custodian",
+            "key": "demo-bilateral-logs-010",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by custodian.",
+            "criteria": [
+              "Research purpose documented",
+              "Synthetic sample delivered",
+              "Privacy conditions checked"
+            ]
+          },
+          "errors": [],
+          "world": "a5e8af9e4397404fd97844fcaaaf7f6b634834fb3432ebd056991baf99db4857",
+          "network": "2b568392828fefec639563936d3a0d4c4086abd53175a8c7b81e501dbfdd2c40",
+          "history": "7e67bb6f823f7db8c7b321a0135401a7ccb16874cf8460e3f1bf0dc8fa42e146",
+          "inbox": "e796e80c62acfa030f2e9dbde3513037c0f6f51bf80dff8929d325f93329ef9e"
+        },
+        {
+          "command": {
+            "kind": "verify",
+            "actor": "verifier",
+            "key": "demo-bilateral-logs-011",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Independent review of synthetic artefacts against the agreed criteria."
+          },
+          "errors": [],
+          "world": "2ade4ac89209228c64aa0558f0b3fe5769167c8d7ac4892b1a8c33db5be21ee3",
+          "network": "6bb8e3512c24e5ee01b36891584aa78c5fa7bf213c5c90e7d797f3e0dd49e6e5",
+          "history": "d8928cb08eb3fadebe49fc13269c4afe667db0af5ca8883efe0dc993caa2d8b8",
+          "inbox": "5a432ae0add9aa425bcba486ee0d5a946c1d5a92f9e7ca868d2d966c4806eef8"
+        }
+      ]
+    },
+    "montreal-geneva": {
+      "definition_sha256": "3f5ea9abb676f908730f7dce222d84b388506030d2364d73f0778c0a9c99421b",
+      "world_schema": "commons.0.1",
+      "initial": {
+        "world": "cbb670f792a7bda765b464c19d09dc90d5438afdd0dd19325ca0bc1c3a630126",
+        "network": "a4978e3465c669a58c6091eac3050bbd261a88353ba210e8bccee637eaea512f",
+        "history": "0ceb222d45e93aeae79c15fc76e254989baf2a84813c546330172a6c6e167d30",
+        "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+      },
+      "steps": [
+        {
+          "command": {
+            "kind": "propose",
+            "actor": "researcher",
+            "key": "demo-montreal-geneva-001",
+            "id": "agreement-main",
+            "label": "Mentoring coalition agreement",
+            "parties": [
+              "researcher",
+              "custodian",
+              "institution"
+            ],
+            "objective_id": "objective-main",
+            "terms": {
+              "purpose": "Establish and deliver one mentoring session on governing AI and digital commons.",
+              "responsibilities": [
+                {
+                  "actor_id": "researcher",
+                  "description": "Prepare mentoring materials."
+                },
+                {
+                  "actor_id": "custodian",
+                  "description": "Facilitate the mentoring session."
+                },
+                {
+                  "actor_id": "institution",
+                  "description": "Participate and document institutional feedback."
+                }
+              ],
+              "conditions": [
+                "Agree a shared objective before booking a session.",
+                "Document responsibilities of all three fictional partners.",
+                "A collective text alone does not establish operational success."
+              ]
+            },
+            "resources": [
+              {
+                "resource_id": "mentoring-slot",
+                "quantity": 1
+              }
+            ],
+            "valid_until": "2026-12-01T00:00:00+00:00",
+            "policy_id": "coalition",
+            "verification": {
+              "verifier_ids": [
+                "verifier"
+              ],
+              "criteria": [
+                "Session delivered",
+                "Mentoring materials shared",
+                "Institutional feedback recorded"
+              ],
+              "independent": true
+            }
+          },
+          "errors": [],
+          "world": "386c59aede42af9c00977b8e73aca91d8ecc8059b90a0db7b85f2afb069c8c52",
+          "network": "c43d67f148a385ecb382512a3c9e3f5cd69711373090a2856a1a31d1066bf664",
+          "history": "b807349ef4da88d83cb7ae28a8a6b870a8d039ee5dd4a7757b2db34cf7a9d058",
+          "inbox": "4fc0a9e855ec51a9146285bf088723b0433daa01a8f4071a2f4c8b26c388ad32"
+        },
+        {
+          "command": {
+            "kind": "amend",
+            "actor": "custodian",
+            "key": "demo-montreal-geneva-002",
+            "agreement_id": "agreement-main",
+            "version": 1,
+            "terms": {
+              "purpose": "Establish and deliver one mentoring session on governing AI and digital commons.",
+              "responsibilities": [
+                {
+                  "actor_id": "researcher",
+                  "description": "Prepare mentoring materials."
+                },
+                {
+                  "actor_id": "custodian",
+                  "description": "Facilitate the mentoring session."
+                },
+                {
+                  "actor_id": "institution",
+                  "description": "Participate and document institutional feedback."
+                }
+              ],
+              "conditions": [
+                "Agree a shared objective before booking a session.",
+                "Document responsibilities of all three fictional partners.",
+                "A collective text alone does not establish operational success.",
+                "All parties review the revised delivery note before activation."
+              ]
+            }
+          },
+          "errors": [],
+          "world": "5b559563d306033ff4b9b4244c42bd339b26327ed1707c15b9ed052afdbe1389",
+          "network": "43c8da738f750767895a38ab489679ff708a3179a2bc3ff89d9e8a64cc5035e5",
+          "history": "5b9d0f6ab87ecb24808063c34a1dfd73be2eeb142343b69ea6ca6a8711975104",
+          "inbox": "90cc41988618c00763f3b0267944efef8f38f30a30c7eec9b68cd48b7c382cca"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "researcher",
+            "key": "demo-montreal-geneva-003",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "094993eabd6f3bb698bbf82ba62a724060bf02e9229c8c5d4f4ef5f4f18eb29f",
+          "network": "7c7ecd5a3928d0c73bbcf0ca906e45527d79eda5f5f885742a7950f35cb09bc2",
+          "history": "da3b79ab03c60c036e41bc12716bb17a35185e3fab2a87cd52c17ce53198877e",
+          "inbox": "e464ff0d76b96cdf1200d84be0b836e4d593458a59e89259eca6bab91231a7b1"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "custodian",
+            "key": "demo-montreal-geneva-004",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "3a33b9757bdd051526c84e58075dbfd4bdf360eefa0ebf226b35b50faf0d3c53",
+          "network": "97bf210538e62d54ddf76f57fa7c9ace6ae52a6fbae1104a05190f5ddab1921a",
+          "history": "a567bd51393a1dcbbbabb40476af6da6ea82c3147e0e55f78827741f9bd95078",
+          "inbox": "a601109092267b05ddfa43a7ae25fadcc0c8eb6fba449e0c7d77a4a1bc015309"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "institution",
+            "key": "demo-montreal-geneva-005",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "e71a96a95d044949732a1729f1edf0c49ded41dbf7df05c3525152358a3933b7",
+          "network": "0038041265fcfd769f559014e590c0f6fc9dd6d5589e62ee6f30c0e5381ca4ac",
+          "history": "349e5375a2dad16cc877c99d68fc0b3d83e7bac3867a316e53f5b472443d58b2",
+          "inbox": "dd2e2d5b7aca00366633f26af8d577c902761205be45397ce3d79db77d81bbfd"
+        },
+        {
+          "command": {
+            "kind": "authorize",
+            "actor": "researcher",
+            "key": "demo-montreal-geneva-006",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "7be8810994364490355f6ecbed821df9192a8604c3d805f375535377d448e3e1",
+          "network": "786fe5fdba757118a246d11a283dde784289d0ed7ecc2f3502d87eb1c3390c43",
+          "history": "5f5926b01e47cc0d72fedd692c88877dbbda9b31376f4f8f6b6b7e2a600d3a29",
+          "inbox": "e8cfed8136dae64b3b5444e2bf9295ac4bc43047ebef173b0d6feb6bac61a6cc"
+        },
+        {
+          "command": {
+            "kind": "authorize",
+            "actor": "officer",
+            "key": "demo-montreal-geneva-007",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "368763fbe819d483a10382bc3716eb024af92027c34bf4bd47cf00e9997b877f",
+          "network": "17d1a576a98215136c212f60fc078914b193c95b23b2ab22e04e1bcef4775e34",
+          "history": "9d76e22836988d7181966ccc053c528bfca0d1c7acf10f9ae10d386788237f82",
+          "inbox": "a0cd76028cbd792d01635e3b89c73e619ea656b6614fc1d1698bbd9fe556e370"
+        },
+        {
+          "command": {
+            "kind": "activate",
+            "actor": "researcher",
+            "key": "demo-montreal-geneva-008",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "e47e0010b381323ce6e10625f7275cd152fa2c8a5996c23d939326d9c63bf84d",
+          "network": "5a2d8a778f180b3f8e1359a5685d15baf855d12d5b0478657770c5e092f1d0f9",
+          "history": "0ef9d88bce5870213693cb80011b62f835472f5403166b08ca197ebe4cee43a3",
+          "inbox": "dc4fe7dffc8bd1fe6a3209bf2ca21d07b22310b8e4e386f30145c7020da43151"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "researcher",
+            "key": "demo-montreal-geneva-009",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by researcher."
+          },
+          "errors": [],
+          "world": "4b643d3f652a8cf5ac7f686049ce6215db69e8667f10fbfaa9c9cf74f0123d11",
+          "network": "c64c22e6e52bdeaafb728b2eacd56fc7e5a8c0bd2c3138d7179ad52c7febb50b",
+          "history": "b64649e29def6a04c0c72f59394766994141cf94d5701e20093e7065b9fbec90",
+          "inbox": "7e1e71e953ead7fe9430e7460a5957e5726e25d2c549c74904b3c63355846971"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "researcher",
+            "key": "demo-montreal-geneva-010",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by researcher.",
+            "criteria": [
+              "Session delivered",
+              "Mentoring materials shared",
+              "Institutional feedback recorded"
+            ]
+          },
+          "errors": [],
+          "world": "c98f2635bbcc569ac799055d033a0daaab80bcabb9f986144ddb7ddf9a4dcb92",
+          "network": "423680467ce9653f67d9d436a026d2a7c38c2e0030d80420bb6a86a617022094",
+          "history": "99c3aaa1e10f58fec8a461b4d30267948af3e75c6765ab8ea76a0c09421979aa",
+          "inbox": "a1bcfa77a0774629cba4fb3ca53c3fb8ef5f534a11da2dc509c5d2b539f1fb64"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "custodian",
+            "key": "demo-montreal-geneva-011",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by custodian."
+          },
+          "errors": [],
+          "world": "3f085aec93440f568890fea67b02ad15a4275b716057403c549204522946366b",
+          "network": "54a9da807b78e73f84effb7908baf4eb537e98f1e835aa04e4d7a914a412bab2",
+          "history": "4d8c9e0c0245cc3aedaffc3fd49be8b74997028458eac3802dbb86d398a3ee28",
+          "inbox": "51e4d1e23c63242b658a8212551b48c06e501c307ca9e607e5c2d14cc3f93ce9"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "custodian",
+            "key": "demo-montreal-geneva-012",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by custodian.",
+            "criteria": [
+              "Session delivered",
+              "Mentoring materials shared",
+              "Institutional feedback recorded"
+            ]
+          },
+          "errors": [],
+          "world": "bafd69658da29668d6e3e8dec1ae0179a2aaa6e74a3ac542e317d234385086b8",
+          "network": "9f3fe9d7b6c096e4df3ebff3dd0544fa0aa77ce2af05f02315b4c9f1c0824b14",
+          "history": "c88ee5313f7738c1d9c3b44856c2f1317076a3a50f3f1b4049d4ce9073ee5d09",
+          "inbox": "3ec4e32031b32671358bd4f0e48769dbdb54e562bd78dbfb310b59ebccc2eff8"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "institution",
+            "key": "demo-montreal-geneva-013",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by institution."
+          },
+          "errors": [],
+          "world": "46028fbebdd428af01c1f62bf56252f602c09c1c72ab497a2cfd9a54026d77c8",
+          "network": "73564e3533b3e9099e4de1317ec6a8d4d63c388bfd2606d485b447fb9912f296",
+          "history": "a2762423ffb397b32be29d6446de39760e3003b2a54f4861b678efecef6bc5f6",
+          "inbox": "cabdfef76b582f0d2b186ef86335d8417007f5c5159e56e0fa2d94ef1b7ef0f4"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "institution",
+            "key": "demo-montreal-geneva-014",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by institution.",
+            "criteria": [
+              "Session delivered",
+              "Mentoring materials shared",
+              "Institutional feedback recorded"
+            ]
+          },
+          "errors": [],
+          "world": "125870b090822ee56b5e9182accaeab335ecb59c9a91544d9a7b978ac6ea2d9b",
+          "network": "418c2fdc4c2c629c2249047b3d2531494f8e5ed73118e2d37d3ddfe91185ce44",
+          "history": "e8733a759b9327a96cf29eb634142ec1c68733dad91e2d71c1ca9c67f835b11c",
+          "inbox": "dbceeddef17bd5bb145d0b4c5d5c8f84e658c862978187bbed5851a00b14dc12"
+        },
+        {
+          "command": {
+            "kind": "verify",
+            "actor": "verifier",
+            "key": "demo-montreal-geneva-015",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Independent review of synthetic artefacts against the agreed criteria."
+          },
+          "errors": [],
+          "world": "4c74f03d6e023744abdb06cd515109bc496df4450278553827b904928d383684",
+          "network": "f81a2c1616c0e92934fc3290ba844ce11f9b270be1503c9418fa537bcebb0d95",
+          "history": "fcdb0973fc2704a724e7032151b5a415da33f6fb969f9dfdeb9db052b1305b9b",
+          "inbox": "9ddb322148b3841868eeb8ccd2d04015d190abbe676847bbf24f8db9dbb9a4f6"
+        }
+      ]
+    },
+    "commons-gathering": {
+      "definition_sha256": "b41a556b842a187f50b9f83694215d8852d81aed5922cdc7f519b12df86120c1",
+      "world_schema": "commons.0.1",
+      "initial": {
+        "world": "77ecb497ccc7bf40fcfc0955999d2bb5c3ae1aae3ac3121078dba6a3f7bd0ec2",
+        "network": "c25d335affcf198b2eab3dcb8d0c4645935ffaef95ff743acde0760b3d157b84",
+        "history": "ada95e3eda9895d172ff26bd155fc09746533d0ff24e549561cc9782d1efa1e3",
+        "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+      },
+      "steps": [
+        {
+          "command": {
+            "kind": "invite",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-001",
+            "recipient_id": "custodian",
+            "objective_id": "objective-main"
+          },
+          "errors": [],
+          "world": "5f2b8accbb9c2b453021b8c146a644f658fb3f469ac27694de206f988b15d0d7",
+          "network": "6ed9ba3c00575702b804528d47b62dd0474ba46b23e81e66edb9fecdc498fd41",
+          "history": "baf6ec73e266efede5365dba6030286cf7b507f82517826d121bce977381fda0",
+          "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+        },
+        {
+          "command": {
+            "kind": "respond_invitation",
+            "actor": "custodian",
+            "key": "demo-commons-gathering-002",
+            "invitation_id": "invitation_000002",
+            "response": "accept"
+          },
+          "errors": [],
+          "world": "7f2c1fefc57456cf9f3cf2ddb0d9738e782030232d63a584a61dbeed39166860",
+          "network": "e1470cad6962d0dfb1353163da81f8c71cff38f29d9b35379f6b86c1f76f14c4",
+          "history": "a03ce4ef0d624d3cd4861e61d1ba8da855d7cc9fa2e330fbe27b0a8024e88a4c",
+          "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+        },
+        {
+          "command": {
+            "kind": "invite",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-003",
+            "recipient_id": "institution",
+            "objective_id": "objective-main"
+          },
+          "errors": [],
+          "world": "a2b033ba2b28af5c5deba2d251f3323c1a1e56bc986fad2a901a011023c3bc92",
+          "network": "1993823e9e319d0befd3b04249a8cf482a1d6e027f80393890611ebad29c2d4e",
+          "history": "da9f6406a58cb01e01d1e82bf019a2533a617453c6ecd81694ba22cdfe82654a",
+          "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+        },
+        {
+          "command": {
+            "kind": "respond_invitation",
+            "actor": "institution",
+            "key": "demo-commons-gathering-004",
+            "invitation_id": "invitation_000004",
+            "response": "accept"
+          },
+          "errors": [],
+          "world": "5e33c6d002c50330b6c1f05cfbc89e72f94ac06ed06393603bc00cf8500ac767",
+          "network": "9a558255b7838c4c5782def1459756cd7d6be373f5e0d350cb6fa67bf6d0bd4d",
+          "history": "43e17f230c2fa52099ad8ffd91fbe5372defb5ed04670cd6822e40a1572b6dfc",
+          "inbox": "606038b548281587b96007cb874d923bc8daa99933a01fd46b000fb5f6532bf3"
+        },
+        {
+          "command": {
+            "kind": "propose",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-005",
+            "id": "agreement-main",
+            "label": "Commons assembly agreement",
+            "parties": [
+              "researcher",
+              "custodian",
+              "institution"
+            ],
+            "objective_id": "objective-main",
+            "terms": {
+              "purpose": "Convene a three-party commons assembly and record one subsequent action.",
+              "responsibilities": [
+                {
+                  "actor_id": "researcher",
+                  "description": "Facilitate the assembly."
+                },
+                {
+                  "actor_id": "custodian",
+                  "description": "Host and arrange the room."
+                },
+                {
+                  "actor_id": "institution",
+                  "description": "Document the assembly and subsequent action."
+                }
+              ],
+              "conditions": [
+                "Three participants must accept invitations or host.",
+                "Assign facilitation, hosting and documentation responsibilities.",
+                "Record one subsequent action and an accessible assembly note."
+              ]
+            },
+            "resources": [
+              {
+                "resource_id": "gathering-room",
+                "quantity": 1
+              }
+            ],
+            "valid_until": "2026-12-01T00:00:00+00:00",
+            "policy_id": "coalition",
+            "verification": {
+              "verifier_ids": [
+                "verifier"
+              ],
+              "criteria": [
+                "Gathering held",
+                "Assembly note shared",
+                "Subsequent action recorded"
+              ],
+              "independent": true
+            }
+          },
+          "errors": [],
+          "world": "f55146fbe34c4005c7b5059a92b15a8f3e6b189dba612cca19b0529c1de1a95c",
+          "network": "174c1464a3943043a4bd8b8b8154b021c4d0ef0f5be5612c9292c5288dcee966",
+          "history": "f76dd1ea723d0e1553acd8fb0afee42b5255375f8fd14b5b84ea92165df4ff28",
+          "inbox": "8d61859cd4ba778056b9d00449eeecb2d60fc4caa270c4d8e3794ce499eab6c5"
+        },
+        {
+          "command": {
+            "kind": "amend",
+            "actor": "custodian",
+            "key": "demo-commons-gathering-006",
+            "agreement_id": "agreement-main",
+            "version": 1,
+            "terms": {
+              "purpose": "Convene a three-party commons assembly and record one subsequent action.",
+              "responsibilities": [
+                {
+                  "actor_id": "researcher",
+                  "description": "Facilitate the assembly."
+                },
+                {
+                  "actor_id": "custodian",
+                  "description": "Host and arrange the room."
+                },
+                {
+                  "actor_id": "institution",
+                  "description": "Document the assembly and subsequent action."
+                }
+              ],
+              "conditions": [
+                "Three participants must accept invitations or host.",
+                "Assign facilitation, hosting and documentation responsibilities.",
+                "Record one subsequent action and an accessible assembly note.",
+                "All parties review the revised delivery note before activation."
+              ]
+            }
+          },
+          "errors": [],
+          "world": "5da25d5c7a1f1a9b5229b46771c50a6eb804fb6c780a62bca13a4148f5891412",
+          "network": "7fe282a23e4dfa1a8c877699c5041d1959fa7514886e87796615e9f3b7e465b2",
+          "history": "b838f68389651d7a6a215656cac2ae2dab4bef945142432349cb3a6d0ffb6961",
+          "inbox": "0fb508c552f3bf70235449abea7ca97fd7801b599e0b1737ef87a737489287ad"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-007",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "6159047ca0c896a9eef6e87737dc88a0598aa6abc783c9162d4f13013d7b6d58",
+          "network": "00822aa8461c175d2027f7db1a0ed1bf330ad089469b939259bf9a93cef5315e",
+          "history": "340850599f16c926722cec33355e7cd9f69ad95e1c8735aec05ccc539e228447",
+          "inbox": "a7855b5dab4700086e4a609cc89c6ee235813d7ef4f180e4b821aa2377a8c663"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "custodian",
+            "key": "demo-commons-gathering-008",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "b2d428e2c7887a8ab410bd816b329db0875e2c2ab2c953a86c5bc7478a334913",
+          "network": "ddd625c29dd6ca82f02721bc23fd62b78e1fafe432581ecabb232bced198a6ba",
+          "history": "8e06885b8c38d2a2e06f679fc3b98e18d2d69c1d506080ce70cce3d117c9b129",
+          "inbox": "89f99a3530454160aebb1e4fc0c920e3bf8d5ee0cf57395c446fee791f3703bd"
+        },
+        {
+          "command": {
+            "kind": "accept",
+            "actor": "institution",
+            "key": "demo-commons-gathering-009",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "1eb918b17429f8c6a5563aed0ef79c9a094b585b0b50e7e9f0e223c0d4732f55",
+          "network": "4358849a317adb8cd1454be9054ffba6b2866a912b18d24ae4b6ba8011480ac3",
+          "history": "93f393802c4a9abc0152cf3922597c18e95acbb44a08c403128cbad4e94a25b2",
+          "inbox": "37dde0b06c589b7c99754c5940a172f89ea9104051855d6a96e45cc595dbf208"
+        },
+        {
+          "command": {
+            "kind": "authorize",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-010",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "bcd58895267020ea99c099afa19580c5965d6962c67c468c301d00d9a13b65d0",
+          "network": "9024e9585b39432b457865bb28316f4b59bcc9aa315aef6e8ef04eb4857ef483",
+          "history": "dcc18cd69c2e018cdfcf694766a4adda9d3579922bb680a8008ad2cb3bffe704",
+          "inbox": "2c46de8a85490187961e48e8c03ac99b779346e2854dcae49292c74e3661b25b"
+        },
+        {
+          "command": {
+            "kind": "authorize",
+            "actor": "officer",
+            "key": "demo-commons-gathering-011",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "197abfde7916791e314624d98cc582dbcc763bed18822aeb0bb7dddd32fce998",
+          "network": "e5d45be0bb33e6ee155dbeb582a3f3e0d07fd60c419f1e26e9a4f739eccac35b",
+          "history": "7ef208dd1afb9f75efb90537d33682a8b9ec3f44c4e9685bd34543534f3be032",
+          "inbox": "2dcc048f4746e5fc7f680191a301e7f01dd90ebfe58f614fa7007de38041a341"
+        },
+        {
+          "command": {
+            "kind": "activate",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-012",
+            "agreement_id": "agreement-main",
+            "version": 2
+          },
+          "errors": [],
+          "world": "e28fae750b8c06097890cde8e314b76fd34b4ff206bcca5e26c2758a061ba18b",
+          "network": "d2ec4f371ef9ec5d7c5184cbf3a94772bd25bdf848862ba70e549a38f9889708",
+          "history": "a7b692cd43d1ced680015330eaa804185cdab22763c11942e686b5c7b4ef67c0",
+          "inbox": "9aa4bd274b7643e75b7e3ba26af803817f02e86a88e18cfc434948ffed5c6d2e"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-013",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by researcher."
+          },
+          "errors": [],
+          "world": "019204fe56cc63ad9c34768eee72680fd9a454ec086f82c6ce92b9b06d589a09",
+          "network": "eac9fface1e0b8d9616d1aa3b0ec1f242958e3b7909a637a8d35901a7fd06433",
+          "history": "f0408382b8fbd118406c84fd5c9e0a424c10fa88bf366b4b2b7792a08337d976",
+          "inbox": "daaa5dbd8bd316de26e1e52bbbb9463a8cf5fc46ec09551f2199a57a859091e6"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "researcher",
+            "key": "demo-commons-gathering-014",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by researcher.",
+            "criteria": [
+              "Gathering held",
+              "Assembly note shared",
+              "Subsequent action recorded"
+            ]
+          },
+          "errors": [],
+          "world": "8c7ccde1eb9769e7097ab9c57095003a4c51c45a6e1e2c2cc54c2b55ffc154e6",
+          "network": "178e3333c13f05808670b0d1a352fe5800e56365c598452aaa009e5eb7a5c8a4",
+          "history": "db7fba77e7e73b504caf9a42d32b59a4bfa8524945a54adbbf4d2821020548c3",
+          "inbox": "86212824957d63814910ae7c2594a680bcfd1ec5b993b8c41552544e47ee8c4d"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "custodian",
+            "key": "demo-commons-gathering-015",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by custodian."
+          },
+          "errors": [],
+          "world": "b79dec49c10e525a11d49c88ed92e164a8b4909cb48bca10e407726e69742571",
+          "network": "428446efa453deb2b8f1ae95962376a33d36dcdb48fa560cd2b517fff54041bb",
+          "history": "8f9b059f00a134a39f85159fc179811ae023c913ae2b70b68de6d82ed7c68977",
+          "inbox": "9b2b68ce90d036957ecb29450f5579380358c0d71f429fe642074adca32cc206"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "custodian",
+            "key": "demo-commons-gathering-016",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by custodian.",
+            "criteria": [
+              "Gathering held",
+              "Assembly note shared",
+              "Subsequent action recorded"
+            ]
+          },
+          "errors": [],
+          "world": "c25247a7a125c677dedaecfd004ea62308dcca3533acb2589eb13d5834202396",
+          "network": "0de4847b39093e6b029ea12a8f65bc0500985948d801529a34cbb5152aeeba2f",
+          "history": "b0f336e2906b4bd3e146fa2b40652e31c9f49176ff7d0215ba7038fd84a228ec",
+          "inbox": "3b39e9e87c3f162fda3f67580e3d4e0a5a86a2f93a19b12df63f93ce41e1bab0"
+        },
+        {
+          "command": {
+            "kind": "initiate",
+            "actor": "institution",
+            "key": "demo-commons-gathering-017",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic execution record by institution."
+          },
+          "errors": [],
+          "world": "410a89e5eb9ee565c097bfd22e91da579fcf350a44fabb052e78ddfa98fbc347",
+          "network": "ce42711f8170a79180108dd6b3f0a3e645bd8d851d46c7c35104ecb6439db0b4",
+          "history": "1201812a6ed10665a401ad73d100f80440164cdb5c51e2b64276d222ebd5d8ac",
+          "inbox": "d929b0b69ee2e97517d188ee13431cedf78cccaddbb90457bdd9fa4a89b32a16"
+        },
+        {
+          "command": {
+            "kind": "fulfill",
+            "actor": "institution",
+            "key": "demo-commons-gathering-018",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Synthetic delivery report by institution.",
+            "criteria": [
+              "Gathering held",
+              "Assembly note shared",
+              "Subsequent action recorded"
+            ]
+          },
+          "errors": [],
+          "world": "e49b10a3b57fd080cebc83eb03c11a59e44cadd3b7db0dc0e3a0f71db969900f",
+          "network": "77085c2a1aa4b65219af9c8194248b7d20a4ec3c57f5df03f69e109c8ccab3c3",
+          "history": "f76b13200cc7ec1c4dd77b2a244410e041c0e21662a4c5006c85dd8974063d8b",
+          "inbox": "12486ad2dad78563ea28851062fba48cf64b2a905bf612da07a42250ff20686a"
+        },
+        {
+          "command": {
+            "kind": "verify",
+            "actor": "verifier",
+            "key": "demo-commons-gathering-019",
+            "agreement_id": "agreement-main",
+            "version": 2,
+            "reference": "Independent review of synthetic artefacts against the agreed criteria."
+          },
+          "errors": [],
+          "world": "5e6ad538ae75d146f2d8ae3b8dd0e81ef1473adca4af7405382ab8437fd9b53a",
+          "network": "feeb43abacc576efa05cc5c3ab22174542401802f46bdece5b0fc98ec7a35365",
+          "history": "28940672e469025d72ab6e5508d24b385df189d05eef5566ae18ec99fd24c3f9",
+          "inbox": "e438c92f096c7b49f17e3476e914a73356a90ec137daf9fb5941bc66b772dbfd"
+        }
+      ]
+    },
+    "montreal-commons": {
+      "definition_sha256": "18b9c9ef5fa1e00bba88c6a3be4d2717d68c4359d8abdb667ed81298b75f8e39",
+      "world_schema": "commons.0.1",
+      "initial": {
+        "world": "e47b70466f7f075b9764be451db7d0a0297fb0425457302cb673a3576837bc97",
+        "network": "be9f1164b95468145c51f99b24b36fa6cc91c608a5af6ae1edc3d06207e7408e",
+        "history": "026bffa77c040197e3aadb64a16412f863d777cb8b31504c2be4620428d08568",
+        "inbox": "604b5e8743bffbd503443e6e033ad2ff0baa277431794bf21c185bc85176a46b"
+      },
+      "steps": []
+    }
+  }
+}

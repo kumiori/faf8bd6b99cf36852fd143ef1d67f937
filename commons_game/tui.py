@@ -7,6 +7,8 @@ import shutil
 import textwrap
 from uuid import uuid4
 
+from game_gamer.tui.screen import Cancelled as Cancelled
+
 from .player import ActorSession
 from .presentation import display_label, display_world
 
@@ -43,8 +45,6 @@ EVENT_NAMES = {
 }
 
 
-class Cancelled(Exception):
-    pass
 
 
 def display(value):
