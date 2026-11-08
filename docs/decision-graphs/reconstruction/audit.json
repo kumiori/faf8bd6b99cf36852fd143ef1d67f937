@@ -1,0 +1,168 @@
+{
+  "findings": [
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.command",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.contracts",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.curator",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.ecosystem",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.help",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.history",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.network",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.paths",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.player",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.handoff.trajectory",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.intro.scroll",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.intro.skip",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.network.scroll",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.profile.scroll",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.quit",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.search",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.selection.move",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    },
+    {
+      "classification": "verification_gap",
+      "code": "untested_transition",
+      "coverage_status": "uncovered",
+      "edge_id": "exercise.reconstruct.sort",
+      "reason": "No observed automated test traversal.",
+      "severity": "WARNING"
+    }
+  ],
+  "interfaces": [
+    {
+      "complete": true,
+      "id": "commons.reconstruction.v1",
+      "status": "executable_contract"
+    }
+  ],
+  "metrics": {
+    "engine_actions": 6,
+    "missing_recovery_paths": 0,
+    "options": 59,
+    "questions": 8,
+    "screens": 11,
+    "uninstrumented_transitions": 0,
+    "unmapped_options": 0,
+    "unreachable_screens": 0,
+    "untested_transitions": 18
+  },
+  "passed": true,
+  "schema_version": "0.1.0"
+}

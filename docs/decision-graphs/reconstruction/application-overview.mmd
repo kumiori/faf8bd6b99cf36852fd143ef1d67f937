@@ -1,0 +1,20 @@
+flowchart LR
+  %% Canonical IDs are retained in node/edge comments.
+  graph_limits["Coverage / audit: screens=11 · questions=8 · options=59 · engine actions=6 · unreachable screens=0 · unmapped options=0 · missing recovery paths=0 · untested transitions=18 · uninstrumented transitions=0 This contract verifies the reconstruction slice only. Shared handoff destinations and the remaining application require their own contracts and evidence."]
+  subgraph scope_ed9f6f250686["Engine"]
+    %% node overview.engine
+    n32484d0214f0["engine · 6 states/definitions"]
+  end
+  subgraph scope_e63fd7892e86["Exercise.Reconstruct"]
+    %% node overview.exercise.reconstruct
+    n82fc261b6946["exercise.reconstruct · 132 states/definitions"]
+  end
+  %% edge overview.exercise.reconstruct.to.overview.engine
+  n82fc261b6946 -->|"Declared transitions"| n32484d0214f0
+  linkStyle 0 stroke:#607d8b
+  %% edge overview.exercise.reconstruct.to.overview.exercise.reconstruct
+  n82fc261b6946 -->|"Declared transitions"| n82fc261b6946
+  linkStyle 1 stroke:#7b1fa2
+  subgraph legend["Legend (presentation only)"]
+    legend_text["Grey: navigation / disabled · Purple: state change · Amber: conditional or extraction uncertainty · Red: confirmed graph defect · Green: recovery"]
+  end

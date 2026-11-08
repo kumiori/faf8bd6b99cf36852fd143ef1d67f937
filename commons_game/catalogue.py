@@ -1,5 +1,6 @@
 """Read-only player catalogue and explicitly issued development simulation roles."""
 from uuid import uuid4
+from game_gamer.runtime.curation import canonical, profile, visible
 
 from .identity import ActorBinding, PlayerIdentity
 from .model import require
@@ -7,7 +8,7 @@ from .presentation import display_label, folded, person_labels
 
 
 def affiliations(world, actor_id):
-    return [world['actors'][r['target_id']]['label'] for r in world['relationships'].values()
+    return [profile(world, canonical(world, r['target_id']))['label'] for r in world['relationships'].values()
             if r['kind'] == 'affiliated_with' and r['source_id'] == actor_id and r['target_id'] in world['actors']]
 
 
@@ -20,6 +21,7 @@ def people(world, *, search='', organisation='', development=False):
         actors=imported
     else:
         actors=[a for a in world['actors'].values() if a['kind']=='person' and a['status']=='active']
+    actors=[profile(world, a['id']) for a in actors if development or visible(world, a['id'])]
     labels=person_labels(world)
     actors=[{**a,'display_name':labels[a['id']]} if a['id'] in labels else {**a} for a in actors]
     return sorted([a for a in actors if a['status']=='active' and folded(search) in folded(display_label(a))

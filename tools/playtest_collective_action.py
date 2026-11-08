@@ -23,7 +23,7 @@ from commons_game.trajectory import project_trajectory,trajectory_yaml,load_traj
 
 async def player(d,name):
     await d.send('p');await d.expect('WHO WILL YOU PLAY?');await d.choose(name)
-    await d.expect('Playing: '+name)
+    await d.expect('Playing as: '+name)
 
 
 async def agreement(d,title,other,offered,requested):

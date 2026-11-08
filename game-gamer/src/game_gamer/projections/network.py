@@ -1,6 +1,9 @@
 """Disposable multiplex and incidence projections; no canonical writes."""
 from copy import deepcopy
 from ..model import require
+from ..runtime.curation import resolve_graph
+from ..runtime.reconstruction import CLAIM_KINDS
+from .reconstruction import reconstruction_edges
 
 
 def network(world, *, possibilities=None):
@@ -8,7 +11,8 @@ def network(world, *, possibilities=None):
     edges = [{**deepcopy(r), 'layer': 'invitation' if r['kind'] == 'contact_invitation' else
               'connection' if r['kind'] == 'acknowledged_connection' else 'inferred' if r['status'] == 'inferred' else
               'documented' if r['status'] == 'verified' or r.get('provenance', {}).get('epistemic_status') == 'documented' else 'declared'}
-             for r in world['relationships'].values()]
+             for r in world['relationships'].values() if r['kind'] not in CLAIM_KINDS]
+    edges.extend(reconstruction_edges(world))
     for record in world['relationships'].values():
         if record['kind'] == 'contact_invitation':
             nodes.append({**deepcopy(record), 'kind': 'invitation'})
@@ -52,7 +56,7 @@ def network(world, *, possibilities=None):
         possibilities = potential_complementarities(world)
     for possibility in possibilities:
         edges.append({**possibility,'layer':'inferred','directed':True})
-    return {'nodes': nodes, 'edges': edges}
+    return resolve_graph(world, {'nodes': nodes, 'edges': edges})
 
 
 def potential_complementarities(world):

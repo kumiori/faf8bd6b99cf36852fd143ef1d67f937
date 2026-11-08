@@ -8,7 +8,7 @@ import json
 from .transactions import WorldEngine
 from ..model import (TABLES, ENTITY_TABLES, Agreement, AgreementVersion, Approval,
                     Commitment, DomainError, require)
-from . import invitations
+from . import invitations, reconstruction, curation, curation_requests
 from .governance import evaluate_authorisation
 
 
@@ -34,6 +34,9 @@ def text(value, code='text_required'):
 
 FIELDS = {
     **invitations.FIELDS,
+    **reconstruction.FIELDS,
+    **curation.FIELDS,
+    **curation_requests.FIELDS,
     'draft': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, {'interaction_context'}),
     'propose': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, {'interaction_context'}),
     'publish_proposal': ({'agreement_id', 'version'}, set()),
@@ -79,6 +82,9 @@ class CollectiveEngine(WorldEngine):
             'previous_state': digest(before), 'resulting_state': digest(after),
             'authorization': deepcopy(action.get('authorization', {
                 'decision': 'allowed', 'rule': {'ecosystem.imported': 'read_only_ecosystem_import',
+                    'reconstruction.sources_imported': 'trusted_historical_source_import',
+                    'curator.access_granted': 'trusted_local_curator_provisioning',
+                    'curator.access_revoked': 'trusted_local_curator_provisioning',
                     'identity_binding.requested': 'pending_identity_claim'}.get(event['kind'], 'synthetic_scenario_initialisation'),
                 'actor_id': 'system'})),
         }
@@ -123,6 +129,16 @@ class CollectiveEngine(WorldEngine):
             require(self._world['actors'][command['actor']]['status'] == 'active', 'inactive_actor')
             if 'session' in command and self._world['actors'][command['actor']]['kind'] == 'organisation':
                 require(command['session']['authority'] == 'organisation', 'organisation_binding_required')
+            require(curation.canonical(self._world, command['actor']) == command['actor'], 'canonical_identity_required')
+            require(curation.state(self._world).get('visibility', {}).get(command['actor'], {}).get('value') != 'archived',
+                    'archived_actor')
+            if kind not in curation.FIELDS and kind not in curation_requests.FIELDS:
+                for field in ('target_id', 'recipient_id'):
+                    target = command.get(field)
+                    if target is not None:
+                        require(curation.canonical(self._world, target) == target, 'canonical_target_required')
+                        require(curation.state(self._world).get('visibility', {}).get(target, {}).get('value') != 'archived',
+                                'archived_target')
             self._prepare(command)
             return []
         except DomainError as error:
@@ -234,6 +250,12 @@ class CollectiveEngine(WorldEngine):
 
         if kind in invitations.KINDS:
             summary = invitations.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
+        elif kind in curation_requests.FIELDS:
+            curation_requests.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
+        elif kind in curation.FIELDS:
+            curation.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
+        elif kind in reconstruction.FIELDS:
+            reconstruction.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
         elif kind in {'draft', 'propose'}:
             gid = text(command['id'])
             require(gid not in world['agreements'], 'agreement_exists')

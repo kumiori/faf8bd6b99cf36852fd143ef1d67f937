@@ -150,7 +150,7 @@ def test_matrix_switching_search_inspection_and_context_have_one_snapshot():
     ui.handle('enter',ui.build_screen());s=ui.build_screen()
     text='\n'.join(s.lines)
     assert 'captured ' not in text and 'response-' not in text
-    assert 'provider' in ' '.join(label.lower() for label,_ in s.entries)
+    assert 'inspect offers' in ' '.join(label.lower() for label,_ in s.entries)
     assert any(isinstance(value,tuple) and value[0]=='invite_to' for _,value in s.entries)
     ui.handle('d',s);assert 'responses' in '\n'.join(ui.build_screen().lines)
     ui.back();ui.back()

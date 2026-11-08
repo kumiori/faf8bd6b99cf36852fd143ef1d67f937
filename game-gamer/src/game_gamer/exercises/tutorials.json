@@ -1,0 +1,487 @@
+{
+  "world": {
+    "schema": "game-gamer/world/v1",
+    "scope_id": "practice-template",
+    "revision": 1,
+    "execution_mode": "simulation",
+    "world_time": "2030-01-01T00:00:00+00:00",
+    "title": "Learning together",
+    "actors": [
+      {
+        "id": "learner",
+        "label": "Learner"
+      },
+      {
+        "id": "partner",
+        "label": "Partner"
+      },
+      {
+        "id": "reviewer",
+        "label": "Reviewer"
+      }
+    ],
+    "governance": [
+      {
+        "id": "review",
+        "label": "Both parties, then reviewer approval",
+        "eligible_actors": [
+          "reviewer"
+        ],
+        "threshold": 1
+      }
+    ],
+    "objectives": [
+      {
+        "id": "exchange",
+        "label": "A reviewed exchange",
+        "mode": "ecosystem",
+        "status": "open",
+        "support_ids": [],
+        "provenance": {
+          "kind": "fictional_fixture"
+        },
+        "success": {
+          "minimum_parties": 2,
+          "minimum_attendees": 0,
+          "verified_agreements": 1
+        }
+      }
+    ]
+  },
+  "tutorials": [
+    {
+      "schema": "game-gamer/tutorial/v1",
+      "id": "connect",
+      "title": "Connect",
+      "steps": [
+        {
+          "title": "Inspect the two practice participants.",
+          "actor_id": "learner"
+        },
+        {
+          "title": "As Learner, invite Partner. Sending leaves the invitation pending.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "send_contact",
+            "payload": {
+              "id": "practice-contact",
+              "recipient_id": "partner",
+              "message": "Would you like to exchange ideas?"
+            }
+          }
+        },
+        {
+          "title": "As Learner, try accepting your own sent invitation. The engine will reject it.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "respond_contact",
+            "payload": {
+              "invitation_id": "practice-contact",
+              "response": "accept"
+            }
+          },
+          "expected_errors": [
+            "recipient_required"
+          ]
+        },
+        {
+          "title": "As Partner, accept the invitation in your own name.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "respond_contact",
+            "payload": {
+              "invitation_id": "practice-contact",
+              "response": "accept"
+            }
+          }
+        },
+        {
+          "title": "Inspect the acknowledged connection and its provenance.",
+          "actor_id": "learner"
+        }
+      ]
+    },
+    {
+      "schema": "game-gamer/tutorial/v1",
+      "id": "agreement",
+      "title": "Make an Agreement",
+      "steps": [
+        {
+          "title": "As Learner, propose a session. Proposal leaves both acceptances pending.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "propose",
+            "payload": {
+              "id": "practice-agreement",
+              "label": "Share a mapping session",
+              "parties": [
+                "learner",
+                "partner"
+              ],
+              "objective_id": "exchange",
+              "terms": {
+                "purpose": "Exchange practical mapping knowledge",
+                "responsibilities": [
+                  {
+                    "actor_id": "learner",
+                    "description": "Bring a question and review the session"
+                  },
+                  {
+                    "actor_id": "partner",
+                    "description": "Provide an introduction to mapping"
+                  }
+                ],
+                "conditions": [
+                  "Practice session on 2030-01-15"
+                ]
+              },
+              "resources": [],
+              "valid_until": "2030-02-01T00:00:00+00:00",
+              "policy_id": "review",
+              "verification": {
+                "independent": true,
+                "verifier_ids": [
+                  "reviewer"
+                ],
+                "criteria": [
+                  "Session provided and reviewed"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "As Partner, negotiate the common format and date. New terms require fresh acceptance.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "amend",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 1,
+              "terms": {
+                "purpose": "Exchange practical mapping knowledge",
+                "responsibilities": [
+                  {
+                    "actor_id": "learner",
+                    "description": "Bring a question and review the session"
+                  },
+                  {
+                    "actor_id": "partner",
+                    "description": "Provide an introduction to mapping"
+                  }
+                ],
+                "conditions": [
+                  "Agree the format together",
+                  "Practice session on 2030-01-15"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "As Reviewer, try accepting on the parties’ behalf. The engine will reject it.",
+          "actor_id": "reviewer",
+          "action": {
+            "kind": "accept",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          },
+          "expected_errors": [
+            "party_required"
+          ]
+        },
+        {
+          "title": "As Learner, accept the exact revised terms.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "accept",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Partner, independently accept the same version.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "accept",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Reviewer, record the additional policy approval.",
+          "actor_id": "reviewer",
+          "action": {
+            "kind": "authorize",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Learner, activate the agreement and its commitments.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "activate",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Learner, record that your part has started.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "initiate",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2,
+              "reference": "Practice execution"
+            }
+          }
+        },
+        {
+          "title": "As Learner, report your part complete.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "fulfill",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2,
+              "reference": "Practice report",
+              "criteria": [
+                "Session provided and reviewed"
+              ]
+            }
+          }
+        },
+        {
+          "title": "As Partner, record that your part has started.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "initiate",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2,
+              "reference": "Practice execution"
+            }
+          }
+        },
+        {
+          "title": "As Partner, report your part complete.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "fulfill",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2,
+              "reference": "Practice report",
+              "criteria": [
+                "Session provided and reviewed"
+              ]
+            }
+          }
+        },
+        {
+          "title": "As Reviewer, independently verify the completed practice exchange.",
+          "actor_id": "reviewer",
+          "action": {
+            "kind": "verify",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2,
+              "reference": "Independent practice review"
+            }
+          }
+        },
+        {
+          "title": "Inspect the verified outcome and the history.",
+          "actor_id": "learner"
+        }
+      ]
+    },
+    {
+      "schema": "game-gamer/tutorial/v1",
+      "id": "expertise",
+      "title": "Exchange Expertise",
+      "steps": [
+        {
+          "title": "As Learner, declare a need for mapping expertise.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "declare",
+            "payload": {
+              "table": "needs",
+              "record": {
+                "domain": "mapping",
+                "quantity": 1,
+                "unit": "session"
+              }
+            }
+          }
+        },
+        {
+          "title": "As Partner, declare an offer in the same domain.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "declare",
+            "payload": {
+              "table": "capacities",
+              "record": {
+                "domain": "mapping",
+                "quantity": 1,
+                "unit": "session"
+              }
+            }
+          }
+        },
+        {
+          "title": "Inspect the inferred complementarity. An agreement still requires the parties’ decisions.",
+          "actor_id": "learner"
+        },
+        {
+          "title": "As Learner, propose a session. Proposal leaves both acceptances pending.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "propose",
+            "payload": {
+              "id": "practice-agreement",
+              "label": "Share a mapping session",
+              "parties": [
+                "learner",
+                "partner"
+              ],
+              "objective_id": "exchange",
+              "terms": {
+                "purpose": "Exchange practical mapping knowledge",
+                "responsibilities": [
+                  {
+                    "actor_id": "learner",
+                    "description": "Bring a question and review the session"
+                  },
+                  {
+                    "actor_id": "partner",
+                    "description": "Provide an introduction to mapping"
+                  }
+                ],
+                "conditions": [
+                  "Practice session on 2030-01-15"
+                ]
+              },
+              "resources": [],
+              "valid_until": "2030-02-01T00:00:00+00:00",
+              "policy_id": "review",
+              "verification": {
+                "independent": true,
+                "verifier_ids": [
+                  "reviewer"
+                ],
+                "criteria": [
+                  "Session provided and reviewed"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "As Partner, negotiate the common format and date. New terms require fresh acceptance.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "amend",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 1,
+              "terms": {
+                "purpose": "Exchange practical mapping knowledge",
+                "responsibilities": [
+                  {
+                    "actor_id": "learner",
+                    "description": "Bring a question and review the session"
+                  },
+                  {
+                    "actor_id": "partner",
+                    "description": "Provide an introduction to mapping"
+                  }
+                ],
+                "conditions": [
+                  "Agree the format together",
+                  "Practice session on 2030-01-15"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "As Reviewer, try accepting on the parties’ behalf. The engine will reject it.",
+          "actor_id": "reviewer",
+          "action": {
+            "kind": "accept",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          },
+          "expected_errors": [
+            "party_required"
+          ]
+        },
+        {
+          "title": "As Learner, accept the exact revised terms.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "accept",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Partner, independently accept the same version.",
+          "actor_id": "partner",
+          "action": {
+            "kind": "accept",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Reviewer, record the additional policy approval.",
+          "actor_id": "reviewer",
+          "action": {
+            "kind": "authorize",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "As Learner, activate the agreement and its commitments.",
+          "actor_id": "learner",
+          "action": {
+            "kind": "activate",
+            "payload": {
+              "agreement_id": "practice-agreement",
+              "version": 2
+            }
+          }
+        },
+        {
+          "title": "Inspect the active exchange, agreed date and commitments.",
+          "actor_id": "learner"
+        }
+      ]
+    }
+  ]
+}

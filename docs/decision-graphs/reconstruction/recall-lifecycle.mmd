@@ -1,0 +1,197 @@
+flowchart LR
+  %% Canonical IDs are retained in node/edge comments.
+  graph_limits["Coverage / audit: screens=11 · questions=8 · options=59 · engine actions=6 · unreachable screens=0 · unmapped options=0 · missing recovery paths=0 · untested transitions=18 · uninstrumented transitions=0 This contract verifies the reconstruction slice only. Shared handoff destinations and the remaining application require their own contracts and evidence.; Focused view; coverage counts describe the complete reconstruction release contract, not this cropped path."]
+  subgraph scope_e63fd7892e86["Exercise.Reconstruct"]
+    %% node exercise.reconstruct.connect.menu
+    n523f2a21ef6e["Connect with participant"]
+    %% node exercise.reconstruct.result
+    n3d0ed43bc696["Action result"]
+    %% node exercise.reconstruct.directory
+    n71b1c378e899["Participant directory"]
+    %% node exercise.reconstruct.profile
+    n1180192834b2["Participant profile"]
+    %% node exercise.reconstruct.network
+    n26c6832f798f["Participant network"]
+    %% node exercise.reconstruct.graph
+    nf840aa9e3afa["Collective network"]
+    %% node exercise.reconstruct.quit
+    n69c819b5d20c["Quit"]
+  end
+  subgraph scope_8e92c05eb3c8["Exercise.Reconstruct.Connect.Recall"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.request
+    n6f62e60e845c["We connected in Montréal / request"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.guards
+    n0cb6d1a40ea5["We connected in Montréal / guards"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.input
+    nbcffd7f2f883["We connected in Montréal / input"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.submission
+    n98fefd6b2d19["We connected in Montréal / submission"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.receipt.committed
+    nd5f7b6c27f11["We connected in Montréal / receipt.committed"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.committed
+    n84ba4bd802a2["We connected in Montréal / feedback.committed"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.committed
+    ne56759837af2["We connected in Montréal / recovery.committed"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.receipt.idempotent
+    n3d15419cd219["We connected in Montréal / receipt.idempotent"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.idempotent
+    n14494661e2b5["We connected in Montréal / feedback.idempotent"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.idempotent
+    nd7da4a566416["We connected in Montréal / recovery.idempotent"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.receipt.rejected
+    n1ca7ee0e990b["We connected in Montréal / receipt.rejected"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.rejected
+    nd20eaa44499b["We connected in Montréal / feedback.rejected"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.rejected
+    naee0c8601a1d["We connected in Montréal / recovery.rejected"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.cancelled
+    nd2620f2c74a7["We connected in Montréal / feedback.cancelled"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.cancelled
+    nbacb327d0f12["We connected in Montréal / recovery.cancelled"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.blocked
+    nd4fa2128457f["We connected in Montréal / feedback.blocked"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.blocked
+    ne86b74215be4["We connected in Montréal / recovery.blocked"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.error
+    ncfe3c75a6759["We connected in Montréal / feedback.error"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.error
+    ne678ef182d15["We connected in Montréal / recovery.error"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.feedback.aborted
+    n28624462e392["We connected in Montréal / feedback.aborted"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.handler
+    n599a59401da1["We connected in Montréal / handler"]
+    %% node exercise.reconstruct.connect.recall.lifecycle.recovery.aborted
+    n0637afe2601a["We connected in Montréal / recovery.aborted"]
+  end
+  %% edge exercise.reconstruct.connect.recall.lifecycle.source.exercise.reconstruct.connect.menu
+  n523f2a21ef6e -->|"We connected in Montréal"| n6f62e60e845c
+  linkStyle 0 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.request.guards
+  n6f62e60e845c -->|"Check source and preconditions"| n0cb6d1a40ea5
+  linkStyle 1 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.guards.input
+  n0cb6d1a40ea5 -->|"Collect / confirm inputs"| nbcffd7f2f883
+  linkStyle 2 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.input.submission
+  nbcffd7f2f883 -->|"Submit to commit boundary"| n98fefd6b2d19
+  linkStyle 3 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.submission.receipt.committed
+  n98fefd6b2d19 -->|"Observe committed result"| nd5f7b6c27f11
+  linkStyle 4 stroke:#7b1fa2
+  %% edge exercise.reconstruct.connect.recall.lifecycle.receipt.committed.feedback.committed
+  nd5f7b6c27f11 -->|"Render result"| n84ba4bd802a2
+  linkStyle 5 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.committed.recovery.committed
+  n84ba4bd802a2 -->|"Recover / continue / hand off"| ne56759837af2
+  linkStyle 6 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.committed.exercise.reconstruct.result
+  ne56759837af2 -->|"committed"| n3d0ed43bc696
+  linkStyle 7 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.submission.receipt.idempotent
+  n98fefd6b2d19 -->|"Observe idempotent result"| n3d15419cd219
+  linkStyle 8 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.receipt.idempotent.feedback.idempotent
+  n3d15419cd219 -->|"Render result"| n14494661e2b5
+  linkStyle 9 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.idempotent.recovery.idempotent
+  n14494661e2b5 -->|"Recover / continue / hand off"| nd7da4a566416
+  linkStyle 10 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.idempotent.exercise.reconstruct.result
+  nd7da4a566416 -->|"idempotent"| n3d0ed43bc696
+  linkStyle 11 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.submission.receipt.rejected
+  n98fefd6b2d19 -->|"Observe rejected result"| n1ca7ee0e990b
+  linkStyle 12 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.receipt.rejected.feedback.rejected
+  n1ca7ee0e990b -->|"Render result"| nd20eaa44499b
+  linkStyle 13 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.rejected.recovery.rejected
+  nd20eaa44499b -->|"Recover / continue / hand off"| naee0c8601a1d
+  linkStyle 14 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.rejected.exercise.reconstruct.result
+  naee0c8601a1d -->|"rejected"| n3d0ed43bc696
+  linkStyle 15 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.input.feedback.cancelled
+  nbcffd7f2f883 -->|"Cancel before submission"| nd2620f2c74a7
+  linkStyle 16 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.cancelled.recovery.cancelled
+  nd2620f2c74a7 -->|"Recover / continue / hand off"| nbacb327d0f12
+  linkStyle 17 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.cancelled.exercise.reconstruct.directory
+  nbacb327d0f12 -->|"cancelled"| n71b1c378e899
+  linkStyle 18 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.cancelled.exercise.reconstruct.profile
+  nbacb327d0f12 -->|"cancelled"| n1180192834b2
+  linkStyle 19 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.cancelled.exercise.reconstruct.network
+  nbacb327d0f12 -->|"cancelled"| n26c6832f798f
+  linkStyle 20 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.cancelled.exercise.reconstruct.graph
+  nbacb327d0f12 -->|"cancelled"| nf840aa9e3afa
+  linkStyle 21 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.guards.feedback.blocked
+  n0cb6d1a40ea5 -->|"Precondition denied"| nd4fa2128457f
+  linkStyle 22 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.blocked.recovery.blocked
+  nd4fa2128457f -->|"Recover / continue / hand off"| ne86b74215be4
+  linkStyle 23 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.blocked.exercise.reconstruct.directory
+  ne86b74215be4 -->|"blocked"| n71b1c378e899
+  linkStyle 24 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.blocked.exercise.reconstruct.profile
+  ne86b74215be4 -->|"blocked"| n1180192834b2
+  linkStyle 25 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.blocked.exercise.reconstruct.network
+  ne86b74215be4 -->|"blocked"| n26c6832f798f
+  linkStyle 26 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.blocked.exercise.reconstruct.graph
+  ne86b74215be4 -->|"blocked"| nf840aa9e3afa
+  linkStyle 27 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.input.feedback.error
+  nbcffd7f2f883 -->|"Input or UI failure before submission"| ncfe3c75a6759
+  linkStyle 28 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.receipt.committed.feedback.error
+  nd5f7b6c27f11 -->|"UI failure after accepted commit: preserve receipt"| ncfe3c75a6759
+  linkStyle 29 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.receipt.rejected.feedback.error
+  n1ca7ee0e990b -->|"UI failure after rejection: preserve unchanged history"| ncfe3c75a6759
+  linkStyle 30 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.error.recovery.error
+  ncfe3c75a6759 -->|"Recover / continue / hand off"| ne678ef182d15
+  linkStyle 31 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.error.exercise.reconstruct.directory
+  ne678ef182d15 -->|"error"| n71b1c378e899
+  linkStyle 32 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.error.exercise.reconstruct.profile
+  ne678ef182d15 -->|"error"| n1180192834b2
+  linkStyle 33 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.error.exercise.reconstruct.network
+  ne678ef182d15 -->|"error"| n26c6832f798f
+  linkStyle 34 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.error.exercise.reconstruct.graph
+  ne678ef182d15 -->|"error"| nf840aa9e3afa
+  linkStyle 35 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.lifecycle.guards.feedback.aborted
+  n0cb6d1a40ea5 -->|"Interrupt at this stage; inspect authoritative history"| n28624462e392
+  linkStyle 36 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.input.feedback.aborted
+  nbcffd7f2f883 -->|"Interrupt at this stage; inspect authoritative history"| n28624462e392
+  linkStyle 37 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.handler.feedback.aborted
+  n599a59401da1 -->|"Interrupt at this stage; inspect authoritative history"| n28624462e392
+  linkStyle 38 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.submission.feedback.aborted
+  n98fefd6b2d19 -->|"Interrupt at this stage; inspect authoritative history"| n28624462e392
+  linkStyle 39 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.receipt.committed.feedback.aborted
+  nd5f7b6c27f11 -->|"Interrupt at this stage; inspect authoritative history"| n28624462e392
+  linkStyle 40 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.feedback.aborted.recovery.aborted
+  n28624462e392 -->|"Recover / continue / hand off"| n0637afe2601a
+  linkStyle 41 stroke:#607d8b
+  %% edge exercise.reconstruct.connect.recall.lifecycle.destination.aborted.exercise.reconstruct.quit
+  n0637afe2601a -->|"aborted"| n69c819b5d20c
+  linkStyle 42 stroke:#ef6c00
+  subgraph legend["Legend (presentation only)"]
+    legend_text["Grey: navigation / disabled · Purple: state change · Amber: conditional or extraction uncertainty · Red: confirmed graph defect · Green: recovery"]
+  end

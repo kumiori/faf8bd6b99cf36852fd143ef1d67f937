@@ -1,0 +1,102 @@
+flowchart LR
+  %% Canonical IDs are retained in node/edge comments.
+  graph_limits["Coverage / audit: screens=59 · questions=203 · options=633 · engine actions=34 · unreachable screens=0 · unmapped options=126 · missing recovery paths=32 · untested transitions=515 · uninstrumented transitions=351 This contract verifies the reconstruction slice only. Shared handoff destinations and the remaining application require their own contracts and evidence.; Source-only adapters remain uncertain outside the declared scope."]
+  subgraph scope_570dd38dc5ba["Ecosystem"]
+    %% node overview.ecosystem
+    n84d0b2290715["ecosystem · 45 states/definitions"]
+  end
+  subgraph scope_ed9f6f250686["Engine"]
+    %% node overview.engine
+    n32484d0214f0["engine · 102 states/definitions"]
+  end
+  subgraph scope_e63fd7892e86["Exercise.Reconstruct"]
+    %% node overview.exercise.reconstruct
+    n82fc261b6946["exercise.reconstruct · 132 states/definitions"]
+  end
+  subgraph scope_000f14e10251["Exercises"]
+    %% node overview.exercises
+    n3f4a9b95e54c["exercises · 14 states/definitions"]
+  end
+  subgraph scope_45441664c0ba["Gathering"]
+    %% node overview.gathering
+    n31425702764e["gathering · 4 states/definitions"]
+  end
+  subgraph scope_d1a1c362651a["Scenarios"]
+    %% node overview.scenarios
+    nd5ebbf00e0fb["scenarios · 7 states/definitions"]
+  end
+  subgraph scope_a4d26868017c["Shared"]
+    %% node overview.shared
+    na7c86afee520["shared · 547 states/definitions"]
+  end
+  %% edge overview.ecosystem.to.overview.ecosystem
+  n84d0b2290715 -->|"Unverified source observations"| n84d0b2290715
+  linkStyle 0 stroke:#ef6c00
+  %% edge overview.ecosystem.to.overview.shared
+  n84d0b2290715 -->|"Unverified source observations"| na7c86afee520
+  linkStyle 1 stroke:#ef6c00
+  unresolved_9d006c9d46d2["Unresolved destination"]
+  %% edge overview.ecosystem.to.unresolved
+  n84d0b2290715 -->|"Unverified source observations"| unresolved_9d006c9d46d2
+  linkStyle 2 stroke:#ef6c00
+  %% edge overview.engine.to.overview.engine
+  n32484d0214f0 -->|"Declared transitions"| n32484d0214f0
+  linkStyle 3 stroke:#7b1fa2
+  %% edge overview.exercise.reconstruct.to.overview.engine
+  n82fc261b6946 -->|"Declared transitions"| n32484d0214f0
+  linkStyle 4 stroke:#607d8b
+  %% edge overview.exercise.reconstruct.to.overview.exercise.reconstruct
+  n82fc261b6946 -->|"Declared transitions"| n82fc261b6946
+  linkStyle 5 stroke:#7b1fa2
+  %% edge overview.exercises.to.overview.exercises
+  n3f4a9b95e54c -->|"Unverified source observations"| n3f4a9b95e54c
+  linkStyle 6 stroke:#ef6c00
+  %% edge overview.exercises.to.overview.shared
+  n3f4a9b95e54c -->|"Unverified source observations"| na7c86afee520
+  linkStyle 7 stroke:#ef6c00
+  unresolved_89a0faac9e22["Unresolved destination"]
+  %% edge overview.exercises.to.unresolved
+  n3f4a9b95e54c -->|"Unverified source observations"| unresolved_89a0faac9e22
+  linkStyle 8 stroke:#ef6c00
+  %% edge overview.gathering.to.overview.shared
+  n31425702764e -->|"Unverified source observations"| na7c86afee520
+  linkStyle 9 stroke:#ef6c00
+  unresolved_4ed7117a0d58["Unresolved destination"]
+  %% edge overview.gathering.to.unresolved
+  n31425702764e -->|"Unverified source observations"| unresolved_4ed7117a0d58
+  linkStyle 10 stroke:#ef6c00
+  %% edge overview.scenarios.to.overview.scenarios
+  nd5ebbf00e0fb -->|"Unverified source observations"| nd5ebbf00e0fb
+  linkStyle 11 stroke:#ef6c00
+  %% edge overview.scenarios.to.overview.shared
+  nd5ebbf00e0fb -->|"Unverified source observations"| na7c86afee520
+  linkStyle 12 stroke:#ef6c00
+  unresolved_72d0a5ae0bc2["Unresolved destination"]
+  %% edge overview.scenarios.to.unresolved
+  nd5ebbf00e0fb -->|"Unverified source observations"| unresolved_72d0a5ae0bc2
+  linkStyle 13 stroke:#ef6c00
+  %% edge overview.shared.to.overview.ecosystem
+  na7c86afee520 -->|"Unverified source observations"| n84d0b2290715
+  linkStyle 14 stroke:#ef6c00
+  %% edge overview.shared.to.overview.engine
+  na7c86afee520 -->|"Unverified source observations"| n32484d0214f0
+  linkStyle 15 stroke:#ef6c00
+  %% edge overview.shared.to.overview.exercises
+  na7c86afee520 -->|"Unverified source observations"| n3f4a9b95e54c
+  linkStyle 16 stroke:#ef6c00
+  %% edge overview.shared.to.overview.gathering
+  na7c86afee520 -->|"Unverified source observations"| n31425702764e
+  linkStyle 17 stroke:#ef6c00
+  %% edge overview.shared.to.overview.scenarios
+  na7c86afee520 -->|"Unverified source observations"| nd5ebbf00e0fb
+  linkStyle 18 stroke:#ef6c00
+  %% edge overview.shared.to.overview.shared
+  na7c86afee520 -->|"Unverified source observations"| na7c86afee520
+  linkStyle 19 stroke:#ef6c00
+  unresolved_c3b39afb87ea["Unresolved destination"]
+  %% edge overview.shared.to.unresolved
+  na7c86afee520 -->|"Unverified source observations"| unresolved_c3b39afb87ea
+  linkStyle 20 stroke:#ef6c00
+  subgraph legend["Legend (presentation only)"]
+    legend_text["Grey: navigation / disabled · Purple: state change · Amber: conditional or extraction uncertainty · Red: confirmed graph defect · Green: recovery"]
+  end

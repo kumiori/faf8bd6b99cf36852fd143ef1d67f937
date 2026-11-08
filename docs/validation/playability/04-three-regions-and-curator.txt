@@ -1,0 +1,34 @@
+RECONSTRUCT THE NETWORK                                                                                                              ◆ CURATOR  
+Playing: Alex · Simulation · Montréal Commons · v3                                                                                              
+m Paths | e Ecosystem | g Gathering | s Scenarios | C Contracts | i Inbox | p Player                                                            
+Ecosystem > Exercises > Alex                                                                                                                    
+Who did you connect with in Montréal?                                                                                                           
+4 people · 0 recalled pairs · 0 directed claims · 0 contributors                                                                                
+0 corroborated · 0 unilateral · 0 disputed · Your claims 0                                                                                      
+0 pending invitations · 0 accepted new connections                                                                                              
+WHO / DIRECTORY >                               WHY / PROFILE                                   CONNECTIONS / NETWORK                           
+4 matches · / Search · f Filter                 Alex                                            Montréal reconstruction · Neighbourhood         
+> Alex                                          ╭─────────────╮                                 0 observations · L Layers · v View · [ ] Page   
+  Casey (1)                                     │             │                                 No observations in this view.                   
+  Casey (2)                                     │             │                                                                                 
+  Morgan                                        │      ●-----◆│                                                      ∘          ∘       ∘       
+                                                │         \   │                                                                                 
+                                                │            ○│                                                                                 
+                                                ╰─────────────╯                                                                                 
+                                                Person · 1 recorded offers · 1 recorded needs                                                   
+                                                · 2 recorded domains                                                                            
+                                                Organisation: Fictional Research Commons                                                        
+                                                Role: curator                                                         @                         
+                                                Motivation: Not yet recorded                                       1 Alex                       
+                                                Offers: Data stewardship                                                                        
+                                                Needs: Coalition building                                                                       
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                Dotted: recall · solid: mutual                  
+                                                                                                Dashed: invite · ring: no recall                
+                                                                                                                                                
+                                                                                                                                                
+Esc/b Back  ? Help | Up/Down Select  Enter Inspect  c Connect  n Network  / Search  f Filter  o Sort  v View  G Graph  d Provenance  Tab Region 

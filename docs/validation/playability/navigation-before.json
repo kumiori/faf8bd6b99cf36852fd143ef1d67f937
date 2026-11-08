@@ -1,0 +1,7 @@
+{
+  "operation": "revision check + selection + two screen builds",
+  "samples": 20,
+  "median_ms": 231.241,
+  "p95_ms": 340.677,
+  "max_ms": 372.888
+}

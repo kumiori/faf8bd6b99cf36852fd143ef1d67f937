@@ -5,7 +5,7 @@ from .matrix import MatrixViewport
 
 
 MODE_KEYS = {'e': 'ecosystem', 'g': 'gathering', 's': 'scenarios'}
-NAVIGATION = 'm Paths | e Ecosystem | g Gathering | s Scenarios | c Contracts | i Inbox | p Player'
+NAVIGATION = 'm Paths | H History | e Ecosystem | g Gathering | s Scenarios | c Contracts | i Inbox | p Player'
 
 
 @dataclass

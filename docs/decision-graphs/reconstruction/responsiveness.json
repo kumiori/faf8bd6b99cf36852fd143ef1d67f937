@@ -1,0 +1,17 @@
+{
+  "authoritative_history_unchanged": true,
+  "contract_digest": "6d9cd2700c7333c4922be599d2b4d562e63c02e32057e5a623cccd2fc75b820a",
+  "fixture_events": 2,
+  "fixture_people": 200,
+  "limitations": "Synthetic local read-only frames with in-memory tracing; not deployment load or human usability acceptance.",
+  "max_ms": 4.453,
+  "measurement": "handle_and_render",
+  "median_ms": 3.88,
+  "p95_ms": 4.112,
+  "samples": 100,
+  "schema_version": "game-gamer/responsiveness/v1",
+  "viewport": {
+    "height": 34,
+    "width": 144
+  }
+}

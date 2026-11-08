@@ -1,0 +1,1110 @@
+{
+  "implementation_digest": "f5bfd84b7ca5bad99af508e6c1e1b08e85cb00af83b820441277cd7467972452",
+  "schema_version": "0.1.0",
+  "transitions": {
+    "commons_game.exercises.tutorial_key.confirm.9d5866565100.46844283c056.option.3cbc87c7681f": [
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.back.back.71bcc7084fe9.back": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_duplicate_first_names_are_distinct_and_consistent_across_matrix_inspector_and_graph",
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot",
+      "tests/test_matrix_navigation.py::test_matrix_selection_back_mode_switch_and_player_switch_preserve_state",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_self_pair_actions_and_third_party_cell_do_not_imply_authority",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world",
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_player_focus_relation_breadcrumbs_and_back_are_separate_contexts"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.choose_mode.picker.312b44578bfe.option.1ad53df27b8d": [
+      "tests/test_network_reconstruction.py::test_other_commons_scenarios_keep_their_original_paths"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.choose_mode.picker.312b44578bfe.option.46cb8c0f762a": [
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world",
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.choose_mode.push.e17acaad4648.1a0cc52b9ecc.navigate": [
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world",
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.collect_action.ask.0d62f6cbc7c0.option.3e75895617f8": [
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.collect_action.ask.66f365de82b6.option.3e75895617f8": [
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.collect_action.ask.7b7828f81893.option.3e75895617f8": [
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.collect_action.ask.9b898ac6ef5e.option.3e75895617f8": [
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.collect_action.confirm.5373dd26d34b.option.3cbc87c7681f": [
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.confirm.confirm.e3279f809164.option.3cbc87c7681f": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.confirm.confirm.e3279f809164.option.60a33e6cf515": [
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.execute_action.push.465da5b4b8ae.ce10f65e150c.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.execute_action.push.bf707e271cee.7b0eaeab0147.navigate": [
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.execute_action.push.fe2c9e425447.1eb7107a50d7.navigate": [
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.back.953cbeb135dc.642d6afa1815.back": [
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world",
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.choose.af80bf4c0a42.4f8c8255b289.option.05936269a590": [
+      "tests/test_collective_action.py::test_network_scopes_layer_filters_coverage_and_real_3d_are_read_only"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.0c709bc73419.7162910de671.navigate": [
+      "tests/test_network_reconstruction.py::test_an_open_inspector_survives_a_recorded_visibility_correction"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.2f9a068f8adc.79364c78cb5e.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.8b0cf99a2c55.f00a9c290d95.navigate": [
+      "tests/test_network_reconstruction.py::test_curator_indicator_and_controls_follow_actual_permissions"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.a724db629ee3.6d17ffb067d4.navigate": [
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.b3cc98e6e4d5.6f3ebb7fae72.navigate": [
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.bf707e271cee.61fa82b7ceef.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observation_only_cell_never_promotes_focus_to_agency",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context",
+      "tests/test_relational_navigation.py::test_player_focus_relation_breadcrumbs_and_back_are_separate_contexts"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.d1d1fa9f6509.95a730d3586a.navigate": [
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.d715058121ab.76c2e31bb8cc.navigate": [
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world",
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.push.e33a8b4168f6.5bc7ba6e8ea4.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_duplicate_first_names_are_distinct_and_consistent_across_matrix_inspector_and_graph",
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot",
+      "tests/test_collective_action.py::test_nathalie_catherine_snapshot_score_and_matching_list_are_identical",
+      "tests/test_collective_action.py::test_observer_never_gets_contact_or_direct_contract_actions_for_someone_elses_pair",
+      "tests/test_matrix_navigation.py::test_matrix_selection_back_mode_switch_and_player_switch_preserve_state",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_self_pair_actions_and_third_party_cell_do_not_imply_authority",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observation_only_cell_never_promotes_focus_to_agency",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context",
+      "tests/test_relational_navigation.py::test_player_focus_relation_breadcrumbs_and_back_are_separate_contexts"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.handle.read.a7eb0f462b51.901fde13872c.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.open_network.push.eab7459aaaf2.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_network_scopes_layer_filters_coverage_and_real_3d_are_read_only",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.push.push.2a788cca2485.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_action.py::test_duplicate_first_names_are_distinct_and_consistent_across_matrix_inspector_and_graph",
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot",
+      "tests/test_collective_action.py::test_nathalie_catherine_snapshot_score_and_matching_list_are_identical",
+      "tests/test_collective_action.py::test_network_scopes_layer_filters_coverage_and_real_3d_are_read_only",
+      "tests/test_collective_action.py::test_observer_never_gets_contact_or_direct_contract_actions_for_someone_elses_pair",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_matrix_navigation.py::test_matrix_selection_back_mode_switch_and_player_switch_preserve_state",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_self_pair_actions_and_third_party_cell_do_not_imply_authority",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_an_open_inspector_survives_a_recorded_visibility_correction",
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_curator_indicator_and_controls_follow_actual_permissions",
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world",
+      "tests/test_network_reconstruction.py::test_fourth_path_preserves_selection_and_renders_narrow_intermediate_and_wide",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observation_only_cell_never_promotes_focus_to_agency",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context",
+      "tests/test_relational_navigation.py::test_player_focus_relation_breadcrumbs_and_back_are_separate_contexts"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.read.prompt.066323a70e0f.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_action.py::test_matrix_switching_search_inspection_and_context_have_one_snapshot",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.refine_proposal.choose.d9de01babbe7.option.146d74173da9": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.resume_mode.resume.90949c951738.navigate": [
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_other_commons_scenarios_keep_their_original_paths"
+    ],
+    "commons_game.fullscreen.FullScreenTerminal.switch_mode.resume.1af6899a303b.navigate": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_matrix_navigation.py::test_matrix_selection_back_mode_switch_and_player_switch_preserve_state"
+    ],
+    "commons_game.play.PlayableTerminal.assume_actor.confirm.2d33997d69aa.option.3cbc87c7681f": [
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture"
+    ],
+    "commons_game.play.PlayableTerminal.cmd_history.read.222b31c1ab0a.option.3e75895617f8": [
+      "tests/test_playability.py::test_open_latest_contract_and_history_aliases_reach_real_records"
+    ],
+    "commons_game.play.PlayableTerminal.cmd_search.read.c20a2f906171.option.3e75895617f8": [
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[search]"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.4e2aa9a4f208.b8bf77b2db97.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.7688dd4a6f16.534761ea516a.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.95f7179cfc44.bc8b75533b69.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.964686da2d1f.b8bf77b2db97.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.9e0a3ba0cb7e.a2461fd11c8c.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.aa9c2ce64255.b8bf77b2db97.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.b1839db57f59.b8bf77b2db97.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.b4137f6edd5d.b8bf77b2db97.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.c27ba1b6d265.534761ea516a.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.dde3703a72ab.a2461fd11c8c.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.ask.f948cbb88978.534761ea516a.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.choose.779c99c807fe.0e4fbd41b108.option.18d2ad96a9f8": [
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.choose.779c99c807fe.0e4fbd41b108.option.d83fae1fd070": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox"
+    ],
+    "commons_game.play.PlayableTerminal.collect_action.confirm.5373dd26d34b.option.3cbc87c7681f": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context"
+    ],
+    "commons_game.play.PlayableTerminal.invitation.choose.447bfab6a91a.149d479f6a59.option.140ccaa3c986": [
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture"
+    ],
+    "commons_game.play.PlayableTerminal.invitation.confirm.18fc211d8bec.option.3cbc87c7681f": [
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture"
+    ],
+    "commons_game.reconstruction.connect.confirm.28587fd00f88.option.3cbc87c7681f": [
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract"
+    ],
+    "commons_game.reconstruction.connect.confirm.28587fd00f88.option.60a33e6cf515": [
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player"
+    ],
+    "commons_game.reconstruction.connect.push.b2e396c6fcc7.navigate": [
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract"
+    ],
+    "commons_game.reconstruction.handle_exercise.back.674fc1d5ab55.e736931eb6ae.back": [
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract"
+    ],
+    "commons_game.reconstruction.handle_exercise.push.04e2c8b915fe.80bb4f137eee.navigate": [
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available"
+    ],
+    "commons_game.reconstruction.handle_exercise.push.2c4c0ee70172.6f9da5af1280.navigate": [
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available"
+    ],
+    "commons_game.reconstruction.handle_exercise.push.36f2789e0927.0eae58dfce56.navigate": [
+      "tests/test_network_reconstruction.py::test_exercise_directory_is_people_only_and_graph_provenance_is_available"
+    ],
+    "commons_game.reconstruction.handle_exercise.push.4ed2924bf7ec.22b4ab2cffcd.navigate": [
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world"
+    ],
+    "commons_game.reconstruction_filters.filter_key.back.674fc1d5ab55.9a3c30dfd6b9.back": [
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world"
+    ],
+    "commons_game.reconstruction_filters.filter_key.push.0a4f67409cfd.b740237959c4.navigate": [
+      "tests/test_network_reconstruction.py::test_facet_apply_clear_preserves_selection_and_does_not_mutate_the_world"
+    ],
+    "commons_game.tui.Terminal.ask.read.b155bd1a3950.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_collective_play.py::test_onboarding_pending_claim_is_wired_without_granting_a_role",
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable",
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_developer_graph_command_repairs_preserve_original_repro",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context",
+      "tests/test_tui.py::test_cancelled_and_invalid_contract_forms_never_partially_write",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "commons_game.tui.Terminal.choose.ask.adf16dc11c26.option.3e75895617f8": [
+      "tests/test_collective_play.py::test_onboarding_pending_claim_is_wired_without_granting_a_role",
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable",
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_playability.py::test_developer_graph_command_repairs_preserve_original_repro",
+      "tests/test_tui.py::test_cancelled_and_invalid_contract_forms_never_partially_write",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "commons_game.tui.Terminal.claim.ask.567588bfe349.option.3e75895617f8": [
+      "tests/test_collective_play.py::test_onboarding_pending_claim_is_wired_without_granting_a_role"
+    ],
+    "commons_game.tui.Terminal.collect_action.ask.83153945dfe7.6bb0b4f28eaf.option.3e75895617f8": [
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "commons_game.tui.Terminal.collect_action.ask.8c01623fbbec.04b38853ceb0.option.3e75895617f8": [
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "commons_game.tui.Terminal.collect_action.ask.a2f56d2a3edd.6bb0b4f28eaf.option.3e75895617f8": [
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "commons_game.tui.Terminal.collect_action.ask.c3159d9738f0.6bb0b4f28eaf.option.3e75895617f8": [
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "commons_game.tui.Terminal.collect_action.confirm.ad8b9a1d422a.4990aa61ea2b.option.3cbc87c7681f": [
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "commons_game.tui.Terminal.collect_action.confirm.f9bc6cbc30a7.option.3cbc87c7681f": [
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable",
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "commons_game.tui.Terminal.confirm.ask.af0753514e2f.option.3e75895617f8": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable",
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_network_reconstruction.py::test_cancel_and_discard_do_not_add_a_claim_or_change_player",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "commons_game.tui.Terminal.history.ask.9f1293498d04.a72e2125a72c.option.3e75895617f8": [
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "commons_game.tui.Terminal.inbox.read.e23c407a8e23.option.3e75895617f8": [
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable"
+    ],
+    "engine.accept.allowed": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable",
+      "tests/test_collective_play.py::test_two_players_concurrent_transitions_restart_inbox_and_native_trajectory",
+      "tests/test_engine.py::test_acceptance_is_version_bound_and_amendment_revokes_authorization",
+      "tests/test_engine.py::test_active_amendment_cannot_rewrite_reserved_terms",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_approvals_include_content_digest_and_are_not_cryptographic_signatures",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_concurrent_processes_cannot_double_reserve_sqlite_capacity",
+      "tests/test_engine.py::test_external_capacity_requires_independent_reconciliation",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance",
+      "tests/test_engine.py::test_overcommitment_is_atomic_and_termination_releases_reservations",
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit",
+      "tests/test_engine.py::test_threshold_named_and_stakeholder_category_rules_are_inspectable",
+      "tests/test_engine.py::test_unauthorized_approval_and_missing_institutional_authorization",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_player.py::test_explicit_hot_seat_and_stale_store_submission_remain_separate",
+      "tests/test_player.py::test_fixed_session_cannot_accept_for_another_actor_or_silently_switch",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "engine.accept.rejected": [
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_play.py::test_mock_binding_cannot_switch_forge_an_actor_or_claim_real_authentication",
+      "tests/test_engine.py::test_acceptance_is_version_bound_and_amendment_revokes_authorization",
+      "tests/test_engine.py::test_invalid_commands_leave_no_partial_mutations[payload0-unknown_agreement]",
+      "tests/test_engine.py::test_invalid_commands_leave_no_partial_mutations[payload4-unknown_actor]",
+      "tests/test_engine.py::test_rejected_agreement_cannot_be_accepted",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries"
+    ],
+    "engine.activate.allowed": [
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_engine.py::test_active_amendment_cannot_rewrite_reserved_terms",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_external_capacity_requires_independent_reconciliation",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_overcommitment_is_atomic_and_termination_releases_reservations",
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit",
+      "tests/test_engine.py::test_threshold_named_and_stakeholder_category_rules_are_inspectable",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "engine.activate.rejected": [
+      "tests/test_engine.py::test_acceptance_is_version_bound_and_amendment_revokes_authorization",
+      "tests/test_engine.py::test_external_capacity_requires_independent_reconciliation",
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance",
+      "tests/test_engine.py::test_overcommitment_is_atomic_and_termination_releases_reservations",
+      "tests/test_engine.py::test_threshold_named_and_stakeholder_category_rules_are_inspectable",
+      "tests/test_engine.py::test_unauthorized_approval_and_missing_institutional_authorization"
+    ],
+    "engine.advance_time.allowed": [
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_play.py::test_rejected_and_expired_contracts_keep_their_graph_node",
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution"
+    ],
+    "engine.advance_time.rejected": [
+      "tests/test_engine.py::test_invalid_commands_leave_no_partial_mutations[payload1-invalid_timestamp]",
+      "tests/test_engine.py::test_invalid_commands_leave_no_partial_mutations[payload2-timezone_required]",
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution"
+    ],
+    "engine.amend.allowed": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_engine.py::test_acceptance_is_version_bound_and_amendment_revokes_authorization",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "engine.amend.rejected": [
+      "tests/test_engine.py::test_active_amendment_cannot_rewrite_reserved_terms"
+    ],
+    "engine.authorize.allowed": [
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_engine.py::test_acceptance_is_version_bound_and_amendment_revokes_authorization",
+      "tests/test_engine.py::test_active_amendment_cannot_rewrite_reserved_terms",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_approvals_include_content_digest_and_are_not_cryptographic_signatures",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_concurrent_processes_cannot_double_reserve_sqlite_capacity",
+      "tests/test_engine.py::test_external_capacity_requires_independent_reconciliation",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance",
+      "tests/test_engine.py::test_overcommitment_is_atomic_and_termination_releases_reservations",
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit",
+      "tests/test_engine.py::test_threshold_named_and_stakeholder_category_rules_are_inspectable",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "engine.authorize.rejected": [
+      "tests/test_engine.py::test_unauthorized_approval_and_missing_institutional_authorization",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition"
+    ],
+    "engine.correct_profile.allowed": [
+      "tests/test_curation.py::test_correction_visibility_and_provenance_keep_raw_source_and_authority"
+    ],
+    "engine.correct_profile.rejected": [
+      "tests/test_curation.py::test_correction_visibility_and_provenance_keep_raw_source_and_authority",
+      "tests/test_curation.py::test_player_cannot_correct_hide_merge_or_reverse_identity"
+    ],
+    "engine.declare.allowed": [
+      "tests/test_collective.py::test_retry_compares_json_types",
+      "tests/test_engine.py::test_discovery_is_reported_and_matches_are_disposable_not_agreements",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_reconstruction.py::test_directory_filters_declared_attributes_and_portrait_is_stable_after_claims"
+    ],
+    "engine.declare.rejected": [
+      "tests/test_collective.py::test_retry_compares_json_types",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_engine.py::test_invalid_commands_leave_no_partial_mutations[payload3-invalid_declaration_table]"
+    ],
+    "engine.dispute.allowed": [
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit"
+    ],
+    "engine.dispute_recollection.allowed": [
+      "tests/test_curation.py::test_canonical_claim_ownership_and_duplicates_follow_author_and_target_merges",
+      "tests/test_reconstruction.py::test_dispute_prior_relationship_and_contact_are_separate_layers"
+    ],
+    "engine.dispute_recollection.rejected": [
+      "tests/test_reconstruction.py::test_dispute_prior_relationship_and_contact_are_separate_layers"
+    ],
+    "engine.draft_contact.allowed": [
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix"
+    ],
+    "engine.fulfill.allowed": [
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "engine.fulfill.rejected": [
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification"
+    ],
+    "engine.initiate.allowed": [
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "engine.initiate.rejected": [
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution",
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit"
+    ],
+    "engine.invite.allowed": [
+      "tests/test_collective.py::test_replay_and_fork_authority_are_distinct",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture",
+      "tests/test_relational_navigation.py::test_gathering_attendance_gate_remains_separate_from_verified_outcome",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "engine.invite.rejected": [
+      "tests/test_collective.py::test_replay_and_fork_authority_are_distinct"
+    ],
+    "engine.merge_profiles.allowed": [
+      "tests/test_curation.py::test_canonical_claim_ownership_and_duplicates_follow_author_and_target_merges",
+      "tests/test_curation.py::test_merge_is_previewed_resolvable_and_reversible_without_rewriting_claims",
+      "tests/test_curation.py::test_merge_suppresses_self_links_and_reversal_restores_them_with_attribution"
+    ],
+    "engine.merge_profiles.rejected": [
+      "tests/test_curation.py::test_a_stale_preview_and_unconfirmed_identity_cannot_merge",
+      "tests/test_curation.py::test_player_cannot_correct_hide_merge_or_reverse_identity"
+    ],
+    "engine.propose.allowed": [
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_collective_play.py::test_mock_binding_cannot_switch_forge_an_actor_or_claim_real_authentication",
+      "tests/test_collective_play.py::test_rejected_and_expired_contracts_keep_their_graph_node",
+      "tests/test_collective_play.py::test_terminal_graph_inbox_direct_links_and_onboarding_are_reachable",
+      "tests/test_collective_play.py::test_terminal_proposal_direct_open_and_ecosystem_visibility",
+      "tests/test_collective_play.py::test_two_players_concurrent_transitions_restart_inbox_and_native_trajectory",
+      "tests/test_engine.py::test_acceptance_is_version_bound_and_amendment_revokes_authorization",
+      "tests/test_engine.py::test_active_amendment_cannot_rewrite_reserved_terms",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_approvals_include_content_digest_and_are_not_cryptographic_signatures",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_concurrent_processes_cannot_double_reserve_sqlite_capacity",
+      "tests/test_engine.py::test_duplicate_submission_and_payload_conflict_survive_restart",
+      "tests/test_engine.py::test_external_capacity_requires_independent_reconciliation",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance",
+      "tests/test_engine.py::test_multiplex_agreement_is_a_separate_node",
+      "tests/test_engine.py::test_overcommitment_is_atomic_and_termination_releases_reservations",
+      "tests/test_engine.py::test_recorded_time_expiration_releases_resource_and_blocks_execution",
+      "tests/test_engine.py::test_rejected_agreement_cannot_be_accepted",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit",
+      "tests/test_engine.py::test_threshold_named_and_stakeholder_category_rules_are_inspectable",
+      "tests/test_engine.py::test_unauthorized_approval_and_missing_institutional_authorization",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_matrix_navigation.py::test_propose_negotiate_accept_graph_policy_history_inbox_and_trajectory",
+      "tests/test_matrix_navigation.py::test_synthetic_scenario_template_is_reviewed_as_proposed_contributions",
+      "tests/test_mechanics_freeze.py::test_global_navigation_restores_network_and_contract_decision_context",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_bare_open_actions_and_history_use_selection_instead_of_empty_id_errors",
+      "tests/test_playability.py::test_developer_graph_command_repairs_preserve_original_repro",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[actions]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[back]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[connect]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[contracts]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[ecosystem]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[gathering]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[help]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[history]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[inbox]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[invite]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[list]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[metadata]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[open]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[past]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[paths]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[player]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[quit]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[replay]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[respond]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[scenarios]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[search]",
+      "tests/test_playability.py::test_each_advertised_command_dispatches_or_gives_contextual_explanation[trajectory]",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_playability.py::test_first_names_only_across_selection_contracts_and_historical_profiles",
+      "tests/test_playability.py::test_open_latest_contract_and_history_aliases_reach_real_records",
+      "tests/test_playability.py::test_unavailable_invite_respond_and_actor_permissions_explain_why",
+      "tests/test_player.py::test_available_actions_are_read_only_and_probe_evidence_never_escapes",
+      "tests/test_player.py::test_explicit_hot_seat_and_stale_store_submission_remain_separate",
+      "tests/test_player.py::test_fixed_session_cannot_accept_for_another_actor_or_silently_switch",
+      "tests/test_relational_navigation.py::test_gathering_attendance_gate_remains_separate_from_verified_outcome",
+      "tests/test_relational_navigation.py::test_network_keeps_related_counterparty_contracts_and_unknown_direction_without_invented_links",
+      "tests/test_relational_navigation.py::test_network_paging_rotation_zoom_and_centring_preserve_canonical_state",
+      "tests/test_relational_navigation.py::test_new_contract_returns_to_same_relation_and_network_reaches_policy_objective_and_party",
+      "tests/test_relational_navigation.py::test_observer_can_only_create_their_own_explicit_profile_agreement_context",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory",
+      "tests/test_tui.py::test_terminal_hypothetical_branch_never_changes_history"
+    ],
+    "engine.propose.rejected": [
+      "tests/test_engine.py::test_duplicate_submission_and_payload_conflict_survive_restart"
+    ],
+    "engine.publish_contact.allowed": [
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_action.py::test_player_can_save_then_send_a_draft_without_delivering_it_early",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix"
+    ],
+    "engine.recall_connection.allowed": [
+      "tests/test_curation.py::test_a_stale_preview_and_unconfirmed_identity_cannot_merge",
+      "tests/test_curation.py::test_canonical_claim_ownership_and_duplicates_follow_author_and_target_merges",
+      "tests/test_curation.py::test_merge_is_previewed_resolvable_and_reversible_without_rewriting_claims",
+      "tests/test_curation.py::test_merge_suppresses_self_links_and_reversal_restores_them_with_attribution",
+      "tests/test_network_reconstruction.py::test_connect_recollects_without_creating_an_invitation_or_contract",
+      "tests/test_network_reconstruction.py::test_external_commit_is_reflected_while_inspecting_a_filter",
+      "tests/test_playability.py::test_cached_store_reads_are_detached_and_validate_changed_history",
+      "tests/test_playability.py::test_store_cache_keeps_exact_retries_idempotent_after_a_new_commit",
+      "tests/test_reconstruction.py::test_directory_filters_declared_attributes_and_portrait_is_stable_after_claims",
+      "tests/test_reconstruction.py::test_dispute_prior_relationship_and_contact_are_separate_layers",
+      "tests/test_reconstruction.py::test_distinct_players_corroborate_and_can_retract_only_their_own_claim",
+      "tests/test_reconstruction.py::test_recall_is_a_directed_declaration_with_its_own_event_time",
+      "tests/test_reconstruction.py::test_unrelated_worlds_and_contexts_cannot_corroborate_each_other"
+    ],
+    "engine.recall_connection.rejected": [
+      "tests/test_curation.py::test_canonical_claim_ownership_and_duplicates_follow_author_and_target_merges",
+      "tests/test_curation.py::test_correction_visibility_and_provenance_keep_raw_source_and_authority",
+      "tests/test_curation.py::test_merge_is_previewed_resolvable_and_reversible_without_rewriting_claims",
+      "tests/test_reconstruction.py::test_distinct_players_corroborate_and_can_retract_only_their_own_claim",
+      "tests/test_reconstruction.py::test_unrelated_worlds_and_contexts_cannot_corroborate_each_other"
+    ],
+    "engine.reconcile_resource.allowed": [
+      "tests/test_engine.py::test_external_capacity_requires_independent_reconciliation"
+    ],
+    "engine.record_prior_relationship.allowed": [
+      "tests/test_reconstruction.py::test_dispute_prior_relationship_and_contact_are_separate_layers"
+    ],
+    "engine.reject.allowed": [
+      "tests/test_collective_play.py::test_rejected_and_expired_contracts_keep_their_graph_node",
+      "tests/test_engine.py::test_rejected_agreement_cannot_be_accepted",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations"
+    ],
+    "engine.reject.rejected": [
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix"
+    ],
+    "engine.respond_contact.allowed": [
+      "tests/test_collective.py::test_authority_and_epistemic_status",
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_action.py::test_invitation_acceptance_is_atomic_persistent_idempotent_and_does_not_create_a_contract",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_reconstruction.py::test_dispute_prior_relationship_and_contact_are_separate_layers",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "engine.respond_contact.rejected": [
+      "tests/test_collective.py::test_authority_and_epistemic_status",
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_action.py::test_invitation_acceptance_is_atomic_persistent_idempotent_and_does_not_create_a_contract",
+      "tests/test_decisions.py::test_coverage_records_observed_results_and_rejects_stale_manifests",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries"
+    ],
+    "engine.respond_invitation.allowed": [
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_playability.py::test_invite_and_respond_execute_in_gathering_fixture",
+      "tests/test_relational_navigation.py::test_gathering_attendance_gate_remains_separate_from_verified_outcome",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "engine.respond_invitation.rejected": [
+      "tests/test_engine.py::test_gathering_requires_recipient_consent_and_attendance"
+    ],
+    "engine.resume.allowed": [
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit"
+    ],
+    "engine.retract_relationship_claim.allowed": [
+      "tests/test_curation.py::test_canonical_claim_ownership_and_duplicates_follow_author_and_target_merges",
+      "tests/test_reconstruction.py::test_distinct_players_corroborate_and_can_retract_only_their_own_claim"
+    ],
+    "engine.retract_relationship_claim.rejected": [
+      "tests/test_reconstruction.py::test_distinct_players_corroborate_and_can_retract_only_their_own_claim"
+    ],
+    "engine.reverse_profile_merge.allowed": [
+      "tests/test_curation.py::test_merge_is_previewed_resolvable_and_reversible_without_rewriting_claims",
+      "tests/test_curation.py::test_merge_suppresses_self_links_and_reversal_restores_them_with_attribution"
+    ],
+    "engine.reverse_profile_merge.rejected": [
+      "tests/test_curation.py::test_player_cannot_correct_hide_merge_or_reverse_identity"
+    ],
+    "engine.send_contact.allowed": [
+      "tests/test_collective.py::test_authority_and_epistemic_status",
+      "tests/test_collective.py::test_competing_actions_and_exact_retries[False]",
+      "tests/test_collective.py::test_competing_actions_and_exact_retries[True]",
+      "tests/test_collective.py::test_interrupted_append_recovers_and_retries",
+      "tests/test_collective.py::test_replay_and_fork_authority_are_distinct",
+      "tests/test_collective_action.py::test_both_gameplay_pathways_and_unique_actionable_inbox",
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_action.py::test_invitation_acceptance_is_atomic_persistent_idempotent_and_does_not_create_a_contract",
+      "tests/test_collective_action.py::test_network_scopes_layer_filters_coverage_and_real_3d_are_read_only",
+      "tests/test_decisions.py::test_context_uses_real_permissions_and_never_commits",
+      "tests/test_decisions.py::test_coverage_records_observed_results_and_rejects_stale_manifests",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_inviting_from_the_exercise_uses_the_existing_recipient_inbox",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_reconstruction.py::test_dispute_prior_relationship_and_contact_are_separate_layers",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "engine.send_contact.rejected": [
+      "tests/test_collective.py::test_authority_and_epistemic_status",
+      "tests/test_collective.py::test_competing_actions_and_exact_retries[False]",
+      "tests/test_collective.py::test_competing_actions_and_exact_retries[True]"
+    ],
+    "engine.set_profile_visibility.allowed": [
+      "tests/test_curation.py::test_correction_visibility_and_provenance_keep_raw_source_and_authority",
+      "tests/test_network_reconstruction.py::test_an_open_inspector_survives_a_recorded_visibility_correction"
+    ],
+    "engine.set_profile_visibility.rejected": [
+      "tests/test_curation.py::test_player_cannot_correct_hide_merge_or_reverse_identity"
+    ],
+    "engine.suspend.allowed": [
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit"
+    ],
+    "engine.terminate.allowed": [
+      "tests/test_engine.py::test_overcommitment_is_atomic_and_termination_releases_reservations",
+      "tests/test_engine.py::test_suspension_dispute_and_termination_are_explicit"
+    ],
+    "engine.verify.allowed": [
+      "tests/test_collective_play.py::test_contract_is_immediate_connected_stable_and_replayable_through_lifecycle",
+      "tests/test_collective_play.py::test_inbox_tracks_amendments_authorisation_obligations_and_independent_review",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[bilateral-logs]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[commons-gathering]",
+      "tests/test_engine.py::test_all_scenarios_replay_and_independent_mode_objectives[montreal-geneva]",
+      "tests/test_engine.py::test_bilateral_agreement_has_distinct_commitment_commit_and_verified_outcome",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification",
+      "tests/test_engine.py::test_replay_detects_commit_state_tampering",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[bilateral-logs]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[commons-gathering]",
+      "tests/test_extraction_baseline.py::test_frozen_trajectory[montreal-geneva]",
+      "tests/test_mechanics_freeze.py::test_invitation_and_versioned_contract_survive_process_restart_and_every_prefix",
+      "tests/test_network_reconstruction.py::test_tutorials_use_practice_roles_while_the_main_player_and_world_are_preserved",
+      "tests/test_playability.py::test_each_configured_tutorial_completes_through_the_engine_with_exact_retries",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes",
+      "tests/test_trajectory.py::test_alternative_branches_do_not_change_authoritative_memory_or_sqlite",
+      "tests/test_trajectory.py::test_branch_parent_and_resolved_diagnostics_cannot_be_silently_reassigned",
+      "tests/test_trajectory.py::test_contract_lifecycle_and_partial_acceptances_stay_distinct",
+      "tests/test_trajectory.py::test_loaded_package_document_is_detached_and_inspection_cannot_write_back",
+      "tests/test_trajectory.py::test_native_serialization_preserves_ids_order_provenance_and_all_mutations",
+      "tests/test_trajectory.py::test_real_pinned_package_represents_sequence_without_artificial_coordinates",
+      "tests/test_trajectory.py::test_rejected_hypothetical_action_is_diagnostic_and_creates_no_transition",
+      "tests/test_trajectory.py::test_serialized_state_hashes_and_event_order_are_validated_by_commons",
+      "tests/test_trajectory.py::test_unsupported_adapter_version_fails_and_unknown_record_fields_are_retained",
+      "tests/test_tui.py::test_entered_hot_seat_commands_complete_contract_and_show_actual_trajectory"
+    ],
+    "engine.verify.rejected": [
+      "tests/test_collective_action.py::test_direct_contract_does_not_allow_a_third_party_to_forge_execution_or_verification",
+      "tests/test_engine.py::test_fulfilment_requires_execution_and_is_separate_from_verification"
+    ],
+    "engine.withdraw_contact.allowed": [
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering",
+      "tests/test_collective_action.py::test_invitation_acceptance_is_atomic_persistent_idempotent_and_does_not_create_a_contract"
+    ],
+    "engine.withdraw_contact.rejected": [
+      "tests/test_collective_action.py::test_contact_decline_withdraw_draft_and_expiry_are_distinct_from_gathering"
+    ],
+    "game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.option.3cbc87c7681f": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.execute.push.06a43bdcc7e3.529f58f8aa58.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.handle.back.71bcc7084fe9.d023bb358258.back": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.handle.push.dba790964dc5.33338af08098.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.handle.push.eab7459aaaf2.4004de978943.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.handle.resume.5aa90c256d0a.910e0c8cf2d0.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.matrix_key.push.0b037dfb0d22.57f522abde52.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.push.push.2a788cca2485.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.application.TerminalGame.select_entry.push.0467897444f5.0ad4460ea8c1.navigate": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.option.3cbc87c7681f": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.option.d83fae1fd070": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.option.3cbc87c7681f": [
+      "tests/test_decisions.py::test_coverage_records_observed_results_and_rejects_stale_manifests",
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.option.3e75895617f8": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ],
+    "game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.option.3cbc87c7681f": [
+      "tests/test_terminal.py::test_independent_terminal_negotiates_verifies_and_resumes"
+    ]
+  }
+}

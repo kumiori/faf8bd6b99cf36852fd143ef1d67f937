@@ -6,7 +6,7 @@ import unicodedata
 
 from .navigation import NAVIGATION
 from .screen import Cancelled, Screen
-from .text import clean, folded, clip, column_slice
+from .text import clean, folded, clip, column_slice, display_width
 
 
 class CursesViewport:
@@ -65,13 +65,61 @@ class CursesViewport:
             except self.curses.error:
                 pass  # A resize or bottom-right cell can invalidate a draw.
 
+    def draw_panel(self, screen, context, notice):
+        from dataclasses import replace
+        width, height = self.size()
+        self.window.erase()
+        base = replace(screen, panel=None)
+        panel = replace(screen.panel, panel=None, header_indicator=screen.header_indicator,
+                        header_colour=screen.header_colour,
+                        region='explore' if screen.panel_focused else 'details',
+                        reveal=screen.panel_focused and screen.panel.reveal)
+        if width < 90:
+            chosen = panel if screen.panel_focused else base
+            chosen.footer += ' · Tab Main/Context'
+            result = self.draw(chosen, context, notice)
+            return {'panel' if screen.panel_focused else 'main': result}
+
+        right_width = min(52, max(32, width//3))
+        left_width = width-right_width-1
+
+        def child(window):
+            view = object.__new__(type(self))
+            view.__dict__.update(self.__dict__)
+            view.window = window
+            return view
+
+        left = child(self.window.derwin(height, left_width, 0, 0))
+        right = child(self.window.derwin(height, right_width, 0, left_width+1))
+        main_scroll = left.draw(base, context, '' if screen.panel_focused else notice)
+        result = right.draw(panel, 'Tab Main view' if screen.panel_focused else 'Tab Context panel',
+                            notice if screen.panel_focused else '')
+        for row in range(height):
+            try:
+                self.window.addnstr(row, left_width, '|', 1, self.colour_style('#f0c75e'))
+            except self.curses.error:
+                pass
+        self.window.refresh()
+        self.last_screen = screen
+        return {'main': main_scroll, 'panel': result}
+
     def draw(self, screen, context='', notice=''):
+        if screen.panel is not None:
+            return self.draw_panel(screen, context, notice)
         self.last_screen = screen
         width, height = self.size(); self.window.erase()
         self.put(0, screen.title, self.curses.A_BOLD)
+        if screen.header_indicator:
+            text = self.safe(screen.header_indicator)
+            column = max(0, width-display_width(text)-2)
+            try:
+                self.window.addnstr(0, column, text, len(text),
+                                   self.colour_style(screen.header_colour, None, True))
+            except self.curses.error:
+                pass
         self.put(1, context)
         if screen.navigation:
-            self.put(2, NAVIGATION)
+            self.put(2, screen.navigation_text or NAVIGATION)
         if screen.breadcrumb:self.put(3,screen.breadcrumb)
         body_start=4 if screen.breadcrumb else 3
         body_height = max(1, height-body_start-3)
@@ -102,6 +150,8 @@ class CursesViewport:
             add_line('EXPLORE' + ('  <' if screen.region == 'explore' else ''), self.curses.A_BOLD)
         entry_starts = []
         for i, (label, _) in enumerate(screen.entries if screen.show_entries else []):
+            if i in screen.entry_sections:
+                add_line(screen.entry_sections[i], self.curses.A_BOLD)
             entry_starts.append(len(content))
             active = screen.region == 'explore' and i == screen.selected
             prefix = '> ' if active else '  '
@@ -147,7 +197,20 @@ class CursesViewport:
     def message(self, screen):
         self.draw(screen)
 
+    def poll_key(self, timeout_ms):
+        self.window.timeout(timeout_ms)
+        try:
+            return self.key()
+        except self.curses.error:
+            return None
+        finally:
+            self.window.timeout(-1)
+
     def key(self):
+        pending = getattr(self, '_pending_key', None)
+        if pending is not None:
+            self._pending_key = None
+            return pending
         key = self.window.get_wch()
         mapping = {self.curses.KEY_UP: 'up', self.curses.KEY_DOWN: 'down', self.curses.KEY_LEFT: 'left',
                    self.curses.KEY_RIGHT: 'right', self.curses.KEY_NPAGE: 'pagedown', self.curses.KEY_PPAGE: 'pageup',
@@ -156,6 +219,49 @@ class CursesViewport:
         if key in {'\x03', '\x04'}:
             raise EOFError
         return mapping.get(key, key)
+
+    def navigation_key(self, timeout_ms=None):
+        key = self.poll_key(timeout_ms) if timeout_ms else self.key()
+        if key not in {'up', 'down', 'left', 'right', 'pageup', 'pagedown'}:
+            return key
+        # Coalesce a queued burst of the same direction. Preserve the following command.
+        self.window.timeout(0)
+        try:
+            for _ in range(64):
+                try:
+                    following = self.key()
+                except self.curses.error:
+                    break
+                if following != key:
+                    self._pending_key = following
+                    break
+        finally:
+            self.window.timeout(-1)
+        return key
+
+    def confirm(self, title, lines, context):
+        index = 0
+        while True:
+            self.draw(Screen(title, list(lines), [('CONFIRM', True), ('CANCEL', False)],
+                             'Enter Choose · y Confirm · n/Esc Cancel', selected=index, navigation=False), context)
+            key = self.key()
+            if key in {'up', 'down', 'left', 'right', 'tab'}:
+                index = 1-index
+            elif key in {'n', 'esc', 'b'}:
+                return False
+            elif key == 'enter' or key == 'y':
+                # Scripts and terminals may send y followed by Enter in one input burst.
+                self.window.timeout(0)
+                try:
+                    following = self.key()
+                    if following not in {'enter', 'y'}:
+                        self._pending_key = following
+                except self.curses.error:
+                    pass
+                finally:
+                    self.window.timeout(-1)
+                return key == 'y' or index == 0
+            # Other keys leave the selected option and dialog intact.
 
     def prompt(self, title, lines, context):
         value = ''
@@ -184,7 +290,7 @@ class CursesViewport:
             if key in {'y', 'n', 'esc', 'b'}:
                 return key == 'y'
 
-    def choose(self, title, items, label, context, *, preview=None):
+    def choose(self, title, items, label, context, *, preview=None, section=None, header_indicator=''):
         index = 0; query = ''; scroll = 0; region = 'explore'
         while True:
             filtered = [item for item in items if folded(query) in folded(label(item))]
@@ -195,10 +301,18 @@ class CursesViewport:
                           '/ changes search; Enter confirms the current choice.', 'Esc/b goes back.']
                 if filtered:
                     lines += ['Selected: '+label(filtered[index])]
+            sections = {}
+            previous = None
+            if section:
+                for i, item in enumerate(filtered):
+                    current = section(item)
+                    if current != previous:
+                        sections[i] = current
+                    previous = current
             self.draw(Screen(title, lines, [(label(item), item) for item in filtered],
                 'Enter Confirm · Tab Regions · / Search · '+('v Preview · ' if preview else '')+'Esc/b Back',
                 index, scroll if region == 'explore' else 0, navigation=False,
-                show_entries=region == 'explore', reveal=region == 'explore'), context)
+                show_entries=region == 'explore', reveal=region == 'explore', entry_sections=sections, header_indicator=header_indicator), context)
             key = self.key()
             if key in {'b', 'q', 'esc'}:
                 if not self.form_active or self.confirm_discard(context):
@@ -224,7 +338,7 @@ class CursesViewport:
                 details = preview(filtered[index]); offset = 0
                 while True:
                     shown = self.draw(Screen('PROFILE PREVIEW',details,footer='PgUp/PgDn Scroll · Enter or b Return',
-                                             scroll=offset,navigation=False),context)
+                                             scroll=offset,navigation=False,header_indicator=header_indicator),context)
                     key = self.key()
                     if key in {'enter','b','esc','q'}: break
                     if key in {'pageup','pagedown','up','down'}:
@@ -276,14 +390,18 @@ class LineViewport:
         return line.strip() or 'enter'
 
     def draw(self, screen, context='', notice=''):
-        lines = [screen.title, context, screen.breadcrumb, *screen.lines]
+        if screen.panel is not None:
+            from dataclasses import replace
+            self.draw(replace(screen, panel=None), context)
+            return self.draw(screen.panel, 'CONTEXT PANEL', notice)
+        lines = [screen.title, screen.header_indicator, context, screen.breadcrumb, *screen.lines]
         if screen.split_regions:
             lines.extend(('DECISIONS', *(f'  a{i} {title}' for i, (title, _) in enumerate(screen.decisions, 1))))
             lines.append('EXPLORE')
         lines.extend(f'  {i} {title}' for i, (title, _) in enumerate(screen.entries if screen.show_entries else [], 1))
         lines.extend(screen.details)
         if screen.navigation:
-            lines.append(NAVIGATION)
+            lines.append(screen.navigation_text or NAVIGATION)
         lines.extend((notice, screen.footer))
         self.output.write('\n'.join(line for line in lines if line) + '\n')
         self.output.flush()
@@ -309,9 +427,9 @@ class LineViewport:
             if not self.form_active or self.confirm_discard(context):
                 return None
 
-    def choose(self, title, items, label, context, *, preview=None):
+    def choose(self, title, items, label, context, *, preview=None, section=None, header_indicator=''):
         while True:
-            self.draw(Screen(title, entries=[(label(item), item) for item in items], navigation=False), context)
+            self.draw(Screen(title, entries=[(label(item), item) for item in items], navigation=False, header_indicator=header_indicator), context)
             key = self.key()
             if key in {'b', 'esc', 'q'}:
                 if not self.form_active or self.confirm_discard(context):

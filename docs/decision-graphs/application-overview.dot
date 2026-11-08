@@ -1,0 +1,65 @@
+digraph decisions {
+  rankdir=LR;
+  graph [newrank=true, splines=polyline, ranksep=1];
+  node [fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10];
+  label="Coverage / audit: screens=59 · questions=203 · options=633 · engine actions=34 · unreachable screens=0 ·\nunmapped options=126 · missing recovery paths=32 · untested transitions=515 · uninstrumented transitions=351\nThis contract verifies the reconstruction slice only. Shared handoff destinations and the remaining\napplication require their own contracts and evidence.; Source-only adapters remain uncertain outside the\ndeclared scope.";
+  subgraph cluster_570dd38dc5ba {
+    label="Ecosystem";
+    "overview.ecosystem" [id="overview.ecosystem", label="ecosystem · 45 states/definitions", shape=box];
+  }
+  subgraph cluster_ed9f6f250686 {
+    label="Engine";
+    "overview.engine" [id="overview.engine", label="engine · 102 states/definitions", shape=box];
+  }
+  subgraph cluster_e63fd7892e86 {
+    label="Exercise.Reconstruct";
+    "overview.exercise.reconstruct" [id="overview.exercise.reconstruct", label="exercise.reconstruct · 132 states/definitions", shape=box];
+  }
+  subgraph cluster_000f14e10251 {
+    label="Exercises";
+    "overview.exercises" [id="overview.exercises", label="exercises · 14 states/definitions", shape=box];
+  }
+  subgraph cluster_45441664c0ba {
+    label="Gathering";
+    "overview.gathering" [id="overview.gathering", label="gathering · 4 states/definitions", shape=box];
+  }
+  subgraph cluster_d1a1c362651a {
+    label="Scenarios";
+    "overview.scenarios" [id="overview.scenarios", label="scenarios · 7 states/definitions", shape=box];
+  }
+  subgraph cluster_a4d26868017c {
+    label="Shared";
+    "overview.shared" [id="overview.shared", label="shared · 547 states/definitions", shape=box];
+  }
+  "overview.ecosystem" -> "overview.ecosystem" [id="overview.ecosystem.to.overview.ecosystem", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.ecosystem" -> "overview.shared" [id="overview.ecosystem.to.overview.shared", label="Unverified source observations", color="#ef6c00", style=solid];
+  "unresolved.overview.ecosystem.to.unresolved" [label="Unresolved", shape=octagon];
+  "overview.ecosystem" -> "unresolved.overview.ecosystem.to.unresolved" [id="overview.ecosystem.to.unresolved", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.engine" -> "overview.engine" [id="overview.engine.to.overview.engine", label="Declared transitions", color="#7b1fa2", style=solid];
+  "overview.exercise.reconstruct" -> "overview.engine" [id="overview.exercise.reconstruct.to.overview.engine", label="Declared transitions", color="#607d8b", style=solid];
+  "overview.exercise.reconstruct" -> "overview.exercise.reconstruct" [id="overview.exercise.reconstruct.to.overview.exercise.reconstruct", label="Declared transitions", color="#7b1fa2", style=solid];
+  "overview.exercises" -> "overview.exercises" [id="overview.exercises.to.overview.exercises", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.exercises" -> "overview.shared" [id="overview.exercises.to.overview.shared", label="Unverified source observations", color="#ef6c00", style=solid];
+  "unresolved.overview.exercises.to.unresolved" [label="Unresolved", shape=octagon];
+  "overview.exercises" -> "unresolved.overview.exercises.to.unresolved" [id="overview.exercises.to.unresolved", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.gathering" -> "overview.shared" [id="overview.gathering.to.overview.shared", label="Unverified source observations", color="#ef6c00", style=solid];
+  "unresolved.overview.gathering.to.unresolved" [label="Unresolved", shape=octagon];
+  "overview.gathering" -> "unresolved.overview.gathering.to.unresolved" [id="overview.gathering.to.unresolved", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.scenarios" -> "overview.scenarios" [id="overview.scenarios.to.overview.scenarios", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.scenarios" -> "overview.shared" [id="overview.scenarios.to.overview.shared", label="Unverified source observations", color="#ef6c00", style=solid];
+  "unresolved.overview.scenarios.to.unresolved" [label="Unresolved", shape=octagon];
+  "overview.scenarios" -> "unresolved.overview.scenarios.to.unresolved" [id="overview.scenarios.to.unresolved", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.shared" -> "overview.ecosystem" [id="overview.shared.to.overview.ecosystem", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.shared" -> "overview.engine" [id="overview.shared.to.overview.engine", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.shared" -> "overview.exercises" [id="overview.shared.to.overview.exercises", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.shared" -> "overview.gathering" [id="overview.shared.to.overview.gathering", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.shared" -> "overview.scenarios" [id="overview.shared.to.overview.scenarios", label="Unverified source observations", color="#ef6c00", style=solid];
+  "overview.shared" -> "overview.shared" [id="overview.shared.to.overview.shared", label="Unverified source observations", color="#ef6c00", style=solid];
+  "unresolved.overview.shared.to.unresolved" [label="Unresolved", shape=octagon];
+  "overview.shared" -> "unresolved.overview.shared.to.unresolved" [id="overview.shared.to.unresolved", label="Unverified source observations", color="#ef6c00", style=solid];
+  subgraph cluster_legend {
+    label="Legend (presentation only)";
+    legend [shape=note, label="Grey: navigation / disabled\nPurple: state change\nAmber: conditional / extraction uncertainty\nRed: confirmed graph defect\nGreen: recovery"];
+  }
+}

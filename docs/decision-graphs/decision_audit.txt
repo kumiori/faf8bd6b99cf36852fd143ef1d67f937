@@ -1,0 +1,17 @@
+DECISION GRAPH AUDIT
+
+Screens:                         59
+Questions:                      203
+Options:                        633
+Engine actions:                  34
+Unreachable screens:              0
+Unmapped options:               126
+Missing recovery paths:          32
+Untested transitions:           515
+Uninstrumented transitions:     351
+
+ERROR: 158 · WARNING: 1111 · INFO: 0
+Detailed diagnostics are in --audit-output. Exceptions remain visible.
+terminal: source_adapter (imperative branches remain unresolved)
+commons: source_adapter (imperative branches remain unresolved)
+commons.reconstruction.v1: executable_contract

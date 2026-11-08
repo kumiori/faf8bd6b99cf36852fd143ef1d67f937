@@ -57,7 +57,9 @@ def person_labels(world):
     """
     groups = {}
     labels = {}
-    for actor in world['actors'].values():
+    from game_gamer.runtime.curation import profile
+    for original in world['actors'].values():
+        actor = profile(world, original['id'])
         if actor['kind']!='person': continue
         label=display_label({k:v for k,v in actor.items() if k!='display_name'})
         labels[actor['id']]=label

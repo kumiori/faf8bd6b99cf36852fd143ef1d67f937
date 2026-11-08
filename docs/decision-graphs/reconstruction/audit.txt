@@ -1,0 +1,15 @@
+DECISION GRAPH AUDIT
+
+Screens:                         11
+Questions:                        8
+Options:                         59
+Engine actions:                   6
+Unreachable screens:              0
+Unmapped options:                 0
+Missing recovery paths:           0
+Untested transitions:            18
+Uninstrumented transitions:       0
+
+ERROR: 0 · WARNING: 18 · INFO: 0
+Detailed diagnostics are in --audit-output. Exceptions remain visible.
+commons.reconstruction.v1: executable_contract

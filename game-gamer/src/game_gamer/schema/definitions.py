@@ -4,6 +4,8 @@ from dataclasses import asdict
 import json
 
 from ..model import Actor, DomainError, GovernancePolicy, Resource, require
+from .reconstruction_sources import prepare_reconstruction_sources
+from ..runtime.reconstruction import CLAIM_KINDS
 from ..runtime.engine import CollectiveEngine, instant, text
 
 WORLD_SCHEMA = 'game-gamer/world/v1'
@@ -62,7 +64,7 @@ def _validate_references(world):
             require(record['unit'] is None or isinstance(record['unit'], str), 'invalid_unit')
     for relation in world['relationships'].values():
         require(relation['source_id'] in actors and relation['target_id'] in actors, 'unknown_actor')
-        require(relation['kind'] not in {'contact_invitation', 'acknowledged_connection', 'invited'},
+        require(relation['kind'] not in {'contact_invitation', 'acknowledged_connection', 'invited', *CLAIM_KINDS},
                 'relationship_requires_action')
     for objective in world['objectives'].values():
         success = objective['success']
@@ -80,7 +82,7 @@ def initialise(definition):
     require(isinstance(definition, dict) and definition.get('schema') == WORLD_SCHEMA, 'unsupported_world_schema')
     try:
         require(set(definition) <= {*_SEED_TABLES, 'schema', 'scope_id', 'revision', 'execution_mode',
-                                    'world_time', 'title'}, 'unknown_world_field')
+                                    'world_time', 'title', 'reconstruction_sources'}, 'unknown_world_field')
         require(json.loads(json.dumps(definition, sort_keys=True, allow_nan=False)) == definition,
                 'invalid_world_definition')
         scope = text(definition['scope_id'], 'scope_required')
@@ -106,6 +108,10 @@ def initialise(definition):
                          'schema_version': WORLD_SCHEMA}
         world = _build_world(game, definition, configuration)
         _validate_references(world)
+        sources = definition.get('reconstruction_sources', [])
+        require(isinstance(sources, list), 'invalid_reconstruction_sources')
+        world['evidence'].update(prepare_reconstruction_sources(sources, world['actors'].keys()))
+        require(not world['evidence'].keys() & ids, 'invalid_seed_id')
         game._commit(game.get_world(), world, 'world.initialized')
         return game
     except DomainError:

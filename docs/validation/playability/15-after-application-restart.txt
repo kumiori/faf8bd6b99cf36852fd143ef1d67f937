@@ -1,0 +1,32 @@
+RECONSTRUCT THE NETWORK                                                                             
+Playing: Casey / Simulation / Montreal Commons / v4                                                 
+m Paths | e Ecosystem | g Gathering | s Scenarios | C Contracts | i Inbox | p Player                
+Ecosystem > Exercises > Alex                                                                        
+Who did you connect with in Montreal?                                                               
+3 people / 1 recalled pairs / 2 directed claims / 2 contributors                                    
+1 corroborated / 0 unilateral / 0 disputed / Your claims 1                                          
+0 pending invitations / 0 accepted new connections                                                  
+WHO / DIRECTORY                                   CONNECTIONS / NETWORK >                           
+3 matches / / Search / f Filter                   Montreal reconstruction / Neighbourhood           
+> Alex                                            1 observations / L Layers / v View / [ ] Page     
+  Casey                                                                                             
+  Morgan                                                                                            
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                      @-------------------------------------P       
+                                                   1 Alex                                2 Casey    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                  Dotted: recall / solid: mutual                    
+                                                  Dashed: invite / ring: no recall                  
+                                                  Casey -- Alex / Mutual recollection               
+                                                                                                    
+                                                                                                    
+Esc/b Back  ? Help | Up/Down Select  Enter Inspect  c Connect  n Network  / Search  f Filter  o Sor 

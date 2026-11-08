@@ -1,0 +1,34 @@
+CURATOR / MERGE PREVIEW                                                                                                              ◆ CURATOR  
+Playing: Alex · Simulation · Montréal Commons · v4                                                                                              
+m Paths | e Ecosystem | g Gathering | s Scenarios | c Contracts | i Inbox | p Player                                                            
+Ecosystem > Exercises > Casey (2) > Casey (2) > Casey (2)                                                                                       
+Identity must have been explicitly checked with the participant or an authoritative source.                                                     
+Source identity: fixture-duplicate                                                                                                              
+Canonical identity: notion:person:3b7bb3407a95a248f63e8987                                                                                      
+Relationships touched: 2                                                                                                                        
+Self-links suppressed in projections: 0                                                                                                         
+Historical records retain their original identifiers.                                                                                           
+> [1] CONFIRM VERIFIED IDENTITY AND MERGE                                                                                                       
+  [2] CANCEL                                                                                                                                    
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+Esc/b Back  ? Help | Enter Choose · b Cancel · u Curator                                                                                        

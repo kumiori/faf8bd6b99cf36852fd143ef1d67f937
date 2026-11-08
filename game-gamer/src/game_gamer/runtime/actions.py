@@ -6,7 +6,7 @@ import json
 from ..model import DomainError, require
 from .engine import FIELDS, text
 
-_TARGET_FIELDS = ('agreement_id', 'invitation_id', 'resource_id', 'id', 'objective_id')
+_TARGET_FIELDS = ('agreement_id', 'invitation_id', 'resource_id', 'id', 'objective_id', 'claim_id', 'target_id', 'merge_id', 'request_id')
 
 
 @dataclass(frozen=True, kw_only=True)

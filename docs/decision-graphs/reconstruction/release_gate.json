@@ -1,0 +1,84 @@
+{
+  "audit_metrics": {
+    "engine_actions": 6,
+    "missing_recovery_paths": 0,
+    "options": 59,
+    "questions": 8,
+    "screens": 11,
+    "uninstrumented_transitions": 0,
+    "unmapped_options": 0,
+    "unreachable_screens": 0,
+    "untested_transitions": 18
+  },
+  "complete_application_verified": false,
+  "contract_digest": "6d9cd2700c7333c4922be599d2b4d562e63c02e32057e5a623cccd2fc75b820a",
+  "criteria": {
+    "critical_lifecycle_checks": {
+      "missing": [],
+      "passed": true
+    },
+    "engine_state_consistency": {
+      "passed": true,
+      "violations": []
+    },
+    "missing_recovery_paths": {
+      "actual": 0,
+      "passed": true,
+      "required": 0
+    },
+    "navigation_responsiveness": {
+      "max_p95_ms": 100,
+      "measurement": {
+        "authoritative_history_unchanged": true,
+        "contract_digest": "6d9cd2700c7333c4922be599d2b4d562e63c02e32057e5a623cccd2fc75b820a",
+        "fixture_events": 2,
+        "fixture_people": 200,
+        "limitations": "Synthetic local read-only frames with in-memory tracing; not deployment load or human usability acceptance.",
+        "max_ms": 4.453,
+        "measurement": "handle_and_render",
+        "median_ms": 3.88,
+        "p95_ms": 4.112,
+        "samples": 100,
+        "schema_version": "game-gamer/responsiveness/v1",
+        "viewport": {
+          "height": 34,
+          "width": 144
+        }
+      },
+      "passed": true
+    },
+    "persistence_and_replay": {
+      "passed": true
+    },
+    "unexpected_execution_errors": {
+      "observations": [],
+      "passed": true
+    },
+    "uninstrumented_critical_transitions": {
+      "ids": [],
+      "passed": true,
+      "required": 0
+    },
+    "unmapped_options": {
+      "actual": 0,
+      "passed": true,
+      "required": 0
+    },
+    "unresolved_source_branches": {
+      "findings": [],
+      "passed": true,
+      "review": "Executable registrations replace source inference within this scope. External handoffs explicitly terminate the scope."
+    },
+    "untested_critical_transitions": {
+      "ids": [],
+      "passed": true,
+      "required": 0
+    }
+  },
+  "limitations": [
+    "This contract verifies the reconstruction slice only. Shared handoff destinations and the remaining application require their own contracts and evidence."
+  ],
+  "passed": true,
+  "schema_version": "game-gamer/release-gate/v1",
+  "scope": "exercise.reconstruct"
+}

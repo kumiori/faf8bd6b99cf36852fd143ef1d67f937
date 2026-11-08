@@ -1,0 +1,34 @@
+CONNECTION / PROVENANCE                                                                                                              ◆ CURATOR  
+Playing: Alex · Simulation · Montréal Commons · v4                                                                                              
+m Paths | e Ecosystem | g Gathering | s Scenarios | c Contracts | i Inbox | p Player                                                            
+Ecosystem > Exercises > Casey (2) > Casey (2) > Casey (2)                                                                                       
+Alex → Casey (2) / recollection_claim                                                                                                           
+{                                                                                                                                               
+  "graph_identity": "montreal-forum",                                                                                                           
+  "display_group": "reconstruction",                                                                                                            
+  "status": "claimed",                                                                                                                          
+  "event_refs": [                                                                                                                               
+    "commit_000004"                                                                                                                             
+  ],                                                                                                                                            
+  "source_record_ids": [                                                                                                                        
+    "relationship_claim_000004"                                                                                                                 
+  ],                                                                                                                                            
+  "provenance": {                                                                                                                               
+    "action_id": "action_000004",                                                                                                               
+    "kind": "player_declaration"                                                                                                                
+  }                                                                                                                                             
+}                                                                                                                                               
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+Esc/b Back  ? Help | PgUp/PgDn Scroll · b Return · u Curator                                                                                    

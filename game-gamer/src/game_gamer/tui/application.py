@@ -8,7 +8,7 @@ from game_gamer import ActionSubmission, Collective, SimulationBinding, epistemi
 from .forms import ActionForms
 from .matrix import AxisLabel, MatrixView, render_matrix
 from .navigation import MODE_KEYS, NavigationState
-from .network import CATEGORIES, draw_graph, focus_graph
+from .network import CATEGORIES, OBJECT_TYPES, draw_graph, focus_graph
 from .screen import Cancelled, Screen, inspector, run_screens
 from .text import label
 from .viewport import LineViewport, action_form, run_curses, supported
@@ -62,13 +62,17 @@ class TerminalGame:
 
     def prepare_screen(self):
         self.width, self.height = self.viewport.size()
+        key = (self.collective.scope_id, self.collective.revision, self.route.extra.get('at'))
+        if getattr(self, '_snapshot_key', None) == key:
+            return
         self.snapshot = self.collective.project(at=self.route.extra.get('at'))
+        self._snapshot_key = (key[0], self.snapshot['version'] if key[2] is None else key[1], key[2])
         self.world = self.snapshot['world']
         self.graph = self.snapshot['network']
 
     def context(self, *, at=None):
         player = self.world['actors'].get(self.binding.actor_id, {}) if self.binding else {}
-        return f"{self.world['configuration']['world']['title']} · {label(player) or 'Choose a player'} · Simulation · v{self.snapshot['version']}"
+        return f"{self.world['configuration']['world']['title']} · Playing as: {label(player) or 'Choose a player'} · Simulation · v{self.snapshot['version']}"
 
     def breadcrumbs(self):
         return ' > '.join(('Ecosystem' if r.kind == 'matrix' else r.kind.title()) +
@@ -183,7 +187,7 @@ class TerminalGame:
         route = self.route
         visual = focus_graph(self.graph, route.target, limit=8, offset=route.extra.get('offset', 0),
                              scope=route.extra.get('scope', 'neighbourhood'), categories=route.extra.get('categories'),
-                             three_d=route.extra.get('three_d', False))
+                             three_d=route.extra.get('three_d', False), object_type=route.extra.get('object_type'))
         if not visual['nodes']:
             return Screen('ECOSYSTEM / NETWORK', ['No matching graph nodes.'])
         route.extra['offset'] = visual['offset']
@@ -293,6 +297,9 @@ class TerminalGame:
 
     def handle(self, key, screen):
         route = self.route
+        if key == 'H':
+            self.push('history')
+            return
         if key == 'resize':
             return
         if key == 'q':
@@ -366,7 +373,10 @@ class TerminalGame:
     def network_key(self, key, screen):
         route = self.route
         extra = route.extra
-        if key == 'tab':
+        if key == 'T':
+            extra['object_type'] = OBJECT_TYPES[self.pick('MULTIPLEX / OBJECT TYPES', list(OBJECT_TYPES), str)]
+            route.index = extra['offset'] = 0
+        elif key == 'tab':
             route.region = 'explore' if route.region == 'canvas' else 'canvas'
         elif key == 'B':
             extra['background'] = self.pick('NETWORK BACKGROUND', ['dim', 'hidden', 'full'], str.title)

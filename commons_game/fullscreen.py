@@ -16,8 +16,12 @@ from .catalogue import affiliations, people
 from .commands import resolve
 from .expertise import cell, matrix
 from .heatmap import BANDS
-from .network_view import CATEGORIES, focus_graph, draw_graph
+from .network_view import CATEGORIES, OBJECT_TYPES, focus_graph, draw_graph
 from .scenario_catalogue import catalogue, objectives_for, scenarios_for
+from . import curator, curation_panel
+from .global_history import history_screen, history_key
+from .exercises import exercise_menu, tutorial_screen, tutorial_key, tutorial_graph
+from .reconstruction import build_exercise, exercise_available, handle_exercise
 from .play import ACTION_EFFECTS, PlayableTerminal
 from .presentation import OBJECTS, clean, display_label, folded, status
 from .tui import ACTION_NAMES, EVENT_NAMES, Cancelled
@@ -39,6 +43,7 @@ class FullScreenTerminal(PlayableTerminal):
     """A screen stack over one shared saved world and one simulated perspective."""
     def __init__(self, game, *, viewport, **options):
         options.pop('output', None)
+        self.transition_trace=options.pop('transition_trace',None)
         super().__init__(game, output=StringIO(), **options)
         self.viewport = viewport
         self.navigation = NavigationState()
@@ -93,14 +98,42 @@ class FullScreenTerminal(PlayableTerminal):
         self.output.seek(0); self.output.truncate()
 
     def context(self, *, at=None):
+        if self.route.kind in {'tutorial', 'tutorial_graph'}:
+            practice = getattr(self, '_tutorial_sessions', {}).get(self.route.target)
+            if practice:
+                step = practice.definition['steps'][min(practice.index, len(practice.definition['steps'])-1)]
+                return f"Practice sandbox · {practice.definition['title']} · Role: {step['actor_id']} · v{practice.collective.project()['version']}"
         actor = self.label(self.session.actor) if self.session else 'Choose a person'
-        focus = ' · Focus: '+self.label(self.focused_actor) if self.focused_actor else ''
-        return f'Playing: {actor}'+focus+' · Simulation · '+self.world()['configuration']['world']['title']+f' · v{len(self.current().project("log"))}' + (' · Historical view' if at is not None else '')
+        if self.route.kind.startswith('curator') or self.route.kind in {'reconstruction', 'reconstruction_graph'}:
+            target = self.route.target
+        elif self.route.kind == 'network' and getattr(self, '_network', {}).get('nodes'):
+            target = self._network['nodes'][self.route.index]['id']
+        else:
+            target = self.focused_actor
+        focus = ' · Inspecting: '+self.label(target) if target else ''
+        if self.route.kind == 'curator' and self.route.extra.get('panel_page') == 'queue':
+            focus = ' · Inspecting: Curation requests'
+        elif self.route.kind == 'curator' and self.route.extra.get('panel_page') == 'review':
+            from game_gamer.runtime.curation_requests import records
+            request = records(self.world()).get(self.route.extra.get('request_id'))
+            if request:
+                focus = ' · Inspecting: Request for '+self.label(request['target_id'])
+        return f'Playing as: {actor}'+focus+' · Simulation · '+self.world()['configuration']['world']['title']+f' · v{self._frame_revision}' + (' · Historical view' if at is not None else '')
+
+    def decorate_screen(self, screen):
+        from game_gamer.tui.navigation import NAVIGATION
+        screen.navigation_text = (screen.navigation_text or NAVIGATION).replace('H History', 'H History | u Context')
+        if self.route.kind not in {'tutorial', 'tutorial_graph'} and curator.allowed(self):
+            screen.header_indicator = '◆ CURATOR'
+            screen.header_colour = '#f0c75e'
+
+    def panel_drawn(self, screen, scroll):
+        curation_panel.finish_frame(self, scroll)
 
     def capture(self, operation):
         self.reset_buffer(); operation()
         return [line for line in self.output.getvalue().strip().splitlines()
-                if not line.startswith('Playing: ') and not (line.strip() and set(line.strip()) <= {'=','-','─'})]
+                if not line.startswith(('Playing as: ', 'Playing: ')) and not (line.strip() and set(line.strip()) <= {'=','-','─'})]
 
     def read(self, prompt='>'):
         result = self.viewport.prompt(prompt, self.output.getvalue().splitlines(), self.context())
@@ -109,7 +142,15 @@ class FullScreenTerminal(PlayableTerminal):
             raise Cancelled
         return result.strip()
 
-    def picker(self, title, items, *, render=None, preview=None):
+    def confirm(self, prompt):
+        confirm = getattr(self.viewport, 'confirm', None)
+        if confirm:
+            result = confirm(prompt, self.output.getvalue().splitlines(), self.context())
+            self.reset_buffer()
+            return result
+        return super().confirm(prompt)
+
+    def picker(self, title, items, *, render=None, preview=None, section=None):
         if not items:
             self.notice = 'No matching choices are available.'
             raise Cancelled
@@ -117,7 +158,12 @@ class FullScreenTerminal(PlayableTerminal):
             if render:
                 return render(item)
             return display_label(item)
-        return self.viewport.choose(title, items, label, self.context(), preview=preview)
+        options = {'preview': preview}
+        if curator.allowed(self) and self.route.kind not in {'tutorial', 'tutorial_graph'}:
+            options['header_indicator'] = '◆ CURATOR'
+        if section is not None:
+            options['section'] = section
+        return self.viewport.choose(title, items, label, self.context(), **options)
 
     def choose(self, prompt, items, label=str):
         return self.picker(prompt, items, render=label)
@@ -130,7 +176,7 @@ class FullScreenTerminal(PlayableTerminal):
         choices = [*roster, {'id': '__development__', 'kind': 'role', 'label': 'Development simulation roles…'}]
         def label(actor):
             orgs = affiliations(self.world(), actor['id'])
-            return display_label(actor) + (' · '+', '.join(orgs) if orgs else '')
+            return display_label(actor) + (' · '+', '.join(orgs) if orgs else '') + (' · CURATOR' if 'curator' in actor.get('roles', []) else '')
         actor = self.picker('WHO WILL YOU PLAY? / search by first name', choices, render=label,
             preview=lambda a: self.capture(lambda: self.inspect_node(a['id'])) if a['id'] != '__development__' else
                 ['Explicit development roles grant simulation authority only. They do not authenticate a real person.'])
@@ -145,8 +191,15 @@ class FullScreenTerminal(PlayableTerminal):
         self.notice = 'Now simulating '+display_label(actor)+'. The shared world is unchanged.'
 
     def choose_mode(self):
-        mode = self.choose('CHOOSE YOUR PATH', list(MODES), lambda name: name.upper()+' · '+MODES[name])
-        self.resume_mode(mode)
+        mode = self.picker('COMMONS GAME / CHOOSE YOUR PATH', [*MODES, 'exercises', 'history'],
+                           render=lambda name: name.upper()+' · '+MODES[name] if name in MODES else
+                           'EXERCISES · Learn the moves that transform a collective.' if name == 'exercises' else
+                           'HISTORY · Inspect the collective event history.',
+                           section=lambda name: 'EXPLORE THE WORLD' if name in MODES else 'WORKSHOP' if name == 'exercises' else 'YOUR ACTIVITY')
+        if mode in {'exercises', 'history'}:
+            self.push(mode)
+        else:
+            self.resume_mode(mode)
 
     def switch_mode(self, mode):
         """Explicitly reopen a mode root (for example x → Matrix)."""
@@ -170,6 +223,8 @@ class FullScreenTerminal(PlayableTerminal):
         self.navigation.push(kind, target, **extra)
 
     def back(self):
+        if self.route.kind == 'reconstruction_graph' and len(self.stack) > 1:
+            self.stack[-2].target = self.route.target
         if not self.navigation.back():
             self.choose_mode()
 
@@ -195,6 +250,18 @@ class FullScreenTerminal(PlayableTerminal):
     def build_screen(self):
         route = self.route
         self.screen = 'inspector' if route.kind == 'inspect' else 'inbox' if route.kind == 'inbox' else 'explorer'
+        if route.kind == 'exercises':
+            return exercise_menu(self)
+        if route.kind == 'tutorial':
+            return tutorial_screen(self)
+        if route.kind == 'tutorial_graph':
+            return tutorial_graph(self)
+        if route.kind.startswith('curator'):
+            if any(r.kind == 'curator' and r.extra.get('contextual') for r in self.stack):
+                return curation_panel.panel_screen(self)
+            return curator.screen(self)
+        if route.kind in {'reconstruction', 'reconstruction_intro', 'reconstruction_filters', 'reconstruction_facet', 'reconstruction_graph', 'reconstruction_layers', 'reconstruction_provenance', 'action_result'}:
+            return build_exercise(self)
         if route.kind == 'matrix':
             return self.matrix_screen()
         if route.kind == 'cell':
@@ -245,13 +312,8 @@ class FullScreenTerminal(PlayableTerminal):
             if not entries: lines.append('No items in this view. F changes the filter; c opens all contracts.')
             return Screen('INBOX / INVITATIONS AND CONTRACTS', lines, entries,
                           'Enter Review  a Actions  F Filter', route.index, route.scroll, wrap_entries=True)
-        if route.kind == 'history':
-            entries = [(EVENT_NAMES.get(e.get('command', {}).get('kind') if e.get('command') else '',
-                                       e['kind'].replace('.', ' ').replace('_', ' '))+' · '+self.label(e['actor_id'])
-                        if e.get('actor_id') in self.world()['actors'] else e['kind'].replace('.', ' '), e['sequence'])
-                       for e in self.current().project('log') if any(m['entity_id'] == route.target for m in e['mutations'])]
-            return Screen('HISTORY / '+self.label(route.target), ['Recorded changes. Enter opens a clearly marked historical view.'],
-                          entries, 'Enter Inspect historical state', route.index, route.scroll)
+        if route.kind in {'history', 'history_event', 'history_object'}:
+            return history_screen(self)
         if route.kind == 'trajectory':
             from .trajectory import frames, project_trajectory
             try:
@@ -324,6 +386,8 @@ class FullScreenTerminal(PlayableTerminal):
                 'Contract: Explore → Decisions → Details. Network: canvas ↔ object list.',
                 'PgUp/PgDn scroll long content. / searches lists and matrix participants.',
                 'a shows permitted actions for an inspected object. c contracts; i inbox; h object history.',
+                'H opens collective History; +/- changes detail; f filters. u opens the focused object context panel.',
+                'Context panel: Tab switches Main/Panel. Only permitted curator operations are shown.',
                 'In a relationship: j invites to connect; k proposes directly. Neither pathway requires the other.',
                 'In a contract: y accepts, j negotiates, R rejects and X withdraws, only where the engine permits.',
                 'Inbox: F chooses a filter. Each canonical object appears once; badges show overlapping categories.',
@@ -332,6 +396,7 @@ class FullScreenTerminal(PlayableTerminal):
                 ': opens typed commands, including open K-001, contract history and available actions.',
                 'd opens optional source and technical details. t trajectory. v verifies replay.',
                 'Network, People, Organisations and Resources: x alternative ecosystem views.',
+                'Reconstruct: c Connect, C Contracts, n Network, / Search, f Filter, o Sort, L Layers, Tab Regions.',
                 'Network: S changes scope, L filters layers, B selects background, [ ] pages, +/− zooms, r rotates.',
                 'Matrix: +/− changes detail, Home returns to origin, f fits the viewport. A + in a numeric cell means inspect the exact value.',
                 'Dark points are off-scope actors; rings are isolated in the full projection. 3D is experimental.',
@@ -373,6 +438,14 @@ class FullScreenTerminal(PlayableTerminal):
         if historical:
             return Screen('HISTORICAL / '+self.label(route.target, world),
                 self.capture(lambda:self.inspect_node(route.target,at=at)), footer='Read-only · b Current context', scroll=route.scroll)
+        if node is None:
+            from game_gamer.runtime.curation import canonical
+            resolved = canonical(world, route.target)
+            links = [('Inspect canonical profile', resolved)] if resolved != route.target and self.node(resolved) else []
+            return Screen('PROFILE / DISCOVERY UPDATED',
+                          ['This profile has a recorded identity or visibility correction.',
+                           'Historical references remain available through h History.'],
+                          links, 'Enter Inspect · h History · b Back', route.index, route.scroll)
         actions = self.object_actions(route.target)
         decision_entries = []
         for action in actions:
@@ -538,7 +611,7 @@ class FullScreenTerminal(PlayableTerminal):
         reverse=cell(projection,self.route.column,self.route.row)
         self._cell = detail
         self.route.extra['relation']=(detail['provider']['id'],detail['requester']['id'])
-        lines = ['Provider: '+display_label(detail['provider'])+' → Requester: '+display_label(detail['requester']),
+        lines = ['Offers → Needs: '+display_label(detail['provider'])+' → '+display_label(detail['requester']),
                  score_text(detail)+' matching declared expertise domain(s)',
                  'Matching expertise: '+(', '.join(detail['matching_domains']) or 'None confirmed'),
                  'Reverse: '+display_label(reverse['provider'])+' → '+display_label(reverse['requester'])+
@@ -553,8 +626,8 @@ class FullScreenTerminal(PlayableTerminal):
         else:lines.append('You may propose new terms as '+self.label(self.playing_actor)+'. They require a separate decision by the other party.')
         if detail['value'] is None:lines.append('Incomplete coverage. Confirmed matches form a lower bound; remaining domains are unknown.')
         elif detail['value']==0:lines.append('No shared selections in this vocabulary; this does not exclude other collaboration.')
-        entries = [('Inspect provider · '+display_label(detail['provider']), detail['provider']['id']),
-                   ('Inspect requester · '+display_label(detail['requester']), detail['requester']['id'])]
+        entries = [('Inspect offers · '+display_label(detail['provider']), detail['provider']['id']),
+                   ('Inspect needs · '+display_label(detail['requester']), detail['requester']['id'])]
         entries += [('Contract · '+self.contract_title(a['id']),a['id']) for a in self.world()['agreements'].values() if pair <= set(a['parties'])]
         if self.playing_actor in pair and not detail['self_pairing']:
             other = next(p for p in pair if p!=self.playing_actor)
@@ -587,7 +660,7 @@ class FullScreenTerminal(PlayableTerminal):
         visual=focus_graph(self.graph_projection(),route.target,related=related,query=route.query,
                            offset=route.extra.get('offset',0),limit=limit,
                            scope=route.extra.get('scope','neighbourhood'),categories=route.extra.get('categories'),
-                           three_d=route.extra.get('three_d',False))
+                           three_d=route.extra.get('three_d',False), object_type=route.extra.get('object_type'))
         if not visual['nodes']:return Screen('NETWORK / HACK TERMINAL',['No matching graph nodes. / Search or b Back.'])
         route.index=min(route.index,len(visual['nodes'])-1);selected=visual['nodes'][route.index]
         route.extra['offset'] = visual['offset']
@@ -598,7 +671,7 @@ class FullScreenTerminal(PlayableTerminal):
                'Scope: '+route.extra.get('scope_label','Player-centred neighbourhood' if route.target==self.playing_actor else 'Selected-actor neighbourhood')+
                (' · EXPERIMENTAL 3D' if route.extra.get('three_d') else ' · Planar'),
                f"Showing {len(visual['nodes'])}/{visual['full_node_count']} nodes · {visual['rendered_relationship_count']}/{visual['full_relationship_count']} edges ({len(visual['edges'])} bundles)",
-               'Layers: '+(', '.join(route.extra['categories']) if route.extra.get('categories') else 'All')+
+               'Types: '+next((name for name, kind in OBJECT_TYPES.items() if kind == route.extra.get('object_type')), 'All types')+' · Layers: '+(', '.join(route.extra['categories']) if route.extra.get('categories') else 'All')+
                f' · Zoom {zoom:.2f}x · Rotation {rotation:.1f} rad',
                f"Context: {len(visual['context_actor_ids'])} off-scope actors · {route.extra.get('background','dim').title()} background · {'o' if self.plain else '∘'} isolated",
                f"Neighbours {visual['offset']+1 if visual['total'] else 0}–{min(visual['total'],visual['offset']+limit)}/{visual['total']} · [ ] Page"]
@@ -607,7 +680,7 @@ class FullScreenTerminal(PlayableTerminal):
         lines = [line if len(line) <= canvas_width else line[:max(0,canvas_width-3)]+'...' for line in lines]
         self._network=visual
         entries = [(self.node_label(n),n['id']) for n in visual['nodes']]
-        footer = 'Enter Inspect  Tab View  S Scope  L Layers  B Background  [ ] Page  f Centre  + - Zoom  r Rotate'
+        footer = 'Enter Inspect  Tab View  T Types  S Scope  L Layers  B Background  [ ] Page  f Centre  + - Zoom  r Rotate'
         if route.region == 'explore' or canvas_height < 3 or canvas_width < 12:
             return Screen('ECOSYSTEM / NETWORK / OBJECT LIST', lines, entries, footer,
                           route.index, route.scroll)
@@ -624,6 +697,20 @@ class FullScreenTerminal(PlayableTerminal):
         route = self.route
         if key == 'resize':
             return
+        if route.kind.startswith('curator') and screen.panel is not None:
+            if curation_panel.handle(self, key, screen):
+                return
+        if key == 'H':
+            self.push('history')
+            return
+        if route.kind in {'history', 'history_event', 'history_object'} and history_key(self, key, screen):
+            return
+        from .reconstruction_transitions import dispatch
+        if dispatch(self,key,screen):
+            return
+        if route.kind == 'reconstruction_intro' and not route.extra.get('opening_finished', False):
+            route.extra['opening_finished'] = True
+            return
         if key == 'q':
             self.finished = True; return
         if key in {'b', 'esc'}:
@@ -634,6 +721,13 @@ class FullScreenTerminal(PlayableTerminal):
             self.choose_mode(); return
         if key == 'p':
             self.select_actor(); return
+        if key == 'u':
+            curation_panel.open_panel(self, screen)
+            return
+        if route.kind.startswith('curator') and curator.handle(self, key, screen):
+            return
+        if route.kind == 'tutorial' and tutorial_key(self, key, screen):
+            return
         if route.kind == 'matrix' and route.matrix.handle(key):
             if key == 'home':
                 route.row = route.column = 0
@@ -687,6 +781,15 @@ class FullScreenTerminal(PlayableTerminal):
             route.reveal = True
             return
         if route.kind=='network':
+            if key == 'T':
+                selected = screen.entries[route.index][1] if screen.entries else route.target
+                name = self.choose('MULTIPLEX / OBJECT TYPES', list(OBJECT_TYPES), str)
+                route.extra.update(object_type=OBJECT_TYPES[name], offset=0)
+                route.index = 0
+                refreshed = self.network_screen()
+                route.index = next((i for i, (_, ident) in enumerate(refreshed.entries) if ident == selected), 0)
+                route.reveal = True
+                return
             if key == 'B':
                 route.extra['background'] = self.choose('NETWORK BACKGROUND', ['dim', 'hidden', 'full'], str.title)
                 return
@@ -773,7 +876,7 @@ class FullScreenTerminal(PlayableTerminal):
             if target:
                 self.push('history', target)
             else:
-                self.notice = 'Inspect an object first to open its history.'
+                self.push('history')
             return
         if key == 'a':
             self.act(screen); return
@@ -824,7 +927,11 @@ class FullScreenTerminal(PlayableTerminal):
             self.notice = 'Reading details. Tab returns to selectable regions.'
         elif key == 'enter' and screen.entries:
             target = screen.entries[min(route.index, len(screen.entries)-1)][1]
-            if route.kind == 'history':
+            from game_gamer.transitions import Choice
+            if isinstance(target,Choice):
+                from .reconstruction_transitions import REGISTRY
+                REGISTRY.execute(target.transition_id,self,payload=target.payload)
+            elif route.kind == 'history':
                 self.push('inspect', route.target, at=target)
             elif isinstance(target,tuple):
                 kind,value=target
@@ -1008,6 +1115,7 @@ class FullScreenTerminal(PlayableTerminal):
             else:self.notice = 'Contract created · PROPOSED · acceptance is still required.' if payload['kind'] == 'propose' else 'Saved. Current-version acceptance and outcome verification remain separate.'
         else:
             self.notice = 'No state changed: '+', '.join(result['errors'])
+        return result
 
     def typed_command(self, raw):
         from .commands import parse
@@ -1079,6 +1187,7 @@ class FullScreenTerminal(PlayableTerminal):
                 else: self.push('inbox')
 
 
-def run_fullscreen(game, *, store=None, plain=False, explore=False):
+def run_fullscreen(game, *, store=None, plain=False, explore=False,transition_trace=None):
     return run_curses(lambda viewport, plain: FullScreenTerminal(
-        game, viewport=viewport, store=store, plain=plain, explore=explore).run(), plain=plain)
+        game, viewport=viewport, store=store, plain=plain, explore=explore,
+        transition_trace=transition_trace).run(), plain=plain)

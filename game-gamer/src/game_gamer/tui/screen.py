@@ -29,6 +29,13 @@ class Screen:
     split_regions: bool = False
     raster_start: int | None = None
     fixed_rows: set[int] = field(default_factory=set)
+    navigation_text: str | None = None
+    refresh_interval_ms: int | None = None
+    header_indicator: str = ''
+    header_colour: str = '#f0c75e'
+    entry_sections: dict[int, str] = field(default_factory=dict)
+    panel: 'Screen | None' = None
+    panel_focused: bool = True
 
 
 def inspector(title, lines, *, links, decisions, details, route, footer='Tab Regions · Enter Open', wrap_entries=True):
@@ -45,14 +52,27 @@ def run_screens(app):
         screen = app.build_screen()
         route = app.route
         screen.breadcrumb = app.breadcrumbs()
-        screen.region = 'explore' if route.kind == 'network' and screen.show_entries else route.region
-        screen.reveal = route.reveal
+        decorate = getattr(app, 'decorate_screen', None)
+        if decorate:
+            decorate(screen)
+        if screen.panel is None:
+            screen.region = 'explore' if route.kind == 'network' and screen.show_entries else route.region
+            screen.reveal = route.reveal
         scroll = app.viewport.draw(screen, app.context(at=route.extra.get('at')), app.notice)
+        if screen.panel is not None:
+            app.panel_drawn(screen, scroll)
         route.reveal = False
         if isinstance(scroll, int) and screen.raster_start is None:
             route.scroll = scroll
+        poll = getattr(app.viewport, 'poll_key', None)
+        navigation_key = getattr(app.viewport, 'navigation_key', None)
+        if navigation_key:
+            key = navigation_key(screen.refresh_interval_ms)
+        else:
+            key = poll(screen.refresh_interval_ms) if poll and screen.refresh_interval_ms else app.viewport.key()
+        if key is None:
+            continue
         app.notice = ''
-        key = app.viewport.key()
         try:
             app.handle(key, screen)
         except Cancelled:

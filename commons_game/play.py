@@ -53,7 +53,14 @@ class PlayableTerminal(Terminal):
 
     def refresh(self):
         """One consistent read-only display frame; writes still go to the store."""
+        revision = self.store.revision() if self.store else self.game.revision
+        token = (str(self.store.path.resolve()) if self.store else id(self.game), revision)
+        if getattr(self, '_frame_token', None) == token:
+            return
         self._frame_game=self.store.load() if self.store else self.game
+        self._frame_token = (token[0], self._frame_game.revision)
+        self._frame_revision = self._frame_game.revision
+        self._projection_cache = {}
         self._frame_world=self._frame_game.get_world()
         self._frame_graph=None
         self._frame_aliases={value:key for key,value in {**contract_aliases(self._frame_world),**invitation_aliases(self._frame_world)}.items()}
@@ -505,6 +512,8 @@ class PlayableTerminal(Terminal):
         payload=self.collect_action(candidate,self.current());self.submit(payload,version)
 
     def collect_action(self,candidate,game):
+        from game_gamer.transitions import active_transition_id,stage
+        tracing_invite=active_transition_id()=='exercise.reconstruct.connect.invite'
         world=game.get_world();kind=candidate['kind']
         if kind in {'send_contact','draft_contact'}:
             target=world['actors'].get(candidate.get('recipient_id') or self._proposal_target)
@@ -512,13 +521,28 @@ class PlayableTerminal(Terminal):
                 target=self.picker('WHOM WOULD YOU LIKE TO CONNECT WITH?',[a for a in people(world) if a['id']!=self.session.actor])
             self.write('Simulating: '+self.label(self.session.actor)+' → '+self.label(target['id']))
             self.write('An invitation proposes contact. It imposes no obligation.')
+            if tracing_invite:stage('question',state_id='exercise.reconstruct.invite.message')
+            message=self.ask('Invitation message?',default='Would you like to explore a possible collaboration?')
+            if tracing_invite:stage('question',state_id='exercise.reconstruct.invite.purpose')
+            purpose=self.ask('Optional invitation purpose (blank for none)?',default='',parse=lambda value:value.strip())
             payload={'kind':kind,'id':f'contact-{len(world["actions"])+1:06}', 'recipient_id':target['id'],
-                     'message':self.ask('Invitation message?',default='Would you like to explore a possible collaboration?'),
-                     'purpose':self.ask('Optional invitation purpose (blank for none)?',default='',parse=lambda value:value.strip())}
+                     'message':message,'purpose':purpose}
             if candidate.get('context'):payload['context']=deepcopy(candidate['context'])
             if kind=='send_contact':
-                delivery=self.choose('INVITATION DELIVERY', ['Send now','Save draft'],str)
-                if delivery=='Save draft':kind=payload['kind']='draft_contact'
+                if tracing_invite:
+                    from .reconstruction_transitions import REGISTRY,P
+                    self._reconstruction_modal=P+'invite.delivery'
+                    stage('question',state_id=P+'invite.delivery')
+                    delivery=self.choose('INVITATION DELIVERY',[REGISTRY.choice(P+'invite.delivery.send'),
+                        REGISTRY.choice(P+'invite.delivery.draft')],lambda choice:choice.label)
+                    selected=REGISTRY.execute(delivery.transition_id,self)
+                    if selected.outcome=='aborted':raise KeyboardInterrupt
+                    if selected.outcome!='completed':raise ValueError('invitation_delivery_failed')
+                    kind=payload['kind']=selected.value
+                    self._reconstruction_modal=None
+                else:
+                    delivery=self.choose('INVITATION DELIVERY', ['Send now','Save draft'],str)
+                    if delivery=='Save draft':kind=payload['kind']='draft_contact'
         elif kind in {'publish_contact','withdraw_contact','respond_contact'}:
             payload=deepcopy(candidate)
             if kind=='respond_contact':
@@ -585,6 +609,7 @@ class PlayableTerminal(Terminal):
         self.write('Who is affected: '+', '.join(self.label(p) for p in affected))
         self.write('What will change: '+ACTION_EFFECTS[kind])
         self.write('This simulated action is not genuine consent by the represented person.')
+        if tracing_invite:stage('question',state_id='exercise.reconstruct.invite.confirm')
         if not self.confirm('Continue?'):raise Cancelled
         return payload
 
@@ -593,7 +618,10 @@ class PlayableTerminal(Terminal):
         return payload
 
     def submit(self,payload,version):
+        from game_gamer.transitions import observe_engine_result,stage
+        stage('submission_requested')
         result=self.session.submit(payload,expected_version=version)
+        observe_engine_result(payload['kind'],result,boundary='host')
         self.refresh()
         if result['ok']:
             target=payload.get('agreement_id') or payload.get('id')

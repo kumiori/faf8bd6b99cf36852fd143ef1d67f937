@@ -5,6 +5,8 @@ from enum import StrEnum
 class EpistemicStatus(StrEnum):
     RECORDED_FACT = 'recorded_fact'
     DECLARATION = 'declaration'
+    CORROBORATION = 'corroboration'
+    HISTORICAL_EVIDENCE = 'historical_evidence'
     INFERENCE = 'inference'
     PROPOSAL = 'proposal'
     ACKNOWLEDGED = 'acknowledged'
@@ -16,6 +18,10 @@ def epistemic_status(record):
     kind, status = record.get('kind'), record.get('status')
     provenance = record.get('provenance', {})
     source_status = provenance.get('epistemic_status')
+    if kind == 'corroborated_recollection':
+        return EpistemicStatus.CORROBORATION
+    if provenance.get('kind') == 'historical_source':
+        return EpistemicStatus.HISTORICAL_EVIDENCE
     if kind in {'contact_invitation', 'invited'}:
         return EpistemicStatus.PROPOSAL
     if kind == 'acknowledged_connection' and status == 'acknowledged':

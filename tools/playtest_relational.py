@@ -65,7 +65,7 @@ async def exercise(d,game,jeanne,partner):
     await d.enter();await d.expect('POTENTIAL COMPLEMENTARITY');await d.expect('Reverse:')
     d.snapshot('03-both-directions')
     await d.send('2');await d.expect('INSPECT / PERSON');await d.expect('Focus: '+other)
-    assert 'Playing: Jeanne' in d.text();d.snapshot('04-counterparty-profile')
+    assert 'Playing as: Jeanne' in d.text();d.snapshot('04-counterparty-profile')
     await d.send('b');await d.expect('POTENTIAL COMPLEMENTARITY');await d.expect('Reverse:')
     await d.send('w');await d.expect('HACK RENDERER');await d.expect('Centre: Jeanne');d.snapshot('05-hack-network')
     visual=focus_graph(game.project('network'),jeanne['id'],related=partner['id'],limit=8)
@@ -73,7 +73,7 @@ async def exercise(d,game,jeanne,partner):
     contract=visual['nodes'][index]['id']
     for _ in range(index):await d.send('\t')
     await d.enter();await d.expect('CONTRACT INSPECTOR');await d.expect('Governing policy');d.snapshot('06-existing-contract')
-    assert 'Playing: Jeanne' in d.text()
+    assert 'Playing as: Jeanne' in d.text()
     preview=FullScreenTerminal(game,viewport=None,plain=True)
     preview.push('inspect',contract);entries=preview.build_screen().entries
     agreement=game.get_world()['agreements'][contract];version=agreement['versions'][agreement['current_version']-1]
@@ -82,7 +82,7 @@ async def exercise(d,game,jeanne,partner):
         i=next(i for i,(_,key) in enumerate(entries) if key==target)
         if i>=9:raise AssertionError('Fixture has too many links for this entered acceptance; use arrows')
         await d.send(str(i+1));await d.expect(expected)
-        assert 'Playing: Jeanne' in d.text()
+        assert 'Playing as: Jeanne' in d.text()
     for party in agreement['parties']:
         await follow(party,'INSPECT / '+('PERSON' if game.get_world()['actors'][party]['kind']=='person' else 'ORGANISATION'))
         await d.send('b');await d.expect('CONTRACT INSPECTOR')
@@ -98,7 +98,7 @@ async def exercise(d,game,jeanne,partner):
     await d.send('b');await d.expect('HACK RENDERER')
     await d.send('b');await d.expect('POTENTIAL COMPLEMENTARITY')
     await d.send('b');await d.expect('HEATMAP');await d.expect('Selected: Jeanne')
-    assert other in d.text() and 'Playing: Jeanne' in d.text()
+    assert other in d.text() and 'Playing as: Jeanne' in d.text()
     d.snapshot('09-restored-context');await d.send('q');d.save()
 
 

@@ -1,0 +1,1946 @@
+flowchart LR
+  %% Canonical IDs are retained in node/edge comments.
+  graph_limits["Coverage / audit: screens=18 · questions=45 · options=113 · engine actions=34 · unreachable screens=4 · unmapped options=22 · missing recovery paths=14 · untested transitions=181 · uninstrumented transitions=68 Source-only interface observations carry extraction uncertainty. Engine definitions and observed calls are not full application verification."]
+  subgraph scope_570dd38dc5ba["Ecosystem"]
+    %% node game_gamer.tui.application.TerminalGame.matrix_key
+    nf536b1771590["TerminalGame.matrix_key"]
+    %% node game_gamer.tui.application.TerminalGame.matrix_screen
+    na260eb3a50fa["TerminalGame.matrix_screen"]
+    %% node game_gamer.tui.application.TerminalGame.matrix_screen.Screen.04ee79e58a53.5f6b0c9b39b3
+    n46caaad1a8d9["ECOSYSTEM / COMPLEMENTARITY MATRIX"]
+    %% node game_gamer.tui.application.TerminalGame.matrix_screen.Screen.de9e3dc774b5
+    n357f3b403b46["ECOSYSTEM / COMPLEMENTARITY MATRIX"]
+    %% node game_gamer.tui.application.TerminalGame.network_key
+    ne33471f85980["TerminalGame.network_key"]
+    %% node game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f
+    nbb3d83cc55ab["NETWORK LAYERS"]
+    %% node game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.return
+    nef8bc4ad9b37["Return selected value to caller"]
+    %% node game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45
+    nb0607ec886b2["NETWORK BACKGROUND"]
+    %% node game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.return
+    nc542a4f96016["Return selected value to caller"]
+    %% node game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8
+    ndc3d07fb35af["NETWORK SCOPE"]
+    %% node game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.return
+    nda0f49296965["Return selected value to caller"]
+    %% node game_gamer.tui.application.TerminalGame.network_screen
+    n47692c500a07["TerminalGame.network_screen"]
+    %% node game_gamer.tui.application.TerminalGame.network_screen.Screen.85d093a9c1bb.8c67b5b5a429
+    nfde1c0730749["ECOSYSTEM / NETWORK"]
+    %% node terminal.route.cell
+    n954d141631f6["cell"]
+  end
+  subgraph scope_ed9f6f250686["Engine"]
+    %% node engine.accept
+    n79b0c4611144["accept"]
+    %% node engine.accept.allowed
+    ndf6d4b01c785["accept: allowed"]
+    %% node engine.accept.rejected
+    nf6b416259fa1["accept: rejected"]
+    %% node engine.activate
+    n1643fc10e0d6["activate"]
+    %% node engine.activate.allowed
+    n1adadb96a8b3["activate: allowed"]
+    %% node engine.activate.rejected
+    ne9dc0670a88a["activate: rejected"]
+    %% node engine.advance_time
+    n95ed9294b9db["advance_time"]
+    %% node engine.advance_time.allowed
+    ne5ae53626665["advance_time: allowed"]
+    %% node engine.advance_time.rejected
+    n5a913c50ef45["advance_time: rejected"]
+    %% node engine.amend
+    nb66eb29b1e93["amend"]
+    %% node engine.amend.allowed
+    n730761b8a313["amend: allowed"]
+    %% node engine.amend.rejected
+    na0631d49a855["amend: rejected"]
+    %% node engine.authorize
+    nf87e5dddc9b9["authorize"]
+    %% node engine.authorize.allowed
+    nd58ec1f29ee0["authorize: allowed"]
+    %% node engine.authorize.rejected
+    nb29f55b33e7c["authorize: rejected"]
+    %% node engine.correct_profile
+    n591cb4636f6f["correct_profile"]
+    %% node engine.correct_profile.allowed
+    nacd897aa93ed["correct_profile: allowed"]
+    %% node engine.correct_profile.rejected
+    n74cb2f8469b1["correct_profile: rejected"]
+    %% node engine.declare
+    n218a1081afef["declare"]
+    %% node engine.declare.allowed
+    n9361cb82c0b5["declare: allowed"]
+    %% node engine.declare.rejected
+    n123025d53fe7["declare: rejected"]
+    %% node engine.dispute
+    nff4800ead6c3["dispute"]
+    %% node engine.dispute.allowed
+    na2e20ce1be21["dispute: allowed"]
+    %% node engine.dispute.rejected
+    n88407f88747f["dispute: rejected"]
+    %% node engine.dispute_recollection
+    n804e9918cd85["dispute_recollection"]
+    %% node engine.dispute_recollection.allowed
+    n0191951b3f31["dispute_recollection: allowed"]
+    %% node engine.dispute_recollection.rejected
+    nc02f06f8caef["dispute_recollection: rejected"]
+    %% node engine.draft
+    n36461fc9582d["draft"]
+    %% node engine.draft.allowed
+    nbeeb1ba995a1["draft: allowed"]
+    %% node engine.draft.rejected
+    n4921536f9f4f["draft: rejected"]
+    %% node engine.draft_contact
+    n96bc086c8448["draft_contact"]
+    %% node engine.draft_contact.allowed
+    n07f72dfec45f["draft_contact: allowed"]
+    %% node engine.draft_contact.rejected
+    n0e2f32548247["draft_contact: rejected"]
+    %% node engine.fulfill
+    nb7381a170840["fulfill"]
+    %% node engine.fulfill.allowed
+    n459d28e39567["fulfill: allowed"]
+    %% node engine.fulfill.rejected
+    n96ede7b53d8d["fulfill: rejected"]
+    %% node engine.initiate
+    n2972b6933db9["initiate"]
+    %% node engine.initiate.allowed
+    n1f127e304961["initiate: allowed"]
+    %% node engine.initiate.rejected
+    nc774ac47126e["initiate: rejected"]
+    %% node engine.invite
+    n73a6e463dfb4["invite"]
+    %% node engine.invite.allowed
+    nb525df551060["invite: allowed"]
+    %% node engine.invite.rejected
+    n86a4d2e9869c["invite: rejected"]
+    %% node engine.merge_profiles
+    n2e35aeb50238["merge_profiles"]
+    %% node engine.merge_profiles.allowed
+    nc329940e5dd9["merge_profiles: allowed"]
+    %% node engine.merge_profiles.rejected
+    ne2f3399baedc["merge_profiles: rejected"]
+    %% node engine.propose
+    n63a5cffdee03["propose"]
+    %% node engine.propose.allowed
+    n0252dea2ebd0["propose: allowed"]
+    %% node engine.propose.rejected
+    nce01392e0531["propose: rejected"]
+    %% node engine.publish_contact
+    n8752bcea2163["publish_contact"]
+    %% node engine.publish_contact.allowed
+    n8655f8ec342a["publish_contact: allowed"]
+    %% node engine.publish_contact.rejected
+    nd5caa16bd93b["publish_contact: rejected"]
+    %% node engine.publish_proposal
+    ndea6a4c85653["publish_proposal"]
+    %% node engine.publish_proposal.allowed
+    n41b56422ed78["publish_proposal: allowed"]
+    %% node engine.publish_proposal.rejected
+    naee33600f99e["publish_proposal: rejected"]
+    %% node engine.recall_connection
+    n71649e80fb51["recall_connection"]
+    %% node engine.recall_connection.allowed
+    nd2c8806e39da["recall_connection: allowed"]
+    %% node engine.recall_connection.rejected
+    n80ab0366d91a["recall_connection: rejected"]
+    %% node engine.reconcile_resource
+    n35a14dced923["reconcile_resource"]
+    %% node engine.reconcile_resource.allowed
+    n309b1750cdb7["reconcile_resource: allowed"]
+    %% node engine.reconcile_resource.rejected
+    ne6061d7f17e2["reconcile_resource: rejected"]
+    %% node engine.record_prior_relationship
+    ne827ef3bde4a["record_prior_relationship"]
+    %% node engine.record_prior_relationship.allowed
+    nb97da939a299["record_prior_relationship: allowed"]
+    %% node engine.record_prior_relationship.rejected
+    ndd511f650abc["record_prior_relationship: rejected"]
+    %% node engine.reject
+    n21db7ad1427e["reject"]
+    %% node engine.reject.allowed
+    n5f94affa5ce4["reject: allowed"]
+    %% node engine.reject.rejected
+    n68ec9a6524c6["reject: rejected"]
+    %% node engine.respond_contact
+    n6a6949bd99d6["respond_contact"]
+    %% node engine.respond_contact.allowed
+    n453961724900["respond_contact: allowed"]
+    %% node engine.respond_contact.rejected
+    nb983505b84bd["respond_contact: rejected"]
+    %% node engine.respond_invitation
+    n6f7faa53d618["respond_invitation"]
+    %% node engine.respond_invitation.allowed
+    necbe17a3b0c2["respond_invitation: allowed"]
+    %% node engine.respond_invitation.rejected
+    n33870a9ba22a["respond_invitation: rejected"]
+    %% node engine.resume
+    n9ddfb31bf06f["resume"]
+    %% node engine.resume.allowed
+    na61559a6dc51["resume: allowed"]
+    %% node engine.resume.rejected
+    ned64f401788d["resume: rejected"]
+    %% node engine.retract_relationship_claim
+    ndaa281beb227["retract_relationship_claim"]
+    %% node engine.retract_relationship_claim.allowed
+    n1c66b554832b["retract_relationship_claim: allowed"]
+    %% node engine.retract_relationship_claim.rejected
+    nf7f38bce16c3["retract_relationship_claim: rejected"]
+    %% node engine.reverse_profile_merge
+    nf8317d2f2513["reverse_profile_merge"]
+    %% node engine.reverse_profile_merge.allowed
+    n70776eaa393a["reverse_profile_merge: allowed"]
+    %% node engine.reverse_profile_merge.rejected
+    n23bc81e7ac20["reverse_profile_merge: rejected"]
+    %% node engine.send_contact
+    nae34602a8739["send_contact"]
+    %% node engine.send_contact.allowed
+    na8cd2e89e96c["send_contact: allowed"]
+    %% node engine.send_contact.rejected
+    n7018fa119307["send_contact: rejected"]
+    %% node engine.set_profile_visibility
+    nfaa1567b5a17["set_profile_visibility"]
+    %% node engine.set_profile_visibility.allowed
+    nf6ff99bd20e6["set_profile_visibility: allowed"]
+    %% node engine.set_profile_visibility.rejected
+    na71bce3e19f6["set_profile_visibility: rejected"]
+    %% node engine.suspend
+    nf2ce40622ea5["suspend"]
+    %% node engine.suspend.allowed
+    n1d154265adc5["suspend: allowed"]
+    %% node engine.suspend.rejected
+    nb894ef7b70cd["suspend: rejected"]
+    %% node engine.terminate
+    na72ba3f91f06["terminate"]
+    %% node engine.terminate.allowed
+    n32bcff9e27b2["terminate: allowed"]
+    %% node engine.terminate.rejected
+    n34bfa9a4b7db["terminate: rejected"]
+    %% node engine.verify
+    n842f0647e0c5["verify"]
+    %% node engine.verify.allowed
+    n05dc387757e0["verify: allowed"]
+    %% node engine.verify.rejected
+    n771f8ed81351["verify: rejected"]
+    %% node engine.withdraw
+    nb80908027e27["withdraw"]
+    %% node engine.withdraw.allowed
+    ned103c875735["withdraw: allowed"]
+    %% node engine.withdraw.rejected
+    n9246ef648009["withdraw: rejected"]
+    %% node engine.withdraw_contact
+    n9b3c86779b39["withdraw_contact"]
+    %% node engine.withdraw_contact.allowed
+    nfc8fe9f2539a["withdraw_contact: allowed"]
+    %% node engine.withdraw_contact.rejected
+    nb29f4a397e07["withdraw_contact: rejected"]
+  end
+  subgraph scope_000f14e10251["Exercises"]
+    %% node game_gamer.tui.reconstruction._network_panel
+    n72986aded27d["_network_panel"]
+    %% node game_gamer.tui.reconstruction._profile_lines
+    n4a2e64f3f12d["_profile_lines"]
+    %% node game_gamer.tui.reconstruction.reconstruction_screen
+    n1f3b15e02966["reconstruction_screen"]
+    %% node game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7
+    nddec99762349["exercise.title"]
+    %% node game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7.entries
+    ne30a4dc89339["Select an entry"]
+  end
+  subgraph scope_45441664c0ba["Gathering"]
+    %% node game_gamer.tui.application.TerminalGame.handle.pick.b160282d07ad.bfb3d799284b
+    ne75fe285d58c["INVITE ACTOR"]
+    %% node game_gamer.tui.application.TerminalGame.handle.pick.d939802fd952.bfb3d799284b
+    nb3b67b84f30e["GATHERING OBJECTIVE"]
+  end
+  subgraph scope_a4d26868017c["Shared"]
+    %% node game_gamer.tui.application.TerminalGame.__init__
+    n6aab250d7d8f["TerminalGame.__init__"]
+    %% node game_gamer.tui.application.TerminalGame._curses
+    n32a7f3c7da47["TerminalGame._curses"]
+    %% node game_gamer.tui.application.TerminalGame._run
+    ncb510fce5f15["TerminalGame._run"]
+    %% node game_gamer.tui.application.TerminalGame.breadcrumbs
+    n4495dd760ba7["TerminalGame.breadcrumbs"]
+    %% node game_gamer.tui.application.TerminalGame.build_screen
+    n8dd04b32af23["TerminalGame.build_screen"]
+    %% node game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12
+    nd3e9f7b9c9a9["COMPLEMENTARITY / INSPECT"]
+    %% node game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.entries
+    n95fd3f6bf1b7["Select an entry"]
+    %% node game_gamer.tui.application.TerminalGame.build_screen.Screen.bdcba14f6ab2
+    n2a45c26cbaf5["HELP / KEYBOARD"]
+    %% node game_gamer.tui.application.TerminalGame.context
+    na99c0794e512["TerminalGame.context"]
+    %% node game_gamer.tui.application.TerminalGame.execute
+    n2fdd84c48b81["TerminalGame.execute"]
+    %% node game_gamer.tui.application.TerminalGame.execute.cancelled
+    n9a6cf20f4bbf["Cancelled; return to caller"]
+    %% node game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c
+    nf639ebe41ea4["&#x27;SUBMIT SIMULATED ACTION / &#x27; + action_label({&#x27;kind&#x27;: kind})"]
+    %% node game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.return
+    n441a1e952f00["Return selected value to caller"]
+    %% node game_gamer.tui.application.TerminalGame.handle
+    ncc5d38e51c15["TerminalGame.handle"]
+    %% node game_gamer.tui.application.TerminalGame.handle.back.71bcc7084fe9.d023bb358258.caller
+    n7f8ed375856e["Return to previous route (or entry path menu)"]
+    %% node game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.3caeebdbb448
+    n3a966d05d9ee["CHOOSE YOUR PATH"]
+    %% node game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.84db0244d15b
+    n256444acc0ec["CHOOSE YOUR PATH"]
+    %% node game_gamer.tui.application.TerminalGame.inspect
+    n4bfc67a92a19["TerminalGame.inspect"]
+    %% node game_gamer.tui.application.TerminalGame.inspect.Screen.74a2610f5def.d9c78cee40a0
+    n15b968c2b712["INSPECT"]
+    %% node game_gamer.tui.application.TerminalGame.interaction
+    n2e26e561f9bf["TerminalGame.interaction"]
+    %% node game_gamer.tui.application.TerminalGame.interaction.pick.b26e4f3682e7.58a4adf879f6
+    n1bd9a76399c8["CHOOSE COUNTERPARTY"]
+    %% node game_gamer.tui.application.TerminalGame.list_screen
+    n1dbebaf71b16["TerminalGame.list_screen"]
+    %% node game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1
+    n8da558ffea69["title"]
+    %% node game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1.entries
+    n709fd38897cd["Select an entry"]
+    %% node game_gamer.tui.application.TerminalGame.name
+    n9019ea6ac48e["TerminalGame.name"]
+    %% node game_gamer.tui.application.TerminalGame.pick
+    nf58913d1b322["TerminalGame.pick"]
+    %% node game_gamer.tui.application.TerminalGame.pick.pick.06f650aad56d
+    n6c62e55fbe83["title"]
+    %% node game_gamer.tui.application.TerminalGame.prepare_screen
+    nfbf07eb43408["TerminalGame.prepare_screen"]
+    %% node game_gamer.tui.application.TerminalGame.push
+    nf48723a688c5["TerminalGame.push"]
+    %% node game_gamer.tui.application.TerminalGame.route
+    n9e7fa8a5a955["TerminalGame.route"]
+    %% node game_gamer.tui.application.TerminalGame.run
+    n21c675ddc702["TerminalGame.run"]
+    %% node game_gamer.tui.application.TerminalGame.select_entry
+    n3f1b88dad1e0["TerminalGame.select_entry"]
+    %% node game_gamer.tui.application.TerminalGame.select_player
+    n5fc69410074d["TerminalGame.select_player"]
+    %% node game_gamer.tui.application.TerminalGame.select_player.pick.1d320843e5a3
+    n2295ded7de93["WHO WILL YOU PLAY? / SIMULATION ONLY"]
+    %% node game_gamer.tui.application.action_label
+    n7b7df443c4e9["action_label"]
+    %% node game_gamer.tui.forms.ActionForms.__init__
+    n0e8d160505f7["ActionForms.__init__"]
+    %% node game_gamer.tui.forms.ActionForms.ask
+    n6e358fac030f["ActionForms.ask"]
+    %% node game_gamer.tui.forms.ActionForms.ask.cancelled
+    n72a743633ca4["Cancelled; return to caller"]
+    %% node game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451
+    n68e2926d228d["prompt"]
+    %% node game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.return
+    nfc770251159b["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect
+    nd4353d88e3be["ActionForms.collect"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a
+    nb90066133149["Revised purpose"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.return
+    n8f17cb6ecd6b["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900
+    n84618d8f0536["Reason"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900.return
+    n0e84f9f600d6["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a
+    n398512fe0734["&#x27;Contribution by &#x27; + label(world[&#x27;actors&#x27;][item[&#x27;actor_id&#x27;]])"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.return
+    nb65acb7b5605["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111
+    n8223f2b9eda4["Invitation message"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.return
+    na183eace7b0e["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a
+    nbfad7284d546["Additional condition"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.return
+    nd8e746b16afe["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4
+    n28c53fd1bf4f["Optional response message"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.return
+    nbc5e4e0c990d["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3
+    nb5515e486ee9["Evidence reference"]
+    %% node game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.return
+    nc538517b87d2["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.collect.cancelled
+    na79db8ebf2c6["Cancelled; return to caller"]
+    %% node game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c
+    n51dc1da8a2c0["&#x27;Confirm the report addresses &#x27; + &#x27;, &#x27;.join(payload[&#x27;criteria&#x27;])"]
+    %% node game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.return
+    n3150b5972f08["Return selected value to caller"]
+    %% node game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111
+    n1eb4656dfa04["INVITATION DELIVERY"]
+    %% node game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.return
+    nd57836e79418["Return selected value to caller"]
+    %% node game_gamer.tui.forms.ActionForms.confirm
+    nf5d69614b8ff["ActionForms.confirm"]
+    %% node game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c
+    nd629bd1940d8["title"]
+    %% node game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.return
+    n3fde8d1bba76["Return selected value to caller"]
+    %% node game_gamer.tui.forms.ActionForms.pick
+    nd3f4fee17bdc["ActionForms.pick"]
+    %% node game_gamer.tui.forms.ActionForms.pick.choose.d9138ed47920
+    n82e8d9ecded5["title"]
+    %% node game_gamer.tui.forms.ActionForms.proposal
+    n8bc92db36bd3["ActionForms.proposal"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26
+    n66d4b1eb6e90["&#x27;Quantity in &#x27; + resource[&#x27;unit&#x27;]"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.return
+    n5281c9f0af19["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6
+    nf89f33f00ce6["Verification criterion"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.return
+    ne882f86ad5cd["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee
+    ndfedb7250dc7["&#x27;Contribution by &#x27; + label(world[&#x27;actors&#x27;][p])"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee.return
+    n3e902a58ed10["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994
+    n02c0573748ad["Optional condition"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.return
+    n8ba14f75b422["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a
+    n0dc85e67f364["Shared purpose"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.return
+    n62b917d2d921["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2
+    n9123eea58a88["Expiry (ISO 8601)"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.return
+    nb6b6f1bffd19["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399
+    n1ff9d2db89e9["Agreement title"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.return
+    nfabd1e5514b2["Return entered value"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda
+    n39860a1616b2["Reserve a resource on activation?"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.return
+    n01f25993d29d["Return selected value to caller"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.pick.2f06e5ee4b3e
+    n21062b32c8a6["LINK OBJECTIVE"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.pick.42a5688d1bd8.2e90264b1e26
+    nef69fd36532e["RESOURCE"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.pick.b70688247ca1
+    n906c491afb45["ADDITIONAL REQUIRED PARTY"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.pick.c6b9d0717082
+    n793e40384e91["GOVERNANCE POLICY"]
+    %% node game_gamer.tui.forms.ActionForms.proposal.pick.d1532fb20fcd
+    n11a8c68878d0["INDEPENDENT VERIFIER"]
+    %% node game_gamer.tui.navigation.NavigationState.__init__
+    n526e5d0ad2fb["NavigationState.__init__"]
+    %% node game_gamer.tui.navigation.NavigationState.back
+    ncb8e0a5ad9d5["NavigationState.back"]
+    %% node game_gamer.tui.navigation.NavigationState.push
+    n0519b59f43bc["NavigationState.push"]
+    %% node game_gamer.tui.navigation.NavigationState.resume
+    n637949e97ebd["NavigationState.resume"]
+    %% node game_gamer.tui.navigation.NavigationState.route
+    n6277e4d20d69["NavigationState.route"]
+    %% node game_gamer.tui.navigation.NavigationState.stack
+    n59eb83553fe4["NavigationState.stack"]
+    %% node game_gamer.tui.opening.opening_screen
+    ne595a6a79fc0["opening_screen"]
+    %% node game_gamer.tui.opening.opening_screen.Screen.b47769c51b0a
+    n18da59203f36["exercise.title"]
+    %% node game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530
+    n3d8df034ba1a["exercise.title"]
+    %% node game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530.entries
+    nd2d55ecba91b["Select an entry"]
+    %% node game_gamer.tui.screen.inspector
+    n715a1faf1503["inspector"]
+    %% node game_gamer.tui.screen.inspector.Screen.35a015818bb7
+    n208edda42d92["title"]
+    %% node game_gamer.tui.screen.inspector.Screen.35a015818bb7.entries
+    n46db6a11a146["Select an entry"]
+    %% node game_gamer.tui.screen.run_screens
+    na1d83d29bc4e["run_screens"]
+    %% node game_gamer.tui.viewport.CursesViewport.__init__
+    n70cf3f3fb852["CursesViewport.__init__"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose
+    n0f4456a6dacc["CursesViewport.choose"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.Screen.65eb1808157d
+    ne19606afdd6a["title"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.Screen.65eb1808157d.entries
+    n311326bc4c0b["Select an entry"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.Screen.e293eef3ce8b.ff0b7ce6bba2
+    n8eca384dad69["PROFILE PREVIEW"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.cancelled
+    n676d7688dd16["Cancelled; return to caller"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c
+    n56ce1eca6c9d["Search by name or organisation"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c.return
+    n121f37079dd2["Return entered value"]
+    %% node game_gamer.tui.viewport.CursesViewport.colour_style
+    na30b7c3cc36f["CursesViewport.colour_style"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm
+    n10188806b19d["CursesViewport.confirm"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c
+    n7762668e7d15["title"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries
+    nd3135903cafb["Select an entry"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm_discard
+    n02061fda97a9["CursesViewport.confirm_discard"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm_discard.Screen.9cf87ce45164
+    nd2a416a1a5c9["DISCARD UNSUBMITTED INPUT?"]
+    %% node game_gamer.tui.viewport.CursesViewport.draw
+    nb154aa5d6e66["CursesViewport.draw"]
+    %% node game_gamer.tui.viewport.CursesViewport.key
+    n22eabc7a54f3["CursesViewport.key"]
+    %% node game_gamer.tui.viewport.CursesViewport.message
+    nc1c328bddfdf["CursesViewport.message"]
+    %% node game_gamer.tui.viewport.CursesViewport.navigation_key
+    na11a50a96107["CursesViewport.navigation_key"]
+    %% node game_gamer.tui.viewport.CursesViewport.poll_key
+    n7fb288fc843c["CursesViewport.poll_key"]
+    %% node game_gamer.tui.viewport.CursesViewport.prompt
+    nf584dc507d5a["CursesViewport.prompt"]
+    %% node game_gamer.tui.viewport.CursesViewport.prompt.Screen.9a6ff02faea5
+    nf439ebc25dc7["title"]
+    %% node game_gamer.tui.viewport.CursesViewport.put
+    n3ed7f05cee80["CursesViewport.put"]
+    %% node game_gamer.tui.viewport.CursesViewport.safe
+    n6dec33a740d2["CursesViewport.safe"]
+    %% node game_gamer.tui.viewport.CursesViewport.size
+    nf2d162fd4900["CursesViewport.size"]
+    %% node game_gamer.tui.viewport.LineViewport.__init__
+    n950f4ccdc168["LineViewport.__init__"]
+    %% node game_gamer.tui.viewport.LineViewport.choose
+    nfaa31e5880cf["LineViewport.choose"]
+    %% node game_gamer.tui.viewport.LineViewport.choose.Screen.d1391daae5a9
+    n5ab7ba665974["title"]
+    %% node game_gamer.tui.viewport.LineViewport.choose.Screen.d1391daae5a9.entries
+    n041c0a58833c["Select an entry"]
+    %% node game_gamer.tui.viewport.LineViewport.choose.cancelled
+    n21b59e32c0a2["Cancelled; return to caller"]
+    %% node game_gamer.tui.viewport.LineViewport.confirm_discard
+    n5e113440a0e2["LineViewport.confirm_discard"]
+    %% node game_gamer.tui.viewport.LineViewport.draw
+    n922a7ecc51fc["LineViewport.draw"]
+    %% node game_gamer.tui.viewport.LineViewport.key
+    n0291c6e36a8a["LineViewport.key"]
+    %% node game_gamer.tui.viewport.LineViewport.message
+    n873ebe3d90b0["LineViewport.message"]
+    %% node game_gamer.tui.viewport.LineViewport.prompt
+    n877847083faa["LineViewport.prompt"]
+    %% node game_gamer.tui.viewport.LineViewport.prompt.Screen.b836a6a2f378
+    n68f49d1fe166["title"]
+    %% node game_gamer.tui.viewport.LineViewport.size
+    n6e3c1cace473["LineViewport.size"]
+    %% node game_gamer.tui.viewport.action_form
+    n5dd327d6e1e0["action_form"]
+    %% node game_gamer.tui.viewport.run_curses
+    n5b97b75b0da7["run_curses"]
+    %% node game_gamer.tui.viewport.supported
+    n0cfb0f6075ff["supported"]
+    %% node terminal.route.0b27c158feb3
+    n7dac6f53666a["kind"]
+    %% node terminal.route.88c11ac84b14
+    ndd56f6d71e25["self.pick(&#x27;CHOOSE YOUR PATH&#x27;, list(_MODE_NAMES), str.title)"]
+    %% node terminal.route.e16369c6bd7a
+    n4b8d266bfb07["{&#x27;c&#x27;: &#x27;contracts&#x27;, &#x27;i&#x27;: &#x27;inbox&#x27;, &#x27;?&#x27;: &#x27;help&#x27;, &#x27;x&#x27;: &#x27;people&#x27;, &#x27;h&#x27;: &#x27;history&#x27;}[key]"]
+    %% node terminal.route.e704b19734eb
+    n894f443046e9["MODE_KEYS[key]"]
+    %% node terminal.route.inspect
+    n7e091a4a4be0["inspect"]
+    %% node terminal.route.network
+    n2b576e60f46e["network"]
+    %% node terminal.route.people
+    n62fd9b438911["people"]
+  end
+  %% edge engine.accept.allowed
+  n79b0c4611144 -->|"allowed"| ndf6d4b01c785
+  linkStyle 0 stroke:#7b1fa2
+  %% edge engine.accept.rejected
+  n79b0c4611144 -->|"rejected"| nf6b416259fa1
+  linkStyle 1 stroke:#2e7d32
+  %% edge engine.activate.allowed
+  n1643fc10e0d6 -->|"allowed"| n1adadb96a8b3
+  linkStyle 2 stroke:#7b1fa2
+  %% edge engine.activate.rejected
+  n1643fc10e0d6 -->|"rejected"| ne9dc0670a88a
+  linkStyle 3 stroke:#2e7d32
+  %% edge engine.advance_time.allowed
+  n95ed9294b9db -->|"allowed"| ne5ae53626665
+  linkStyle 4 stroke:#7b1fa2
+  %% edge engine.advance_time.rejected
+  n95ed9294b9db -->|"rejected"| n5a913c50ef45
+  linkStyle 5 stroke:#2e7d32
+  %% edge engine.amend.allowed
+  nb66eb29b1e93 -->|"allowed"| n730761b8a313
+  linkStyle 6 stroke:#7b1fa2
+  %% edge engine.amend.rejected
+  nb66eb29b1e93 -->|"rejected"| na0631d49a855
+  linkStyle 7 stroke:#2e7d32
+  %% edge engine.authorize.allowed
+  nf87e5dddc9b9 -->|"allowed"| nd58ec1f29ee0
+  linkStyle 8 stroke:#7b1fa2
+  %% edge engine.authorize.rejected
+  nf87e5dddc9b9 -->|"rejected"| nb29f55b33e7c
+  linkStyle 9 stroke:#2e7d32
+  %% edge engine.correct_profile.allowed
+  n591cb4636f6f -->|"allowed"| nacd897aa93ed
+  linkStyle 10 stroke:#7b1fa2
+  %% edge engine.correct_profile.rejected
+  n591cb4636f6f -->|"rejected"| n74cb2f8469b1
+  linkStyle 11 stroke:#2e7d32
+  %% edge engine.declare.allowed
+  n218a1081afef -->|"allowed"| n9361cb82c0b5
+  linkStyle 12 stroke:#7b1fa2
+  %% edge engine.declare.rejected
+  n218a1081afef -->|"rejected"| n123025d53fe7
+  linkStyle 13 stroke:#2e7d32
+  %% edge engine.dispute.allowed
+  nff4800ead6c3 -->|"allowed"| na2e20ce1be21
+  linkStyle 14 stroke:#7b1fa2
+  %% edge engine.dispute.rejected
+  nff4800ead6c3 -->|"rejected"| n88407f88747f
+  linkStyle 15 stroke:#2e7d32
+  %% edge engine.dispute_recollection.allowed
+  n804e9918cd85 -->|"allowed"| n0191951b3f31
+  linkStyle 16 stroke:#7b1fa2
+  %% edge engine.dispute_recollection.rejected
+  n804e9918cd85 -->|"rejected"| nc02f06f8caef
+  linkStyle 17 stroke:#2e7d32
+  %% edge engine.draft.allowed
+  n36461fc9582d -->|"allowed"| nbeeb1ba995a1
+  linkStyle 18 stroke:#7b1fa2
+  %% edge engine.draft.rejected
+  n36461fc9582d -->|"rejected"| n4921536f9f4f
+  linkStyle 19 stroke:#2e7d32
+  %% edge engine.draft_contact.allowed
+  n96bc086c8448 -->|"allowed"| n07f72dfec45f
+  linkStyle 20 stroke:#7b1fa2
+  %% edge engine.draft_contact.rejected
+  n96bc086c8448 -->|"rejected"| n0e2f32548247
+  linkStyle 21 stroke:#2e7d32
+  %% edge engine.fulfill.allowed
+  nb7381a170840 -->|"allowed"| n459d28e39567
+  linkStyle 22 stroke:#7b1fa2
+  %% edge engine.fulfill.rejected
+  nb7381a170840 -->|"rejected"| n96ede7b53d8d
+  linkStyle 23 stroke:#2e7d32
+  %% edge engine.initiate.allowed
+  n2972b6933db9 -->|"allowed"| n1f127e304961
+  linkStyle 24 stroke:#7b1fa2
+  %% edge engine.initiate.rejected
+  n2972b6933db9 -->|"rejected"| nc774ac47126e
+  linkStyle 25 stroke:#2e7d32
+  %% edge engine.invite.allowed
+  n73a6e463dfb4 -->|"allowed"| nb525df551060
+  linkStyle 26 stroke:#7b1fa2
+  %% edge engine.invite.rejected
+  n73a6e463dfb4 -->|"rejected"| n86a4d2e9869c
+  linkStyle 27 stroke:#2e7d32
+  %% edge engine.merge_profiles.allowed
+  n2e35aeb50238 -->|"allowed"| nc329940e5dd9
+  linkStyle 28 stroke:#7b1fa2
+  %% edge engine.merge_profiles.rejected
+  n2e35aeb50238 -->|"rejected"| ne2f3399baedc
+  linkStyle 29 stroke:#2e7d32
+  %% edge engine.propose.allowed
+  n63a5cffdee03 -->|"allowed"| n0252dea2ebd0
+  linkStyle 30 stroke:#7b1fa2
+  %% edge engine.propose.rejected
+  n63a5cffdee03 -->|"rejected"| nce01392e0531
+  linkStyle 31 stroke:#2e7d32
+  %% edge engine.publish_contact.allowed
+  n8752bcea2163 -->|"allowed"| n8655f8ec342a
+  linkStyle 32 stroke:#7b1fa2
+  %% edge engine.publish_contact.rejected
+  n8752bcea2163 -->|"rejected"| nd5caa16bd93b
+  linkStyle 33 stroke:#2e7d32
+  %% edge engine.publish_proposal.allowed
+  ndea6a4c85653 -->|"allowed"| n41b56422ed78
+  linkStyle 34 stroke:#7b1fa2
+  %% edge engine.publish_proposal.rejected
+  ndea6a4c85653 -->|"rejected"| naee33600f99e
+  linkStyle 35 stroke:#2e7d32
+  %% edge engine.recall_connection.allowed
+  n71649e80fb51 -->|"allowed"| nd2c8806e39da
+  linkStyle 36 stroke:#7b1fa2
+  %% edge engine.recall_connection.rejected
+  n71649e80fb51 -->|"rejected"| n80ab0366d91a
+  linkStyle 37 stroke:#2e7d32
+  %% edge engine.reconcile_resource.allowed
+  n35a14dced923 -->|"allowed"| n309b1750cdb7
+  linkStyle 38 stroke:#7b1fa2
+  %% edge engine.reconcile_resource.rejected
+  n35a14dced923 -->|"rejected"| ne6061d7f17e2
+  linkStyle 39 stroke:#2e7d32
+  %% edge engine.record_prior_relationship.allowed
+  ne827ef3bde4a -->|"allowed"| nb97da939a299
+  linkStyle 40 stroke:#7b1fa2
+  %% edge engine.record_prior_relationship.rejected
+  ne827ef3bde4a -->|"rejected"| ndd511f650abc
+  linkStyle 41 stroke:#2e7d32
+  %% edge engine.reject.allowed
+  n21db7ad1427e -->|"allowed"| n5f94affa5ce4
+  linkStyle 42 stroke:#7b1fa2
+  %% edge engine.reject.rejected
+  n21db7ad1427e -->|"rejected"| n68ec9a6524c6
+  linkStyle 43 stroke:#2e7d32
+  %% edge engine.respond_contact.allowed
+  n6a6949bd99d6 -->|"allowed"| n453961724900
+  linkStyle 44 stroke:#7b1fa2
+  %% edge engine.respond_contact.rejected
+  n6a6949bd99d6 -->|"rejected"| nb983505b84bd
+  linkStyle 45 stroke:#2e7d32
+  %% edge engine.respond_invitation.allowed
+  n6f7faa53d618 -->|"allowed"| necbe17a3b0c2
+  linkStyle 46 stroke:#7b1fa2
+  %% edge engine.respond_invitation.rejected
+  n6f7faa53d618 -->|"rejected"| n33870a9ba22a
+  linkStyle 47 stroke:#2e7d32
+  %% edge engine.resume.allowed
+  n9ddfb31bf06f -->|"allowed"| na61559a6dc51
+  linkStyle 48 stroke:#7b1fa2
+  %% edge engine.resume.rejected
+  n9ddfb31bf06f -->|"rejected"| ned64f401788d
+  linkStyle 49 stroke:#2e7d32
+  %% edge engine.retract_relationship_claim.allowed
+  ndaa281beb227 -->|"allowed"| n1c66b554832b
+  linkStyle 50 stroke:#7b1fa2
+  %% edge engine.retract_relationship_claim.rejected
+  ndaa281beb227 -->|"rejected"| nf7f38bce16c3
+  linkStyle 51 stroke:#2e7d32
+  %% edge engine.reverse_profile_merge.allowed
+  nf8317d2f2513 -->|"allowed"| n70776eaa393a
+  linkStyle 52 stroke:#7b1fa2
+  %% edge engine.reverse_profile_merge.rejected
+  nf8317d2f2513 -->|"rejected"| n23bc81e7ac20
+  linkStyle 53 stroke:#2e7d32
+  %% edge engine.send_contact.allowed
+  nae34602a8739 -->|"allowed"| na8cd2e89e96c
+  linkStyle 54 stroke:#7b1fa2
+  %% edge engine.send_contact.rejected
+  nae34602a8739 -->|"rejected"| n7018fa119307
+  linkStyle 55 stroke:#2e7d32
+  %% edge engine.set_profile_visibility.allowed
+  nfaa1567b5a17 -->|"allowed"| nf6ff99bd20e6
+  linkStyle 56 stroke:#7b1fa2
+  %% edge engine.set_profile_visibility.rejected
+  nfaa1567b5a17 -->|"rejected"| na71bce3e19f6
+  linkStyle 57 stroke:#2e7d32
+  %% edge engine.suspend.allowed
+  nf2ce40622ea5 -->|"allowed"| n1d154265adc5
+  linkStyle 58 stroke:#7b1fa2
+  %% edge engine.suspend.rejected
+  nf2ce40622ea5 -->|"rejected"| nb894ef7b70cd
+  linkStyle 59 stroke:#2e7d32
+  %% edge engine.terminate.allowed
+  na72ba3f91f06 -->|"allowed"| n32bcff9e27b2
+  linkStyle 60 stroke:#7b1fa2
+  %% edge engine.terminate.rejected
+  na72ba3f91f06 -->|"rejected"| n34bfa9a4b7db
+  linkStyle 61 stroke:#2e7d32
+  %% edge engine.verify.allowed
+  n842f0647e0c5 -->|"allowed"| n05dc387757e0
+  linkStyle 62 stroke:#7b1fa2
+  %% edge engine.verify.rejected
+  n842f0647e0c5 -->|"rejected"| n771f8ed81351
+  linkStyle 63 stroke:#2e7d32
+  %% edge engine.withdraw.allowed
+  nb80908027e27 -->|"allowed"| ned103c875735
+  linkStyle 64 stroke:#7b1fa2
+  %% edge engine.withdraw.rejected
+  nb80908027e27 -->|"rejected"| n9246ef648009
+  linkStyle 65 stroke:#2e7d32
+  %% edge engine.withdraw_contact.allowed
+  n9b3c86779b39 -->|"allowed"| nfc8fe9f2539a
+  linkStyle 66 stroke:#7b1fa2
+  %% edge engine.withdraw_contact.rejected
+  n9b3c86779b39 -->|"rejected"| nb29f4a397e07
+  linkStyle 67 stroke:#2e7d32
+  %% edge game_gamer.tui.application.TerminalGame._curses._run.d2485d68b167.call.cb510fce5f15
+  n32a7f3c7da47 -->|"_run"| ncb510fce5f15
+  linkStyle 68 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame._run.prepare_screen.65c3bd920abf.call.fbf07eb43408
+  ncb510fce5f15 -->|"prepare_screen"| nfbf07eb43408
+  linkStyle 69 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame._run.run_screens.bad3e8b11deb.call.a1d83d29bc4e
+  ncb510fce5f15 -->|"run_screens"| na1d83d29bc4e
+  linkStyle 70 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame._run.select_player.3e7bd81e3f8b.c9814c9bf1e7.call.5fc69410074d
+  ncb510fce5f15 -->|"select_player"| n5fc69410074d
+  linkStyle 71 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.breadcrumbs.name.ceb8d1aab875.call.9019ea6ac48e
+  n4495dd760ba7 -->|"name"| n9019ea6ac48e
+  linkStyle 72 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.entries.keyboard
+  n95fd3f6bf1b7 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 73 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.entries.open
+  nd3e9f7b9c9a9 -->|"Choose"| n95fd3f6bf1b7
+  linkStyle 74 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.entries.option.d359683a00d5
+  n95fd3f6bf1b7 -->|"self.name(key)"| n7e091a4a4be0
+  linkStyle 75 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.input.cc5d38e51c15
+  nd3e9f7b9c9a9 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 76 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.render
+  n8dd04b32af23 -->|"render"| nd3e9f7b9c9a9
+  linkStyle 77 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.bdcba14f6ab2.input.cc5d38e51c15
+  n2a45c26cbaf5 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 78 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.bdcba14f6ab2.render
+  n8dd04b32af23 -->|"render"| n2a45c26cbaf5
+  linkStyle 79 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.inspect.ec87b5c599a5.a89dfb6d2c44.call.4bfc67a92a19
+  n8dd04b32af23 -->|"inspect"| n4bfc67a92a19
+  linkStyle 80 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.list_screen.0778821c7188.6636de9f2da2.call.1dbebaf71b16
+  n8dd04b32af23 -->|"list_screen"| n1dbebaf71b16
+  linkStyle 81 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.list_screen.5793a1ee3d9f.d324adce7d81.call.1dbebaf71b16
+  n8dd04b32af23 -->|"list_screen"| n1dbebaf71b16
+  linkStyle 82 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.list_screen.9e6babb904c2.3628175dd013.call.1dbebaf71b16
+  n8dd04b32af23 -->|"list_screen"| n1dbebaf71b16
+  linkStyle 83 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.list_screen.be44404e73de.89074b772288.call.1dbebaf71b16
+  n8dd04b32af23 -->|"list_screen"| n1dbebaf71b16
+  linkStyle 84 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.list_screen.fbb7ed4b91d9.07de9d635241.call.1dbebaf71b16
+  n8dd04b32af23 -->|"list_screen"| n1dbebaf71b16
+  linkStyle 85 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.matrix_screen.9ca1ccd22644.2bd1a75c1865.call.a260eb3a50fa
+  n8dd04b32af23 -->|"matrix_screen"| na260eb3a50fa
+  linkStyle 86 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.name.20bab840056f.688977b07776.call.9019ea6ac48e
+  n8dd04b32af23 -->|"name"| n9019ea6ac48e
+  linkStyle 87 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.name.23ac69775374.6636de9f2da2.call.9019ea6ac48e
+  n8dd04b32af23 -->|"name"| n9019ea6ac48e
+  linkStyle 88 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.name.66018fd0879d.987347347b12.call.9019ea6ac48e
+  n8dd04b32af23 -->|"name"| n9019ea6ac48e
+  linkStyle 89 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.name.70e4459c7c03.987347347b12.call.9019ea6ac48e
+  n8dd04b32af23 -->|"name"| n9019ea6ac48e
+  linkStyle 90 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.name.93e448a910ad.987347347b12.call.9019ea6ac48e
+  n8dd04b32af23 -->|"name"| n9019ea6ac48e
+  linkStyle 91 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.network_screen.27d4289ee896.d3737560692c.call.47692c500a07
+  n8dd04b32af23 -->|"network_screen"| n47692c500a07
+  linkStyle 92 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.action_form.fd16a629ac6c.call.5dd327d6e1e0
+  n2fdd84c48b81 -->|"action_form"| n5dd327d6e1e0
+  linkStyle 93 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.action_label.da9dcce3b603.9599acdcca0a.call.7b7df443c4e9
+  n2fdd84c48b81 -->|"action_label"| n7b7df443c4e9
+  linkStyle 94 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.action_label.da9dcce3b603.call.7b7df443c4e9
+  n2fdd84c48b81 -->|"action_label"| n7b7df443c4e9
+  linkStyle 95 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.cancelled.raise
+  n2fdd84c48b81 -->|"Cancel"| n9a6cf20f4bbf
+  linkStyle 96 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.collect.bca6567493d3.call.d4353d88e3be
+  n2fdd84c48b81 -->|"collect"| nd4353d88e3be
+  linkStyle 97 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.call.f5d69614b8ff
+  n2fdd84c48b81 -->|"confirm"| nf5d69614b8ff
+  linkStyle 98 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.cancel.2fdd84c48b81
+  nf639ebe41ea4 -->|"Cancel input"| n9a6cf20f4bbf
+  linkStyle 99 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.open
+  n2fdd84c48b81 -->|"Ask"| nf639ebe41ea4
+  linkStyle 100 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.option.3cbc87c7681f
+  nf639ebe41ea4 -->|"True"| n441a1e952f00
+  linkStyle 101 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.option.3cbc87c7681f.continuation
+  n441a1e952f00 -->|"Continue caller"| n2fdd84c48b81
+  linkStyle 102 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.option.60a33e6cf515
+  nf639ebe41ea4 -->|"False"| n441a1e952f00
+  linkStyle 103 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.confirm.6f80cd84112c.option.60a33e6cf515.continuation
+  n441a1e952f00 -->|"Continue caller"| n2fdd84c48b81
+  linkStyle 104 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.push.06a43bdcc7e3.529f58f8aa58.call.f48723a688c5
+  n2fdd84c48b81 -->|"push"| nf48723a688c5
+  linkStyle 105 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.push.06a43bdcc7e3.529f58f8aa58.navigate
+  n2fdd84c48b81 -->|"inspect"| n7e091a4a4be0
+  linkStyle 106 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.back.71bcc7084fe9.d023bb358258.back
+  ncc5d38e51c15 -->|"Back / Cancel"| n7f8ed375856e
+  linkStyle 107 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.back.71bcc7084fe9.d023bb358258.call.cb8e0a5ad9d5
+  ncc5d38e51c15 -->|"back"| ncb8e0a5ad9d5
+  linkStyle 108 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.execute.7a7843287299.bfb3d799284b.action.invite
+  ncc5d38e51c15 -->|"invite"| n73a6e463dfb4
+  linkStyle 109 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.execute.7a7843287299.bfb3d799284b.call.2fdd84c48b81
+  ncc5d38e51c15 -->|"execute"| n2fdd84c48b81
+  linkStyle 110 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.execute.f556e213e4f0.31ee7ddf97b0.call.2fdd84c48b81
+  ncc5d38e51c15 -->|"execute"| n2fdd84c48b81
+  linkStyle 111 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.interaction.e0b3ce6ef54b.54a6d7d31b34.call.2e26e561f9bf
+  ncc5d38e51c15 -->|"interaction"| n2e26e561f9bf
+  linkStyle 112 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.matrix_key.d1858ca2c858.d59ae6528486.call.f536b1771590
+  ncc5d38e51c15 -->|"matrix_key"| nf536b1771590
+  linkStyle 113 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.network_key.f15d76ecbc43.8f64846e573b.call.e33471f85980
+  ncc5d38e51c15 -->|"network_key"| ne33471f85980
+  linkStyle 114 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.3caeebdbb448.call.f58913d1b322
+  ncc5d38e51c15 -->|"pick"| nf58913d1b322
+  linkStyle 115 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.3caeebdbb448.cancel.faa31e5880cf
+  n3a966d05d9ee -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 116 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.3caeebdbb448.open
+  ncc5d38e51c15 -->|"Ask"| n3a966d05d9ee
+  linkStyle 117 stroke:#ef6c00
+  unresolved_94ab59cfd71e["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.3caeebdbb448.option.4db3182ac052
+  n3a966d05d9ee -->|"list(_MODE_NAMES)"| unresolved_94ab59cfd71e
+  linkStyle 118 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.84db0244d15b.call.f58913d1b322
+  ncc5d38e51c15 -->|"pick"| nf58913d1b322
+  linkStyle 119 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.84db0244d15b.cancel.faa31e5880cf
+  n256444acc0ec -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 120 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.84db0244d15b.open
+  ncc5d38e51c15 -->|"Ask"| n256444acc0ec
+  linkStyle 121 stroke:#ef6c00
+  unresolved_e04371534ec2["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.88c11ac84b14.84db0244d15b.option.4db3182ac052
+  n256444acc0ec -->|"list(_MODE_NAMES)"| unresolved_e04371534ec2
+  linkStyle 122 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.b160282d07ad.bfb3d799284b.call.f58913d1b322
+  ncc5d38e51c15 -->|"pick"| nf58913d1b322
+  linkStyle 123 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.b160282d07ad.bfb3d799284b.cancel.faa31e5880cf
+  ne75fe285d58c -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 124 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.b160282d07ad.bfb3d799284b.open
+  ncc5d38e51c15 -->|"Ask"| ne75fe285d58c
+  linkStyle 125 stroke:#ef6c00
+  unresolved_4e155601f66c["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.b160282d07ad.bfb3d799284b.option.ca978112ca1b
+  ne75fe285d58c -->|"a"| unresolved_4e155601f66c
+  linkStyle 126 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.d939802fd952.bfb3d799284b.call.f58913d1b322
+  ncc5d38e51c15 -->|"pick"| nf58913d1b322
+  linkStyle 127 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.d939802fd952.bfb3d799284b.cancel.faa31e5880cf
+  nb3b67b84f30e -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 128 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.d939802fd952.bfb3d799284b.open
+  ncc5d38e51c15 -->|"Ask"| nb3b67b84f30e
+  linkStyle 129 stroke:#ef6c00
+  unresolved_9676ba088922["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.handle.pick.d939802fd952.bfb3d799284b.option.65c74c15a686
+  nb3b67b84f30e -->|"o"| unresolved_9676ba088922
+  linkStyle 130 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.push.dba790964dc5.33338af08098.call.f48723a688c5
+  ncc5d38e51c15 -->|"push"| nf48723a688c5
+  linkStyle 131 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.push.dba790964dc5.33338af08098.navigate
+  ncc5d38e51c15 -->|"{&#x27;c&#x27;: &#x27;contracts&#x27;, &#x27;i&#x27;: &#x27;inbox&#x27;, &#x27;?&#x27;: &#x27;help&#x27;, &#x27;x&#x27;: &#x27;people&#x27;, &#x27;h&#x27;: &#x27;history&#x27;}[key]"| n4b8d266bfb07
+  linkStyle 132 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.push.eab7459aaaf2.4004de978943.call.f48723a688c5
+  ncc5d38e51c15 -->|"push"| nf48723a688c5
+  linkStyle 133 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.push.eab7459aaaf2.4004de978943.navigate
+  ncc5d38e51c15 -->|"network"| n2b576e60f46e
+  linkStyle 134 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.5aa90c256d0a.910e0c8cf2d0.call.637949e97ebd
+  ncc5d38e51c15 -->|"resume"| n637949e97ebd
+  linkStyle 135 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.5aa90c256d0a.910e0c8cf2d0.navigate
+  ncc5d38e51c15 -->|"MODE_KEYS[key]"| n894f443046e9
+  linkStyle 136 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.6bae00507387.3caeebdbb448.call.637949e97ebd
+  ncc5d38e51c15 -->|"resume"| n637949e97ebd
+  linkStyle 137 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.6bae00507387.3caeebdbb448.navigate
+  ncc5d38e51c15 -->|"self.pick(&#x27;CHOOSE YOUR PATH&#x27;, list(_MODE_NAMES), str.title)"| ndd56f6d71e25
+  linkStyle 138 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.6bae00507387.84db0244d15b.call.637949e97ebd
+  ncc5d38e51c15 -->|"resume"| n637949e97ebd
+  linkStyle 139 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.6bae00507387.84db0244d15b.navigate
+  ncc5d38e51c15 -->|"self.pick(&#x27;CHOOSE YOUR PATH&#x27;, list(_MODE_NAMES), str.title)"| ndd56f6d71e25
+  linkStyle 140 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.select_entry.62cb0b26b1d2.8e76c931f479.call.3f1b88dad1e0
+  ncc5d38e51c15 -->|"select_entry"| n3f1b88dad1e0
+  linkStyle 141 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.select_player.3e7bd81e3f8b.bf0213376df5.call.5fc69410074d
+  ncc5d38e51c15 -->|"select_player"| n5fc69410074d
+  linkStyle 142 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.Screen.74a2610f5def.d9c78cee40a0.input.cc5d38e51c15
+  n15b968c2b712 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 143 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.Screen.74a2610f5def.d9c78cee40a0.render
+  n4bfc67a92a19 -->|"render"| n15b968c2b712
+  linkStyle 144 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.action_label.af52c57ef5ce.86c2c167907b.call.7b7df443c4e9
+  n4bfc67a92a19 -->|"action_label"| n7b7df443c4e9
+  linkStyle 145 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.action_label.af52c57ef5ce.969ff558f51f.call.7b7df443c4e9
+  n4bfc67a92a19 -->|"action_label"| n7b7df443c4e9
+  linkStyle 146 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.inspector.f5fa45053481.call.715a1faf1503
+  n4bfc67a92a19 -->|"inspector"| n715a1faf1503
+  linkStyle 147 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.66c2278dac35.4c10c8a4732f.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 148 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.688fe4f6b50d.ada9d15538e1.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 149 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.6b1d67f7b877.4c10c8a4732f.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 150 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.6d0a5e2bed6f.ada9d15538e1.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 151 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.73790b72a511.4c10c8a4732f.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 152 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.93e448a910ad.4ec3faf5e309.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 153 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.inspect.name.daee26db7b05.ada9d15538e1.call.9019ea6ac48e
+  n4bfc67a92a19 -->|"name"| n9019ea6ac48e
+  linkStyle 154 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.interaction.execute.cec5e92197f0.call.2fdd84c48b81
+  n2e26e561f9bf -->|"execute"| n2fdd84c48b81
+  linkStyle 155 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.interaction.pick.b26e4f3682e7.58a4adf879f6.call.f58913d1b322
+  n2e26e561f9bf -->|"pick"| nf58913d1b322
+  linkStyle 156 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.interaction.pick.b26e4f3682e7.58a4adf879f6.cancel.faa31e5880cf
+  n1bd9a76399c8 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 157 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.interaction.pick.b26e4f3682e7.58a4adf879f6.open
+  n2e26e561f9bf -->|"Ask"| n1bd9a76399c8
+  linkStyle 158 stroke:#ef6c00
+  unresolved_6073795bc0e2["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.interaction.pick.b26e4f3682e7.58a4adf879f6.option.ca978112ca1b
+  n1bd9a76399c8 -->|"a"| unresolved_6073795bc0e2
+  linkStyle 159 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1.entries.keyboard
+  n709fd38897cd -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 160 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1.entries.open
+  n8da558ffea69 -->|"Choose"| n709fd38897cd
+  linkStyle 161 stroke:#ef6c00
+  unresolved_b85c194ccb17["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1.entries.option.87d05cd08817
+  n709fd38897cd -->|"entries"| unresolved_b85c194ccb17
+  linkStyle 162 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1.input.cc5d38e51c15
+  n8da558ffea69 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 163 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.list_screen.Screen.c49c3af227e1.render
+  n1dbebaf71b16 -->|"render"| n8da558ffea69
+  linkStyle 164 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_key.push.0b037dfb0d22.57f522abde52.call.f48723a688c5
+  nf536b1771590 -->|"push"| nf48723a688c5
+  linkStyle 165 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_key.push.0b037dfb0d22.57f522abde52.navigate
+  nf536b1771590 -->|"cell"| n954d141631f6
+  linkStyle 166 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_screen.Screen.04ee79e58a53.5f6b0c9b39b3.input.cc5d38e51c15
+  n46caaad1a8d9 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 167 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_screen.Screen.04ee79e58a53.5f6b0c9b39b3.render
+  na260eb3a50fa -->|"render"| n46caaad1a8d9
+  linkStyle 168 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_screen.Screen.de9e3dc774b5.input.cc5d38e51c15
+  n357f3b403b46 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 169 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_screen.Screen.de9e3dc774b5.render
+  na260eb3a50fa -->|"render"| n357f3b403b46
+  linkStyle 170 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_screen.name.8e19ff0cc96c.call.9019ea6ac48e
+  na260eb3a50fa -->|"name"| n9019ea6ac48e
+  linkStyle 171 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.matrix_screen.name.f6e4208956dc.call.9019ea6ac48e
+  na260eb3a50fa -->|"name"| n9019ea6ac48e
+  linkStyle 172 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.call.f58913d1b322
+  ne33471f85980 -->|"pick"| nf58913d1b322
+  linkStyle 173 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.cancel.faa31e5880cf
+  nbb3d83cc55ab -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 174 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.open
+  ne33471f85980 -->|"Ask"| nbb3d83cc55ab
+  linkStyle 175 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.option.22ceaa99db95
+  nbb3d83cc55ab -->|"All"| nef8bc4ad9b37
+  linkStyle 176 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.option.22ceaa99db95.continuation
+  nef8bc4ad9b37 -->|"Continue caller"| ne33471f85980
+  linkStyle 177 stroke:#ef6c00
+  unresolved_12e7f0f23dea["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.1d676a864ce9.7413063ea11f.option.b4f5059032fa
+  nbb3d83cc55ab -->|"CATEGORIES"| unresolved_12e7f0f23dea
+  linkStyle 178 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.call.f58913d1b322
+  ne33471f85980 -->|"pick"| nf58913d1b322
+  linkStyle 179 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.cancel.faa31e5880cf
+  nb0607ec886b2 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 180 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.open
+  ne33471f85980 -->|"Ask"| nb0607ec886b2
+  linkStyle 181 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.option.694e921d5346
+  nb0607ec886b2 -->|"hidden"| nc542a4f96016
+  linkStyle 182 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.option.694e921d5346.continuation
+  nc542a4f96016 -->|"Continue caller"| ne33471f85980
+  linkStyle 183 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.option.73d31901a362
+  nb0607ec886b2 -->|"dim"| nc542a4f96016
+  linkStyle 184 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.option.73d31901a362.continuation
+  nc542a4f96016 -->|"Continue caller"| ne33471f85980
+  linkStyle 185 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.option.eb2dc0cc8e5e
+  nb0607ec886b2 -->|"full"| nc542a4f96016
+  linkStyle 186 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.26604676ecc4.f94f829cad45.option.eb2dc0cc8e5e.continuation
+  nc542a4f96016 -->|"Continue caller"| ne33471f85980
+  linkStyle 187 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.call.f58913d1b322
+  ne33471f85980 -->|"pick"| nf58913d1b322
+  linkStyle 188 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.cancel.faa31e5880cf
+  ndc3d07fb35af -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 189 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.open
+  ne33471f85980 -->|"Ask"| ndc3d07fb35af
+  linkStyle 190 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.option.2049e1980c87
+  ndc3d07fb35af -->|"neighbourhood"| nda0f49296965
+  linkStyle 191 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.option.2049e1980c87.continuation
+  nda0f49296965 -->|"Continue caller"| ne33471f85980
+  linkStyle 192 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.option.a9ed21c46856
+  ndc3d07fb35af -->|"connections"| nda0f49296965
+  linkStyle 193 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.option.a9ed21c46856.continuation
+  nda0f49296965 -->|"Continue caller"| ne33471f85980
+  linkStyle 194 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.option.b280a4159376
+  ndc3d07fb35af -->|"whole"| nda0f49296965
+  linkStyle 195 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_key.pick.54852a5bd075.1aed809b78d8.option.b280a4159376.continuation
+  nda0f49296965 -->|"Continue caller"| ne33471f85980
+  linkStyle 196 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_screen.Screen.85d093a9c1bb.8c67b5b5a429.input.cc5d38e51c15
+  nfde1c0730749 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 197 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_screen.Screen.85d093a9c1bb.8c67b5b5a429.render
+  n47692c500a07 -->|"render"| nfde1c0730749
+  linkStyle 198 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_screen.list_screen.5f02028f2ffb.call.1dbebaf71b16
+  n47692c500a07 -->|"list_screen"| n1dbebaf71b16
+  linkStyle 199 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_screen.name.acf6d8cdceeb.call.9019ea6ac48e
+  n47692c500a07 -->|"name"| n9019ea6ac48e
+  linkStyle 200 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.network_screen.name.ae803d244014.call.9019ea6ac48e
+  n47692c500a07 -->|"name"| n9019ea6ac48e
+  linkStyle 201 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.pick.pick.06f650aad56d.call.d3f4fee17bdc
+  nf58913d1b322 -->|"pick"| nd3f4fee17bdc
+  linkStyle 202 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.pick.pick.06f650aad56d.cancel.faa31e5880cf
+  n6c62e55fbe83 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 203 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.pick.pick.06f650aad56d.open
+  nf58913d1b322 -->|"Ask"| n6c62e55fbe83
+  linkStyle 204 stroke:#ef6c00
+  unresolved_3b4993a57459["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.pick.pick.06f650aad56d.option.5f3c4f8580d3
+  n6c62e55fbe83 -->|"items"| unresolved_3b4993a57459
+  linkStyle 205 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.prepare_screen.size.f983b597f1b8.call.6e3c1cace473
+  nfbf07eb43408 -->|"size"| n6e3c1cace473
+  linkStyle 206 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.prepare_screen.size.f983b597f1b8.call.f2d162fd4900
+  nfbf07eb43408 -->|"size"| nf2d162fd4900
+  linkStyle 207 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.push.push.2a788cca2485.call.0519b59f43bc
+  nf48723a688c5 -->|"push"| n0519b59f43bc
+  linkStyle 208 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.push.push.2a788cca2485.navigate
+  nf48723a688c5 -->|"kind"| n7dac6f53666a
+  linkStyle 209 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.run._run.d2485d68b167.1f30fd22b061.call.cb510fce5f15
+  n21c675ddc702 -->|"_run"| ncb510fce5f15
+  linkStyle 210 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.run._run.d2485d68b167.call.cb510fce5f15
+  n21c675ddc702 -->|"_run"| ncb510fce5f15
+  linkStyle 211 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.run.run_curses.f7cc5e426cac.4805ad4a58e4.call.5b97b75b0da7
+  n21c675ddc702 -->|"run_curses"| n5b97b75b0da7
+  linkStyle 212 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.run.supported.4805ad4a58e4.call.0cfb0f6075ff
+  n21c675ddc702 -->|"supported"| n0cfb0f6075ff
+  linkStyle 213 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.execute.342c5d4901c6.21ae46dfa7d1.call.2fdd84c48b81
+  n3f1b88dad1e0 -->|"execute"| n2fdd84c48b81
+  linkStyle 214 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.execute.8d2713945228.a0e2172f8cd6.call.2fdd84c48b81
+  n3f1b88dad1e0 -->|"execute"| n2fdd84c48b81
+  linkStyle 215 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.0467897444f5.0ad4460ea8c1.call.f48723a688c5
+  n3f1b88dad1e0 -->|"push"| nf48723a688c5
+  linkStyle 216 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.0467897444f5.0ad4460ea8c1.navigate
+  n3f1b88dad1e0 -->|"kind"| n7dac6f53666a
+  linkStyle 217 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.2f9a068f8adc.5362bd6a57b8.call.f48723a688c5
+  n3f1b88dad1e0 -->|"push"| nf48723a688c5
+  linkStyle 218 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.2f9a068f8adc.5362bd6a57b8.navigate
+  n3f1b88dad1e0 -->|"inspect"| n7e091a4a4be0
+  linkStyle 219 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.42e6e7f8118d.d56a5587b327.call.f48723a688c5
+  n3f1b88dad1e0 -->|"push"| nf48723a688c5
+  linkStyle 220 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.42e6e7f8118d.d56a5587b327.navigate
+  n3f1b88dad1e0 -->|"people"| n62fd9b438911
+  linkStyle 221 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_player.pick.1d320843e5a3.call.f58913d1b322
+  n5fc69410074d -->|"pick"| nf58913d1b322
+  linkStyle 222 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_player.pick.1d320843e5a3.cancel.faa31e5880cf
+  n2295ded7de93 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 223 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_player.pick.1d320843e5a3.open
+  n5fc69410074d -->|"Ask"| n2295ded7de93
+  linkStyle 224 stroke:#ef6c00
+  unresolved_d324392f4434["Unresolved destination"]
+  %% edge game_gamer.tui.application.TerminalGame.select_player.pick.1d320843e5a3.option.50c9c4aeb40b
+  n2295ded7de93 -->|"actor"| unresolved_d324392f4434
+  linkStyle 225 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.cancelled.raise
+  n6e358fac030f -->|"Cancel"| n72a743633ca4
+  linkStyle 226 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.context.e1356390d76e.call.a99c0794e512
+  n6e358fac030f -->|"context"| na99c0794e512
+  linkStyle 227 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.call.877847083faa
+  n6e358fac030f -->|"prompt"| n877847083faa
+  linkStyle 228 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.call.f584dc507d5a
+  n6e358fac030f -->|"prompt"| nf584dc507d5a
+  linkStyle 229 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.cancel.6e358fac030f
+  n68e2926d228d -->|"Cancel input"| n72a743633ca4
+  linkStyle 230 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.open
+  n6e358fac030f -->|"Ask"| n68e2926d228d
+  linkStyle 231 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.option.3e75895617f8
+  n68e2926d228d -->|"input_value"| nfc770251159b
+  linkStyle 232 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.ask.prompt.bd7888907451.option.3e75895617f8.continuation
+  nfc770251159b -->|"Continue caller"| n6e358fac030f
+  linkStyle 233 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 234 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.cancel.d4353d88e3be
+  nb90066133149 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 235 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.open
+  nd4353d88e3be -->|"Ask"| nb90066133149
+  linkStyle 236 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.option.3e75895617f8
+  nb90066133149 -->|"input_value"| n8f17cb6ecd6b
+  linkStyle 237 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.7286f8154776.1732782abb1a.option.3e75895617f8.continuation
+  n8f17cb6ecd6b -->|"Continue caller"| nd4353d88e3be
+  linkStyle 238 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 239 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900.cancel.d4353d88e3be
+  n84618d8f0536 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 240 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900.open
+  nd4353d88e3be -->|"Ask"| n84618d8f0536
+  linkStyle 241 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900.option.3e75895617f8
+  n84618d8f0536 -->|"input_value"| n0e84f9f600d6
+  linkStyle 242 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.822fd13450fb.d75b26e50900.option.3e75895617f8.continuation
+  n0e84f9f600d6 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 243 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 244 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.cancel.d4353d88e3be
+  n398512fe0734 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 245 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.open
+  nd4353d88e3be -->|"Ask"| n398512fe0734
+  linkStyle 246 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.option.3e75895617f8
+  n398512fe0734 -->|"input_value"| nb65acb7b5605
+  linkStyle 247 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.85ca5adfea2e.1732782abb1a.option.3e75895617f8.continuation
+  nb65acb7b5605 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 248 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 249 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.cancel.d4353d88e3be
+  n8223f2b9eda4 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 250 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.open
+  nd4353d88e3be -->|"Ask"| n8223f2b9eda4
+  linkStyle 251 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.option.3e75895617f8
+  n8223f2b9eda4 -->|"input_value"| na183eace7b0e
+  linkStyle 252 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.91e8ce2a4665.7d6bc1881111.option.3e75895617f8.continuation
+  na183eace7b0e -->|"Continue caller"| nd4353d88e3be
+  linkStyle 253 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 254 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.cancel.d4353d88e3be
+  nbfad7284d546 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 255 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.open
+  nd4353d88e3be -->|"Ask"| nbfad7284d546
+  linkStyle 256 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.option.3e75895617f8
+  nbfad7284d546 -->|"input_value"| nd8e746b16afe
+  linkStyle 257 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b2aa809974bd.1732782abb1a.option.3e75895617f8.continuation
+  nd8e746b16afe -->|"Continue caller"| nd4353d88e3be
+  linkStyle 258 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 259 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.cancel.d4353d88e3be
+  n28c53fd1bf4f -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 260 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.open
+  nd4353d88e3be -->|"Ask"| n28c53fd1bf4f
+  linkStyle 261 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.option.3e75895617f8
+  n28c53fd1bf4f -->|"input_value"| nbc5e4e0c990d
+  linkStyle 262 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.b394710d8afc.c1bd24948bf4.option.3e75895617f8.continuation
+  nbc5e4e0c990d -->|"Continue caller"| nd4353d88e3be
+  linkStyle 263 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.call.6e358fac030f
+  nd4353d88e3be -->|"ask"| n6e358fac030f
+  linkStyle 264 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.cancel.d4353d88e3be
+  nb5515e486ee9 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 265 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.open
+  nd4353d88e3be -->|"Ask"| nb5515e486ee9
+  linkStyle 266 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.option.3e75895617f8
+  nb5515e486ee9 -->|"input_value"| nc538517b87d2
+  linkStyle 267 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.ask.c9edcf3d565f.ed6deb49a3d3.option.3e75895617f8.continuation
+  nc538517b87d2 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 268 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.cancelled.raise
+  nd4353d88e3be -->|"Cancel"| na79db8ebf2c6
+  linkStyle 269 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.call.f5d69614b8ff
+  nd4353d88e3be -->|"confirm"| nf5d69614b8ff
+  linkStyle 270 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.cancel.d4353d88e3be
+  n51dc1da8a2c0 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 271 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.open
+  nd4353d88e3be -->|"Ask"| n51dc1da8a2c0
+  linkStyle 272 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.option.3cbc87c7681f
+  n51dc1da8a2c0 -->|"True"| n3150b5972f08
+  linkStyle 273 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.option.3cbc87c7681f.continuation
+  n3150b5972f08 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 274 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.option.60a33e6cf515
+  n51dc1da8a2c0 -->|"False"| n3150b5972f08
+  linkStyle 275 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.confirm.9e0c6ae94ff9.c9bc1b6b585c.option.60a33e6cf515.continuation
+  n3150b5972f08 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 276 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.call.d3f4fee17bdc
+  nd4353d88e3be -->|"pick"| nd3f4fee17bdc
+  linkStyle 277 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.cancel.d4353d88e3be
+  n1eb4656dfa04 -->|"Cancel input"| na79db8ebf2c6
+  linkStyle 278 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.open
+  nd4353d88e3be -->|"Ask"| n1eb4656dfa04
+  linkStyle 279 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.option.adeaf04a956e
+  n1eb4656dfa04 -->|"Save shared draft"| nd57836e79418
+  linkStyle 280 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.option.adeaf04a956e.continuation
+  nd57836e79418 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 281 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.option.d83fae1fd070
+  n1eb4656dfa04 -->|"Send now"| nd57836e79418
+  linkStyle 282 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.pick.1da17cfb006a.7d6bc1881111.option.d83fae1fd070.continuation
+  nd57836e79418 -->|"Continue caller"| nd4353d88e3be
+  linkStyle 283 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.collect.proposal.15ea12383bd8.59d45afc85fb.call.8bc92db36bd3
+  nd4353d88e3be -->|"proposal"| n8bc92db36bd3
+  linkStyle 284 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.call.d3f4fee17bdc
+  nf5d69614b8ff -->|"pick"| nd3f4fee17bdc
+  linkStyle 285 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.cancel.faa31e5880cf
+  nd629bd1940d8 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 286 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.open
+  nf5d69614b8ff -->|"Ask"| nd629bd1940d8
+  linkStyle 287 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.option.3cbc87c7681f
+  nd629bd1940d8 -->|"True"| n3fde8d1bba76
+  linkStyle 288 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.option.3cbc87c7681f.continuation
+  n3fde8d1bba76 -->|"Continue caller"| nf5d69614b8ff
+  linkStyle 289 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.option.60a33e6cf515
+  nd629bd1940d8 -->|"False"| n3fde8d1bba76
+  linkStyle 290 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.confirm.pick.8d0bfd80bc0c.option.60a33e6cf515.continuation
+  n3fde8d1bba76 -->|"Continue caller"| nf5d69614b8ff
+  linkStyle 291 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.pick.choose.d9138ed47920.call.0f4456a6dacc
+  nd3f4fee17bdc -->|"choose"| n0f4456a6dacc
+  linkStyle 292 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.pick.choose.d9138ed47920.call.faa31e5880cf
+  nd3f4fee17bdc -->|"choose"| nfaa31e5880cf
+  linkStyle 293 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.pick.choose.d9138ed47920.cancel.faa31e5880cf
+  n82e8d9ecded5 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 294 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.pick.choose.d9138ed47920.open
+  nd3f4fee17bdc -->|"Ask"| n82e8d9ecded5
+  linkStyle 295 stroke:#ef6c00
+  unresolved_e9b27c0c6a40["Unresolved destination"]
+  %% edge game_gamer.tui.forms.ActionForms.pick.choose.d9138ed47920.option.39db15dcd092
+  n82e8d9ecded5 -->|"choices"| unresolved_e9b27c0c6a40
+  linkStyle 296 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.pick.context.e1356390d76e.call.a99c0794e512
+  nd3f4fee17bdc -->|"context"| na99c0794e512
+  linkStyle 297 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 298 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.cancel.faa31e5880cf
+  n66d4b1eb6e90 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 299 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.open
+  n8bc92db36bd3 -->|"Ask"| n66d4b1eb6e90
+  linkStyle 300 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.option.3e75895617f8
+  n66d4b1eb6e90 -->|"input_value"| n5281c9f0af19
+  linkStyle 301 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.61ce5182897c.2e90264b1e26.option.3e75895617f8.continuation
+  n5281c9f0af19 -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 302 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 303 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.cancel.faa31e5880cf
+  nf89f33f00ce6 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 304 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.open
+  n8bc92db36bd3 -->|"Ask"| nf89f33f00ce6
+  linkStyle 305 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.option.3e75895617f8
+  nf89f33f00ce6 -->|"input_value"| ne882f86ad5cd
+  linkStyle 306 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.74865240c5d6.option.3e75895617f8.continuation
+  ne882f86ad5cd -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 307 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 308 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee.cancel.faa31e5880cf
+  ndfedb7250dc7 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 309 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee.open
+  n8bc92db36bd3 -->|"Ask"| ndfedb7250dc7
+  linkStyle 310 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee.option.3e75895617f8
+  ndfedb7250dc7 -->|"input_value"| n3e902a58ed10
+  linkStyle 311 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.97737c651dee.option.3e75895617f8.continuation
+  n3e902a58ed10 -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 312 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 313 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.cancel.faa31e5880cf
+  n02c0573748ad -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 314 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.open
+  n8bc92db36bd3 -->|"Ask"| n02c0573748ad
+  linkStyle 315 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.option.3e75895617f8
+  n02c0573748ad -->|"input_value"| n8ba14f75b422
+  linkStyle 316 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.9aea265da994.option.3e75895617f8.continuation
+  n8ba14f75b422 -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 317 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 318 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.cancel.faa31e5880cf
+  n0dc85e67f364 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 319 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.open
+  n8bc92db36bd3 -->|"Ask"| n0dc85e67f364
+  linkStyle 320 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.option.3e75895617f8
+  n0dc85e67f364 -->|"input_value"| n62b917d2d921
+  linkStyle 321 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b02c7694121a.option.3e75895617f8.continuation
+  n62b917d2d921 -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 322 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 323 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.cancel.faa31e5880cf
+  n9123eea58a88 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 324 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.open
+  n8bc92db36bd3 -->|"Ask"| n9123eea58a88
+  linkStyle 325 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.option.3e75895617f8
+  n9123eea58a88 -->|"input_value"| nb6b6f1bffd19
+  linkStyle 326 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.b1bc471de2e2.option.3e75895617f8.continuation
+  nb6b6f1bffd19 -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 327 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.call.6e358fac030f
+  n8bc92db36bd3 -->|"ask"| n6e358fac030f
+  linkStyle 328 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.cancel.faa31e5880cf
+  n1ff9d2db89e9 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 329 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.open
+  n8bc92db36bd3 -->|"Ask"| n1ff9d2db89e9
+  linkStyle 330 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.option.3e75895617f8
+  n1ff9d2db89e9 -->|"input_value"| nfabd1e5514b2
+  linkStyle 331 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.ask.edcf7c09c399.option.3e75895617f8.continuation
+  nfabd1e5514b2 -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 332 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.call.f5d69614b8ff
+  n8bc92db36bd3 -->|"confirm"| nf5d69614b8ff
+  linkStyle 333 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.cancel.faa31e5880cf
+  n39860a1616b2 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 334 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.open
+  n8bc92db36bd3 -->|"Ask"| n39860a1616b2
+  linkStyle 335 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.option.3cbc87c7681f
+  n39860a1616b2 -->|"True"| n01f25993d29d
+  linkStyle 336 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.option.3cbc87c7681f.continuation
+  n01f25993d29d -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 337 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.option.60a33e6cf515
+  n39860a1616b2 -->|"False"| n01f25993d29d
+  linkStyle 338 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.confirm.c23718686dda.option.60a33e6cf515.continuation
+  n01f25993d29d -->|"Continue caller"| n8bc92db36bd3
+  linkStyle 339 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.2f06e5ee4b3e.call.d3f4fee17bdc
+  n8bc92db36bd3 -->|"pick"| nd3f4fee17bdc
+  linkStyle 340 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.2f06e5ee4b3e.cancel.faa31e5880cf
+  n21062b32c8a6 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 341 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.2f06e5ee4b3e.open
+  n8bc92db36bd3 -->|"Ask"| n21062b32c8a6
+  linkStyle 342 stroke:#ef6c00
+  unresolved_cd217311a32f["Unresolved destination"]
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.2f06e5ee4b3e.option.48f946a426d8
+  n21062b32c8a6 -->|"list(world[&#x27;objectives&#x27;].values())"| unresolved_cd217311a32f
+  linkStyle 343 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.42a5688d1bd8.2e90264b1e26.call.d3f4fee17bdc
+  n8bc92db36bd3 -->|"pick"| nd3f4fee17bdc
+  linkStyle 344 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.42a5688d1bd8.2e90264b1e26.cancel.faa31e5880cf
+  nef69fd36532e -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 345 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.42a5688d1bd8.2e90264b1e26.open
+  n8bc92db36bd3 -->|"Ask"| nef69fd36532e
+  linkStyle 346 stroke:#ef6c00
+  unresolved_c8663ee5f3aa["Unresolved destination"]
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.42a5688d1bd8.2e90264b1e26.option.454349e422f0
+  nef69fd36532e -->|"r"| unresolved_c8663ee5f3aa
+  linkStyle 347 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.b70688247ca1.call.d3f4fee17bdc
+  n8bc92db36bd3 -->|"pick"| nd3f4fee17bdc
+  linkStyle 348 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.b70688247ca1.cancel.faa31e5880cf
+  n906c491afb45 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 349 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.b70688247ca1.open
+  n8bc92db36bd3 -->|"Ask"| n906c491afb45
+  linkStyle 350 stroke:#ef6c00
+  unresolved_87033ab533de["Unresolved destination"]
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.b70688247ca1.option.ca978112ca1b
+  n906c491afb45 -->|"a"| unresolved_87033ab533de
+  linkStyle 351 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.c6b9d0717082.call.d3f4fee17bdc
+  n8bc92db36bd3 -->|"pick"| nd3f4fee17bdc
+  linkStyle 352 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.c6b9d0717082.cancel.faa31e5880cf
+  n793e40384e91 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 353 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.c6b9d0717082.open
+  n8bc92db36bd3 -->|"Ask"| n793e40384e91
+  linkStyle 354 stroke:#ef6c00
+  unresolved_b0ab35a2004f["Unresolved destination"]
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.c6b9d0717082.option.148de9c5a7a4
+  n793e40384e91 -->|"p"| unresolved_b0ab35a2004f
+  linkStyle 355 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.d1532fb20fcd.call.d3f4fee17bdc
+  n8bc92db36bd3 -->|"pick"| nd3f4fee17bdc
+  linkStyle 356 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.d1532fb20fcd.cancel.faa31e5880cf
+  n11a8c68878d0 -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 357 stroke:#ef6c00
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.d1532fb20fcd.open
+  n8bc92db36bd3 -->|"Ask"| n11a8c68878d0
+  linkStyle 358 stroke:#ef6c00
+  unresolved_b5e45b5de82b["Unresolved destination"]
+  %% edge game_gamer.tui.forms.ActionForms.proposal.pick.d1532fb20fcd.option.ca978112ca1b
+  n11a8c68878d0 -->|"a"| unresolved_b5e45b5de82b
+  linkStyle 359 stroke:#ef6c00
+  %% edge game_gamer.tui.opening.opening_screen.Screen.b47769c51b0a.render
+  ne595a6a79fc0 -->|"render"| n18da59203f36
+  linkStyle 360 stroke:#ef6c00
+  %% edge game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530.entries.keyboard
+  nd2d55ecba91b -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 361 stroke:#ef6c00
+  %% edge game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530.entries.open
+  n3d8df034ba1a -->|"Choose"| nd2d55ecba91b
+  linkStyle 362 stroke:#ef6c00
+  unresolved_85b072f83db5["Unresolved destination"]
+  %% edge game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530.entries.option.49fce09b8385
+  nd2d55ecba91b -->|"BEGIN RECONSTRUCTION"| unresolved_85b072f83db5
+  linkStyle 363 stroke:#ef6c00
+  %% edge game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530.input.cc5d38e51c15
+  n3d8df034ba1a -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 364 stroke:#ef6c00
+  %% edge game_gamer.tui.opening.opening_screen.Screen.bf038b287970.05343e984530.render
+  ne595a6a79fc0 -->|"render"| n3d8df034ba1a
+  linkStyle 365 stroke:#ef6c00
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7.entries.keyboard
+  ne30a4dc89339 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 366 stroke:#ef6c00
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7.entries.open
+  nddec99762349 -->|"Choose"| ne30a4dc89339
+  linkStyle 367 stroke:#ef6c00
+  unresolved_86fb65067d34["Unresolved destination"]
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7.entries.option.a17af4a2dcfe
+  ne30a4dc89339 -->|"p.name"| unresolved_86fb65067d34
+  linkStyle 368 stroke:#ef6c00
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7.input.cc5d38e51c15
+  nddec99762349 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 369 stroke:#ef6c00
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen.Screen.af020921fee7.render
+  n1f3b15e02966 -->|"render"| nddec99762349
+  linkStyle 370 stroke:#ef6c00
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen._network_panel.08f4dcba2a09.85b4fe541408.call.72986aded27d
+  n1f3b15e02966 -->|"_network_panel"| n72986aded27d
+  linkStyle 371 stroke:#ef6c00
+  %% edge game_gamer.tui.reconstruction.reconstruction_screen._profile_lines.3d60a0379398.fa2f92f51e3a.call.4a2e64f3f12d
+  n1f3b15e02966 -->|"_profile_lines"| n4a2e64f3f12d
+  linkStyle 372 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.inspector.Screen.35a015818bb7.entries.keyboard
+  n46db6a11a146 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 373 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.inspector.Screen.35a015818bb7.entries.open
+  n208edda42d92 -->|"Choose"| n46db6a11a146
+  linkStyle 374 stroke:#ef6c00
+  unresolved_1a016b481526["Unresolved destination"]
+  %% edge game_gamer.tui.screen.inspector.Screen.35a015818bb7.entries.option.eef8b9fd5d43
+  n46db6a11a146 -->|"links"| unresolved_1a016b481526
+  linkStyle 375 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.inspector.Screen.35a015818bb7.input.cc5d38e51c15
+  n208edda42d92 -->|"Dispatch keyboard input"| ncc5d38e51c15
+  linkStyle 376 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.inspector.Screen.35a015818bb7.render
+  n715a1faf1503 -->|"render"| n208edda42d92
+  linkStyle 377 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.breadcrumbs.a54930430da4.call.4495dd760ba7
+  na1d83d29bc4e -->|"breadcrumbs"| n4495dd760ba7
+  linkStyle 378 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.build_screen.eaafd126dced.call.8dd04b32af23
+  na1d83d29bc4e -->|"build_screen"| n8dd04b32af23
+  linkStyle 379 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.context.340431cf1db1.call.a99c0794e512
+  na1d83d29bc4e -->|"context"| na99c0794e512
+  linkStyle 380 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.draw.bcae400814bd.call.922a7ecc51fc
+  na1d83d29bc4e -->|"draw"| n922a7ecc51fc
+  linkStyle 381 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.draw.bcae400814bd.call.b154aa5d6e66
+  na1d83d29bc4e -->|"draw"| nb154aa5d6e66
+  linkStyle 382 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.handle.491ea01889da.call.cc5d38e51c15
+  na1d83d29bc4e -->|"handle"| ncc5d38e51c15
+  linkStyle 383 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.key.6b89959b345e.4086f20d40be.call.0291c6e36a8a
+  na1d83d29bc4e -->|"key"| n0291c6e36a8a
+  linkStyle 384 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.key.6b89959b345e.4086f20d40be.call.22eabc7a54f3
+  na1d83d29bc4e -->|"key"| n22eabc7a54f3
+  linkStyle 385 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.navigation_key.97b9801d09dd.10125c2489a6.call.a11a50a96107
+  na1d83d29bc4e -->|"navigation_key"| na11a50a96107
+  linkStyle 386 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.poll.2913d23a29e0.4086f20d40be.call.7fb288fc843c
+  na1d83d29bc4e -->|"poll"| n7fb288fc843c
+  linkStyle 387 stroke:#ef6c00
+  %% edge game_gamer.tui.screen.run_screens.prepare_screen.ba1561ef9e83.call.fbf07eb43408
+  na1d83d29bc4e -->|"prepare_screen"| nfbf07eb43408
+  linkStyle 388 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.Screen.65eb1808157d.entries.cancel.0f4456a6dacc
+  n311326bc4c0b -->|"Cancel input"| n676d7688dd16
+  linkStyle 389 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.Screen.65eb1808157d.entries.open
+  ne19606afdd6a -->|"Choose"| n311326bc4c0b
+  linkStyle 390 stroke:#ef6c00
+  unresolved_0d9aae98ac45["Unresolved destination"]
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.Screen.65eb1808157d.entries.option.8081eff58158
+  n311326bc4c0b -->|"label(item)"| unresolved_0d9aae98ac45
+  linkStyle 391 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.Screen.65eb1808157d.render
+  n0f4456a6dacc -->|"render"| ne19606afdd6a
+  linkStyle 392 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.Screen.e293eef3ce8b.ff0b7ce6bba2.render
+  n0f4456a6dacc -->|"render"| n8eca384dad69
+  linkStyle 393 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.cancelled.raise
+  n0f4456a6dacc -->|"Cancel"| n676d7688dd16
+  linkStyle 394 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.confirm_discard.ba1202363f60.972aff3f34b3.call.02061fda97a9
+  n0f4456a6dacc -->|"confirm_discard"| n02061fda97a9
+  linkStyle 395 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.draw.493a589edd1f.ff0b7ce6bba2.call.b154aa5d6e66
+  n0f4456a6dacc -->|"draw"| nb154aa5d6e66
+  linkStyle 396 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.draw.65552759ef4b.call.b154aa5d6e66
+  n0f4456a6dacc -->|"draw"| nb154aa5d6e66
+  linkStyle 397 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.key.fca69ec162f7.call.22eabc7a54f3
+  n0f4456a6dacc -->|"key"| n22eabc7a54f3
+  linkStyle 398 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.key.fca69ec162f7.ff0b7ce6bba2.call.22eabc7a54f3
+  n0f4456a6dacc -->|"key"| n22eabc7a54f3
+  linkStyle 399 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c.call.f584dc507d5a
+  n0f4456a6dacc -->|"prompt"| nf584dc507d5a
+  linkStyle 400 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c.cancel.0f4456a6dacc
+  n56ce1eca6c9d -->|"Cancel input"| n676d7688dd16
+  linkStyle 401 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c.open
+  n0f4456a6dacc -->|"Ask"| n56ce1eca6c9d
+  linkStyle 402 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c.option.3e75895617f8
+  n56ce1eca6c9d -->|"input_value"| n121f37079dd2
+  linkStyle 403 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.prompt.a9bfa328efb5.901fde13872c.option.3e75895617f8.continuation
+  n121f37079dd2 -->|"Continue caller"| n0f4456a6dacc
+  linkStyle 404 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.size.315ff0358780.37a951625250.call.f2d162fd4900
+  n0f4456a6dacc -->|"size"| nf2d162fd4900
+  linkStyle 405 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.size.315ff0358780.48da941c34b2.call.f2d162fd4900
+  n0f4456a6dacc -->|"size"| nf2d162fd4900
+  linkStyle 406 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.size.315ff0358780.896dae55f56e.call.f2d162fd4900
+  n0f4456a6dacc -->|"size"| nf2d162fd4900
+  linkStyle 407 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries.open
+  n7762668e7d15 -->|"Choose"| nd3135903cafb
+  linkStyle 408 stroke:#ef6c00
+  unresolved_108a009fced3["Unresolved destination"]
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries.option.2a0768f9872a
+  nd3135903cafb -->|"CONFIRM"| unresolved_108a009fced3
+  linkStyle 409 stroke:#ef6c00
+  unresolved_03ae5597bcf0["Unresolved destination"]
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries.option.937044ee1919
+  nd3135903cafb -->|"CANCEL"| unresolved_03ae5597bcf0
+  linkStyle 410 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.render
+  n10188806b19d -->|"render"| n7762668e7d15
+  linkStyle 411 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.draw.6a487cbcd42f.call.b154aa5d6e66
+  n10188806b19d -->|"draw"| nb154aa5d6e66
+  linkStyle 412 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.key.fca69ec162f7.9428b83ccb0a.call.22eabc7a54f3
+  n10188806b19d -->|"key"| n22eabc7a54f3
+  linkStyle 413 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.key.fca69ec162f7.call.22eabc7a54f3
+  n10188806b19d -->|"key"| n22eabc7a54f3
+  linkStyle 414 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm_discard.Screen.9cf87ce45164.render
+  n02061fda97a9 -->|"render"| nd2a416a1a5c9
+  linkStyle 415 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm_discard.draw.f23a6df6821b.call.b154aa5d6e66
+  n02061fda97a9 -->|"draw"| nb154aa5d6e66
+  linkStyle 416 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm_discard.key.fca69ec162f7.call.22eabc7a54f3
+  n02061fda97a9 -->|"key"| n22eabc7a54f3
+  linkStyle 417 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.colour_style.9da631acf3ec.a410a7f0803c.call.a30b7c3cc36f
+  nb154aa5d6e66 -->|"colour_style"| na30b7c3cc36f
+  linkStyle 418 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.colour_style.dcdb29759c86.059d02fe03ba.call.a30b7c3cc36f
+  nb154aa5d6e66 -->|"colour_style"| na30b7c3cc36f
+  linkStyle 419 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.2e87f68bfe1c.03227f661434.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 420 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.36da3b0b3e95.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 421 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.59f86eb199e1.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 422 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.5a218e1159b7.5287eb4dd846.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 423 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.90d2736d07fc.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 424 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.b18c2cd18c64.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 425 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.d498d36d34b9.a825675a16d6.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 426 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.put.fc00b9a5a9d4.call.3ed7f05cee80
+  nb154aa5d6e66 -->|"put"| n3ed7f05cee80
+  linkStyle 427 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.safe.3947bad53a2e.call.6dec33a740d2
+  nb154aa5d6e66 -->|"safe"| n6dec33a740d2
+  linkStyle 428 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.safe.d1800fd916aa.059d02fe03ba.call.6dec33a740d2
+  nb154aa5d6e66 -->|"safe"| n6dec33a740d2
+  linkStyle 429 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.draw.size.315ff0358780.call.f2d162fd4900
+  nb154aa5d6e66 -->|"size"| nf2d162fd4900
+  linkStyle 430 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.message.draw.90076ecd9611.call.b154aa5d6e66
+  nc1c328bddfdf -->|"draw"| nb154aa5d6e66
+  linkStyle 431 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.navigation_key.key.fca69ec162f7.call.22eabc7a54f3
+  na11a50a96107 -->|"key"| n22eabc7a54f3
+  linkStyle 432 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.navigation_key.poll_key.a7428232d50c.call.7fb288fc843c
+  na11a50a96107 -->|"poll_key"| n7fb288fc843c
+  linkStyle 433 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.poll_key.key.fca69ec162f7.call.22eabc7a54f3
+  n7fb288fc843c -->|"key"| n22eabc7a54f3
+  linkStyle 434 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.prompt.Screen.9a6ff02faea5.render
+  nf584dc507d5a -->|"render"| nf439ebc25dc7
+  linkStyle 435 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.prompt.confirm_discard.ba1202363f60.e270b25ce12a.call.02061fda97a9
+  nf584dc507d5a -->|"confirm_discard"| n02061fda97a9
+  linkStyle 436 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.prompt.draw.f61b19d7cdda.call.b154aa5d6e66
+  nf584dc507d5a -->|"draw"| nb154aa5d6e66
+  linkStyle 437 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.prompt.key.fca69ec162f7.call.22eabc7a54f3
+  nf584dc507d5a -->|"key"| n22eabc7a54f3
+  linkStyle 438 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.prompt.size.315ff0358780.call.f2d162fd4900
+  nf584dc507d5a -->|"size"| nf2d162fd4900
+  linkStyle 439 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.put.safe.3947bad53a2e.a969ad1a7e85.call.6dec33a740d2
+  n3ed7f05cee80 -->|"safe"| n6dec33a740d2
+  linkStyle 440 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.put.size.315ff0358780.call.f2d162fd4900
+  n3ed7f05cee80 -->|"size"| nf2d162fd4900
+  linkStyle 441 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.Screen.d1391daae5a9.entries.cancel.faa31e5880cf
+  n041c0a58833c -->|"Cancel input"| n21b59e32c0a2
+  linkStyle 442 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.Screen.d1391daae5a9.entries.open
+  n5ab7ba665974 -->|"Choose"| n041c0a58833c
+  linkStyle 443 stroke:#ef6c00
+  unresolved_12d50fe601cc["Unresolved destination"]
+  %% edge game_gamer.tui.viewport.LineViewport.choose.Screen.d1391daae5a9.entries.option.8081eff58158
+  n041c0a58833c -->|"label(item)"| unresolved_12d50fe601cc
+  linkStyle 444 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.Screen.d1391daae5a9.render
+  nfaa31e5880cf -->|"render"| n5ab7ba665974
+  linkStyle 445 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.cancelled.raise
+  nfaa31e5880cf -->|"Cancel"| n21b59e32c0a2
+  linkStyle 446 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.confirm_discard.ba1202363f60.036617323ce4.call.5e113440a0e2
+  nfaa31e5880cf -->|"confirm_discard"| n5e113440a0e2
+  linkStyle 447 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.draw.b958f2564ee4.call.922a7ecc51fc
+  nfaa31e5880cf -->|"draw"| n922a7ecc51fc
+  linkStyle 448 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.choose.key.fca69ec162f7.call.0291c6e36a8a
+  nfaa31e5880cf -->|"key"| n0291c6e36a8a
+  linkStyle 449 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.confirm_discard.key.fca69ec162f7.call.0291c6e36a8a
+  n5e113440a0e2 -->|"key"| n0291c6e36a8a
+  linkStyle 450 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.message.draw.90076ecd9611.call.922a7ecc51fc
+  n873ebe3d90b0 -->|"draw"| n922a7ecc51fc
+  linkStyle 451 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.prompt.Screen.b836a6a2f378.render
+  n877847083faa -->|"render"| n68f49d1fe166
+  linkStyle 452 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.prompt.confirm_discard.ba1202363f60.call.5e113440a0e2
+  n877847083faa -->|"confirm_discard"| n5e113440a0e2
+  linkStyle 453 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.prompt.draw.a967aa43f869.call.922a7ecc51fc
+  n877847083faa -->|"draw"| n922a7ecc51fc
+  linkStyle 454 stroke:#ef6c00
+  %% edge terminal.route.cell.dispatch.d3e9f7b9c9a9
+  n954d141631f6 -->|"cell"| nd3e9f7b9c9a9
+  linkStyle 455 stroke:#ef6c00
+  subgraph legend["Legend (presentation only)"]
+    legend_text["Grey: navigation / disabled · Purple: state change · Amber: conditional or extraction uncertainty · Red: confirmed graph defect · Green: recovery"]
+  end

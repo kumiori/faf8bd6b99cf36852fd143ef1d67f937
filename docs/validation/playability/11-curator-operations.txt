@@ -1,0 +1,34 @@
+CURATOR / PROFILE                                                                                                                    ◆ CURATOR  
+Playing: Alex · Simulation · Montréal Commons · v4                                                                                              
+m Paths | e Ecosystem | g Gathering | s Scenarios | c Contracts | i Inbox | p Player                                                            
+Ecosystem > Exercises > Casey (2) > Casey (2)                                                                                                   
+Casey Example                                                                                                                                   
+Stable ID: fixture-duplicate                                                                                                                    
+Canonical ID: fixture-duplicate                                                                                                                 
+> [1] Inspect provenance                                                                                                                        
+  [2] Correct profile                                                                                                                           
+  [3] Hide / archive / restore                                                                                                                  
+  [4] Preview verified identity merge                                                                                                           
+  [5] Reverse an identity merge                                                                                                                 
+  [6] Choose another profile                                                                                                                    
+  [7] Inspect event history                                                                                                                     
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+Esc/b Back  ? Help | Enter Choose · b Return · u Curator                                                                                        

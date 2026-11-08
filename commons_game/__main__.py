@@ -26,10 +26,17 @@ def main(argv=None):
     play.add_argument('--explore', action='store_true', help='Explore without assuming an actor role')
     play.add_argument('--plain', action='store_true', help='Use portable text decorations')
     play.add_argument('--line-mode', action='store_true', help='Use the scripted text fallback instead of the full-screen viewport')
+    play.add_argument('--ui-trace-output',type=Path,help='Write privacy-minimal reconstruction transition observations as JSONL')
     play.add_argument('--developer-ui', action='store_true', help='Use the previous scripted laboratory surface')
     play.add_argument('--choose-world', action='store_true', help='Select another simulation world explicitly')
     imp = commands.add_parser('import-ecosystem', help='Import a read-only ecosystem snapshot into this world')
     imp.add_argument('snapshot', type=Path)
+    sources = commands.add_parser('import-reconstruction-sources', help='Import supplied historical references and transcriptions')
+    sources.add_argument('snapshot', type=Path)
+    access = commands.add_parser('curator-access', help='Trusted local operator setup of simulated curator permissions')
+    access.add_argument('decision', choices=('grant', 'revoke'))
+    access.add_argument('actor', help='Exact actor ID, full label or unique displayed name')
+    access.add_argument('--reference', required=True, help='Reason or source for this role assignment')
     capture = commands.add_parser('capture-notion', help='Read allowlisted Notion sources using the existing sibling transport')
     capture.add_argument('--source-mapping', type=Path, required=True)
     capture.add_argument('--protocol-project', type=Path, default=Path('../app_protocol_hack'))
@@ -79,9 +86,20 @@ def main(argv=None):
             from .ecosystem_import import import_snapshot
             snapshot = json.loads(args.snapshot.read_text())
             print(json.dumps(store.transact(lambda game: import_snapshot(game, snapshot)), indent=2))
+        elif args.operation == 'import-reconstruction-sources':
+            from .ecosystem_import import import_reconstruction_sources
+            document = json.loads(args.snapshot.read_text())
+            print(json.dumps(store.transact(lambda game: import_reconstruction_sources(game, document)), indent=2))
+        elif args.operation == 'curator-access':
+            from .curator_access import provision_curator
+            result = store.transact(lambda game: provision_curator(
+                game, args.actor, enabled=args.decision == 'grant', reference=args.reference))
+            print(json.dumps(result, indent=2))
         elif args.operation == 'play':
             from .tui import Terminal, run_play, Cancelled
             primary = not (args.developer_ui or args.actor or args.mock_identities or args.hot_seat)
+            if args.ui_trace_output and not primary:
+                raise ValueError('ui_trace_output_requires_the_primary_reconstruction_interface')
             from .fullscreen import supported
             interactive_primary = primary and not args.line_mode and supported(sys.stdin,sys.stdout)
             if interactive_primary and args.scenario is None and not args.choose_world:
@@ -133,8 +151,23 @@ def main(argv=None):
                     identity = provider.sign_in(args.mock_player)
             if primary:
                 from .fullscreen import supported, run_fullscreen
+                trace=None
+                if args.ui_trace_output:
+                    if args.ui_trace_output.resolve()==store.path.resolve():
+                        raise ValueError('ui_trace_and_world_paths_must_differ')
+                    from game_gamer.transitions import TraceSession,jsonl_sink
+                    trace=TraceSession(sink=jsonl_sink(args.ui_trace_output))
                 if not args.line_mode and supported(sys.stdin, sys.stdout):
-                    run_fullscreen(game,store=store,plain=args.plain,explore=args.explore)
+                    run_fullscreen(game,store=store,plain=args.plain,explore=args.explore,transition_trace=trace)
+                    if trace is not None and trace.sink_errors:
+                        raise ValueError('ui_trace_output_failed; accepted engine commits remain saved')
+                    return 0
+                if trace is not None:
+                    from .fullscreen import FullScreenTerminal
+                    from game_gamer.tui.viewport import LineViewport
+                    FullScreenTerminal(game,store=store,plain=True,explore=args.explore,
+                        viewport=LineViewport(sys.stdin,sys.stdout),transition_trace=trace).run()
+                    if trace.sink_errors:raise ValueError('ui_trace_output_failed; accepted engine commits remain saved')
                     return 0
                 from .play import PlayableTerminal
                 terminal=PlayableTerminal(game,store=store,plain=args.plain,explore=args.explore)

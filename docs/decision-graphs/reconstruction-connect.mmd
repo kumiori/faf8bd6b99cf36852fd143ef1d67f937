@@ -1,0 +1,487 @@
+flowchart LR
+  %% Canonical IDs are retained in node/edge comments.
+  graph_limits["Coverage / audit: screens=5 · questions=6 · options=7 · engine actions=6 · unreachable screens=5 · unmapped options=0 · missing recovery paths=1 · untested transitions=0 · uninstrumented transitions=0 This contract verifies the reconstruction slice only. Shared handoff destinations and the remaining application require their own contracts and evidence."]
+  subgraph scope_ed9f6f250686["Engine"]
+    %% node engine.dispute_recollection
+    n804e9918cd85["dispute_recollection"]
+    %% node engine.draft_contact
+    n96bc086c8448["draft_contact"]
+    %% node engine.recall_connection
+    n71649e80fb51["recall_connection"]
+    %% node engine.record_prior_relationship
+    ne827ef3bde4a["record_prior_relationship"]
+    %% node engine.retract_relationship_claim
+    ndaa281beb227["retract_relationship_claim"]
+    %% node engine.send_contact
+    nae34602a8739["send_contact"]
+  end
+  subgraph scope_e63fd7892e86["Exercise.Reconstruct"]
+    %% node exercise.reconstruct.connect.cancel.execution
+    n2a8f4ce0dbc4["Cancel"]
+    %% node exercise.reconstruct.connect.confirm
+    n0de77128d997["Record this connection?"]
+    %% node exercise.reconstruct.connect.dispute.execution
+    n9ec02dfb00d5["Dispute this participant’s recollection"]
+    %% node exercise.reconstruct.connect.invite.execution
+    nbed8092465b5["I would like to connect now"]
+    %% node exercise.reconstruct.connect.menu
+    n523f2a21ef6e["Connect with participant"]
+    %% node exercise.reconstruct.connect.open.execution
+    n7233e01eb4e6["Choose connection type"]
+    %% node exercise.reconstruct.connect.open.sources
+    n8095f55c9718["Choose connection type"]
+    %% node exercise.reconstruct.connect.prior_relationship.execution
+    nc1ebcd9956fb["We already knew each other before Montréal"]
+    %% node exercise.reconstruct.connect.recall.execution
+    n19c7d9ba3aa9["We connected in Montréal"]
+    %% node exercise.reconstruct.connect.retract.execution
+    nc6c6cf610308["Retract my relationship declaration"]
+    %% node exercise.reconstruct.directory
+    n71b1c378e899["Participant directory"]
+    %% node exercise.reconstruct.graph
+    nf840aa9e3afa["Collective network"]
+    %% node exercise.reconstruct.invite.confirm
+    n6bb2986d4af4["Submit invitation?"]
+    %% node exercise.reconstruct.invite.delivery
+    nc91cb6b8d0c8["Invitation delivery"]
+    %% node exercise.reconstruct.invite.message
+    nc31bbd9a5891["Invitation message"]
+    %% node exercise.reconstruct.invite.purpose
+    n7d2a76a5c128["Optional invitation purpose"]
+    %% node exercise.reconstruct.network
+    n26c6832f798f["Participant network"]
+    %% node exercise.reconstruct.profile
+    n1180192834b2["Participant profile"]
+    %% node exercise.reconstruct.quit
+    n69c819b5d20c["Quit"]
+    %% node exercise.reconstruct.result
+    n3d0ed43bc696["Action result"]
+    %% node host.inspect
+    na9965a20015a["Shared inspect"]
+  end
+  %% edge exercise.reconstruct.connect.cancel
+  n523f2a21ef6e -->|"Cancel"| n2a8f4ce0dbc4
+  linkStyle 0 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.aborted.exercise.reconstruct.quit
+  n2a8f4ce0dbc4 -->|"Cancel"| n69c819b5d20c
+  linkStyle 1 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.cancelled.exercise.reconstruct.directory
+  n2a8f4ce0dbc4 -->|"Cancel"| n71b1c378e899
+  linkStyle 2 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.cancelled.exercise.reconstruct.graph
+  n2a8f4ce0dbc4 -->|"Cancel"| nf840aa9e3afa
+  linkStyle 3 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.cancelled.exercise.reconstruct.network
+  n2a8f4ce0dbc4 -->|"Cancel"| n26c6832f798f
+  linkStyle 4 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.cancelled.exercise.reconstruct.profile
+  n2a8f4ce0dbc4 -->|"Cancel"| n1180192834b2
+  linkStyle 5 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.error.exercise.reconstruct.directory
+  n2a8f4ce0dbc4 -->|"Cancel"| n71b1c378e899
+  linkStyle 6 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.error.exercise.reconstruct.graph
+  n2a8f4ce0dbc4 -->|"Cancel"| nf840aa9e3afa
+  linkStyle 7 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.error.exercise.reconstruct.network
+  n2a8f4ce0dbc4 -->|"Cancel"| n26c6832f798f
+  linkStyle 8 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.cancel.outcome.error.exercise.reconstruct.profile
+  n2a8f4ce0dbc4 -->|"Cancel"| n1180192834b2
+  linkStyle 9 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute
+  n523f2a21ef6e -->|"Dispute this participant’s recollection"| n9ec02dfb00d5
+  linkStyle 10 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.engine.dispute_recollection
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n804e9918cd85
+  linkStyle 11 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.aborted.exercise.reconstruct.quit
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n69c819b5d20c
+  linkStyle 12 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.blocked.exercise.reconstruct.directory
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n71b1c378e899
+  linkStyle 13 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.blocked.exercise.reconstruct.graph
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| nf840aa9e3afa
+  linkStyle 14 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.blocked.exercise.reconstruct.network
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n26c6832f798f
+  linkStyle 15 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.blocked.exercise.reconstruct.profile
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n1180192834b2
+  linkStyle 16 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.cancelled.exercise.reconstruct.directory
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n71b1c378e899
+  linkStyle 17 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.cancelled.exercise.reconstruct.graph
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| nf840aa9e3afa
+  linkStyle 18 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.cancelled.exercise.reconstruct.network
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n26c6832f798f
+  linkStyle 19 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.cancelled.exercise.reconstruct.profile
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n1180192834b2
+  linkStyle 20 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.outcome.committed.exercise.reconstruct.result
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n3d0ed43bc696
+  linkStyle 21 stroke:#7b1fa2
+  %% edge exercise.reconstruct.connect.dispute.outcome.error.exercise.reconstruct.directory
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n71b1c378e899
+  linkStyle 22 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.error.exercise.reconstruct.graph
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| nf840aa9e3afa
+  linkStyle 23 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.error.exercise.reconstruct.network
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n26c6832f798f
+  linkStyle 24 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.error.exercise.reconstruct.profile
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n1180192834b2
+  linkStyle 25 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.idempotent.exercise.reconstruct.result
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n3d0ed43bc696
+  linkStyle 26 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.outcome.rejected.exercise.reconstruct.result
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n3d0ed43bc696
+  linkStyle 27 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.dispute.question.exercise.reconstruct.connect.confirm
+  n9ec02dfb00d5 -->|"Dispute this participant’s recollection"| n0de77128d997
+  linkStyle 28 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.dispute.question_return.exercise.reconstruct.connect.confirm
+  n0de77128d997 -->|"Dispute this participant’s recollection"| n9ec02dfb00d5
+  linkStyle 29 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite
+  n523f2a21ef6e -->|"I would like to connect now"| nbed8092465b5
+  linkStyle 30 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.engine.draft_contact
+  nbed8092465b5 -->|"I would like to connect now"| n96bc086c8448
+  linkStyle 31 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.engine.send_contact
+  nbed8092465b5 -->|"I would like to connect now"| nae34602a8739
+  linkStyle 32 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.aborted.exercise.reconstruct.quit
+  nbed8092465b5 -->|"I would like to connect now"| n69c819b5d20c
+  linkStyle 33 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.blocked.exercise.reconstruct.directory
+  nbed8092465b5 -->|"I would like to connect now"| n71b1c378e899
+  linkStyle 34 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.blocked.exercise.reconstruct.graph
+  nbed8092465b5 -->|"I would like to connect now"| nf840aa9e3afa
+  linkStyle 35 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.blocked.exercise.reconstruct.network
+  nbed8092465b5 -->|"I would like to connect now"| n26c6832f798f
+  linkStyle 36 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.blocked.exercise.reconstruct.profile
+  nbed8092465b5 -->|"I would like to connect now"| n1180192834b2
+  linkStyle 37 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.cancelled.exercise.reconstruct.directory
+  nbed8092465b5 -->|"I would like to connect now"| n71b1c378e899
+  linkStyle 38 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.cancelled.exercise.reconstruct.graph
+  nbed8092465b5 -->|"I would like to connect now"| nf840aa9e3afa
+  linkStyle 39 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.cancelled.exercise.reconstruct.network
+  nbed8092465b5 -->|"I would like to connect now"| n26c6832f798f
+  linkStyle 40 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.cancelled.exercise.reconstruct.profile
+  nbed8092465b5 -->|"I would like to connect now"| n1180192834b2
+  linkStyle 41 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.committed.host.inspect
+  nbed8092465b5 -->|"I would like to connect now"| na9965a20015a
+  linkStyle 42 stroke:#7b1fa2
+  %% edge exercise.reconstruct.connect.invite.outcome.error.exercise.reconstruct.directory
+  nbed8092465b5 -->|"I would like to connect now"| n71b1c378e899
+  linkStyle 43 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.error.exercise.reconstruct.graph
+  nbed8092465b5 -->|"I would like to connect now"| nf840aa9e3afa
+  linkStyle 44 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.error.exercise.reconstruct.network
+  nbed8092465b5 -->|"I would like to connect now"| n26c6832f798f
+  linkStyle 45 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.error.exercise.reconstruct.profile
+  nbed8092465b5 -->|"I would like to connect now"| n1180192834b2
+  linkStyle 46 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.idempotent.host.inspect
+  nbed8092465b5 -->|"I would like to connect now"| na9965a20015a
+  linkStyle 47 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.outcome.rejected.exercise.reconstruct.directory
+  nbed8092465b5 -->|"I would like to connect now"| n71b1c378e899
+  linkStyle 48 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.rejected.exercise.reconstruct.graph
+  nbed8092465b5 -->|"I would like to connect now"| nf840aa9e3afa
+  linkStyle 49 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.rejected.exercise.reconstruct.network
+  nbed8092465b5 -->|"I would like to connect now"| n26c6832f798f
+  linkStyle 50 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.outcome.rejected.exercise.reconstruct.profile
+  nbed8092465b5 -->|"I would like to connect now"| n1180192834b2
+  linkStyle 51 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.invite.question.exercise.reconstruct.invite.confirm
+  nbed8092465b5 -->|"I would like to connect now"| n6bb2986d4af4
+  linkStyle 52 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question.exercise.reconstruct.invite.delivery
+  nbed8092465b5 -->|"I would like to connect now"| nc91cb6b8d0c8
+  linkStyle 53 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question.exercise.reconstruct.invite.message
+  nbed8092465b5 -->|"I would like to connect now"| nc31bbd9a5891
+  linkStyle 54 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question.exercise.reconstruct.invite.purpose
+  nbed8092465b5 -->|"I would like to connect now"| n7d2a76a5c128
+  linkStyle 55 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question_return.exercise.reconstruct.invite.confirm
+  n6bb2986d4af4 -->|"I would like to connect now"| nbed8092465b5
+  linkStyle 56 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question_return.exercise.reconstruct.invite.delivery
+  nc91cb6b8d0c8 -->|"I would like to connect now"| nbed8092465b5
+  linkStyle 57 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question_return.exercise.reconstruct.invite.message
+  nc31bbd9a5891 -->|"I would like to connect now"| nbed8092465b5
+  linkStyle 58 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.invite.question_return.exercise.reconstruct.invite.purpose
+  n7d2a76a5c128 -->|"I would like to connect now"| nbed8092465b5
+  linkStyle 59 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open
+  n8095f55c9718 -->|"Choose connection type"| n7233e01eb4e6
+  linkStyle 60 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.from.exercise.reconstruct.directory
+  n71b1c378e899 -->|"Choose connection type"| n8095f55c9718
+  linkStyle 61 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.from.exercise.reconstruct.graph
+  nf840aa9e3afa -->|"Choose connection type"| n8095f55c9718
+  linkStyle 62 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.from.exercise.reconstruct.network
+  n26c6832f798f -->|"Choose connection type"| n8095f55c9718
+  linkStyle 63 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.from.exercise.reconstruct.profile
+  n1180192834b2 -->|"Choose connection type"| n8095f55c9718
+  linkStyle 64 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.outcome.aborted.exercise.reconstruct.quit
+  n7233e01eb4e6 -->|"Choose connection type"| n69c819b5d20c
+  linkStyle 65 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.outcome.blocked.exercise.reconstruct.directory
+  n7233e01eb4e6 -->|"Choose connection type"| n71b1c378e899
+  linkStyle 66 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.blocked.exercise.reconstruct.graph
+  n7233e01eb4e6 -->|"Choose connection type"| nf840aa9e3afa
+  linkStyle 67 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.blocked.exercise.reconstruct.network
+  n7233e01eb4e6 -->|"Choose connection type"| n26c6832f798f
+  linkStyle 68 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.blocked.exercise.reconstruct.profile
+  n7233e01eb4e6 -->|"Choose connection type"| n1180192834b2
+  linkStyle 69 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.cancelled.exercise.reconstruct.directory
+  n7233e01eb4e6 -->|"Choose connection type"| n71b1c378e899
+  linkStyle 70 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.cancelled.exercise.reconstruct.graph
+  n7233e01eb4e6 -->|"Choose connection type"| nf840aa9e3afa
+  linkStyle 71 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.cancelled.exercise.reconstruct.network
+  n7233e01eb4e6 -->|"Choose connection type"| n26c6832f798f
+  linkStyle 72 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.cancelled.exercise.reconstruct.profile
+  n7233e01eb4e6 -->|"Choose connection type"| n1180192834b2
+  linkStyle 73 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.open.outcome.error.exercise.reconstruct.directory
+  n7233e01eb4e6 -->|"Choose connection type"| n71b1c378e899
+  linkStyle 74 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.outcome.error.exercise.reconstruct.graph
+  n7233e01eb4e6 -->|"Choose connection type"| nf840aa9e3afa
+  linkStyle 75 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.outcome.error.exercise.reconstruct.network
+  n7233e01eb4e6 -->|"Choose connection type"| n26c6832f798f
+  linkStyle 76 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.outcome.error.exercise.reconstruct.profile
+  n7233e01eb4e6 -->|"Choose connection type"| n1180192834b2
+  linkStyle 77 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.outcome.selected.exercise.reconstruct.connect.menu
+  n7233e01eb4e6 -->|"Choose connection type"| n523f2a21ef6e
+  linkStyle 78 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.question.exercise.reconstruct.connect.menu
+  n7233e01eb4e6 -->|"Choose connection type"| n523f2a21ef6e
+  linkStyle 79 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.open.question_return.exercise.reconstruct.connect.menu
+  n523f2a21ef6e -->|"Choose connection type"| n7233e01eb4e6
+  linkStyle 80 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship
+  n523f2a21ef6e -->|"We already knew each other before Montréal"| nc1ebcd9956fb
+  linkStyle 81 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.engine.record_prior_relationship
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| ne827ef3bde4a
+  linkStyle 82 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.aborted.exercise.reconstruct.quit
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n69c819b5d20c
+  linkStyle 83 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.blocked.exercise.reconstruct.directory
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n71b1c378e899
+  linkStyle 84 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.blocked.exercise.reconstruct.graph
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| nf840aa9e3afa
+  linkStyle 85 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.blocked.exercise.reconstruct.network
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n26c6832f798f
+  linkStyle 86 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.blocked.exercise.reconstruct.profile
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n1180192834b2
+  linkStyle 87 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.cancelled.exercise.reconstruct.directory
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n71b1c378e899
+  linkStyle 88 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.cancelled.exercise.reconstruct.graph
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| nf840aa9e3afa
+  linkStyle 89 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.cancelled.exercise.reconstruct.network
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n26c6832f798f
+  linkStyle 90 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.cancelled.exercise.reconstruct.profile
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n1180192834b2
+  linkStyle 91 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.committed.exercise.reconstruct.result
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n3d0ed43bc696
+  linkStyle 92 stroke:#7b1fa2
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.error.exercise.reconstruct.directory
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n71b1c378e899
+  linkStyle 93 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.error.exercise.reconstruct.graph
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| nf840aa9e3afa
+  linkStyle 94 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.error.exercise.reconstruct.network
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n26c6832f798f
+  linkStyle 95 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.error.exercise.reconstruct.profile
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n1180192834b2
+  linkStyle 96 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.idempotent.exercise.reconstruct.result
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n3d0ed43bc696
+  linkStyle 97 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.outcome.rejected.exercise.reconstruct.result
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n3d0ed43bc696
+  linkStyle 98 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.prior_relationship.question.exercise.reconstruct.connect.confirm
+  nc1ebcd9956fb -->|"We already knew each other before Montréal"| n0de77128d997
+  linkStyle 99 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.prior_relationship.question_return.exercise.reconstruct.connect.confirm
+  n0de77128d997 -->|"We already knew each other before Montréal"| nc1ebcd9956fb
+  linkStyle 100 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall
+  n523f2a21ef6e -->|"We connected in Montréal"| n19c7d9ba3aa9
+  linkStyle 101 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.engine.recall_connection
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n71649e80fb51
+  linkStyle 102 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.aborted.exercise.reconstruct.quit
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n69c819b5d20c
+  linkStyle 103 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.blocked.exercise.reconstruct.directory
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n71b1c378e899
+  linkStyle 104 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.blocked.exercise.reconstruct.graph
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| nf840aa9e3afa
+  linkStyle 105 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.blocked.exercise.reconstruct.network
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n26c6832f798f
+  linkStyle 106 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.blocked.exercise.reconstruct.profile
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n1180192834b2
+  linkStyle 107 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.cancelled.exercise.reconstruct.directory
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n71b1c378e899
+  linkStyle 108 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.cancelled.exercise.reconstruct.graph
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| nf840aa9e3afa
+  linkStyle 109 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.cancelled.exercise.reconstruct.network
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n26c6832f798f
+  linkStyle 110 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.cancelled.exercise.reconstruct.profile
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n1180192834b2
+  linkStyle 111 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.outcome.committed.exercise.reconstruct.result
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n3d0ed43bc696
+  linkStyle 112 stroke:#7b1fa2
+  %% edge exercise.reconstruct.connect.recall.outcome.error.exercise.reconstruct.directory
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n71b1c378e899
+  linkStyle 113 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.error.exercise.reconstruct.graph
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| nf840aa9e3afa
+  linkStyle 114 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.error.exercise.reconstruct.network
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n26c6832f798f
+  linkStyle 115 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.error.exercise.reconstruct.profile
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n1180192834b2
+  linkStyle 116 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.idempotent.exercise.reconstruct.result
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n3d0ed43bc696
+  linkStyle 117 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.outcome.rejected.exercise.reconstruct.result
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n3d0ed43bc696
+  linkStyle 118 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.recall.question.exercise.reconstruct.connect.confirm
+  n19c7d9ba3aa9 -->|"We connected in Montréal"| n0de77128d997
+  linkStyle 119 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.recall.question_return.exercise.reconstruct.connect.confirm
+  n0de77128d997 -->|"We connected in Montréal"| n19c7d9ba3aa9
+  linkStyle 120 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract
+  n523f2a21ef6e -->|"Retract my relationship declaration"| nc6c6cf610308
+  linkStyle 121 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.engine.retract_relationship_claim
+  nc6c6cf610308 -->|"Retract my relationship declaration"| ndaa281beb227
+  linkStyle 122 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.aborted.exercise.reconstruct.quit
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n69c819b5d20c
+  linkStyle 123 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.blocked.exercise.reconstruct.directory
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n71b1c378e899
+  linkStyle 124 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.blocked.exercise.reconstruct.graph
+  nc6c6cf610308 -->|"Retract my relationship declaration"| nf840aa9e3afa
+  linkStyle 125 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.blocked.exercise.reconstruct.network
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n26c6832f798f
+  linkStyle 126 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.blocked.exercise.reconstruct.profile
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n1180192834b2
+  linkStyle 127 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.cancelled.exercise.reconstruct.directory
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n71b1c378e899
+  linkStyle 128 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.cancelled.exercise.reconstruct.graph
+  nc6c6cf610308 -->|"Retract my relationship declaration"| nf840aa9e3afa
+  linkStyle 129 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.cancelled.exercise.reconstruct.network
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n26c6832f798f
+  linkStyle 130 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.cancelled.exercise.reconstruct.profile
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n1180192834b2
+  linkStyle 131 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.outcome.committed.exercise.reconstruct.result
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n3d0ed43bc696
+  linkStyle 132 stroke:#7b1fa2
+  %% edge exercise.reconstruct.connect.retract.outcome.error.exercise.reconstruct.directory
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n71b1c378e899
+  linkStyle 133 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.error.exercise.reconstruct.graph
+  nc6c6cf610308 -->|"Retract my relationship declaration"| nf840aa9e3afa
+  linkStyle 134 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.error.exercise.reconstruct.network
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n26c6832f798f
+  linkStyle 135 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.error.exercise.reconstruct.profile
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n1180192834b2
+  linkStyle 136 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.idempotent.exercise.reconstruct.result
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n3d0ed43bc696
+  linkStyle 137 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.outcome.rejected.exercise.reconstruct.result
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n3d0ed43bc696
+  linkStyle 138 stroke:#2e7d32
+  %% edge exercise.reconstruct.connect.retract.question.exercise.reconstruct.connect.confirm
+  nc6c6cf610308 -->|"Retract my relationship declaration"| n0de77128d997
+  linkStyle 139 stroke:#ef6c00
+  %% edge exercise.reconstruct.connect.retract.question_return.exercise.reconstruct.connect.confirm
+  n0de77128d997 -->|"Retract my relationship declaration"| nc6c6cf610308
+  linkStyle 140 stroke:#ef6c00
+  subgraph legend["Legend (presentation only)"]
+    legend_text["Grey: navigation / disabled · Purple: state change · Amber: conditional or extraction uncertainty · Red: confirmed graph defect · Green: recovery"]
+  end

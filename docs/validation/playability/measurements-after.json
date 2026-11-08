@@ -1,0 +1,45 @@
+{
+  "world": {
+    "people": 41,
+    "actors": 71,
+    "events": 12
+  },
+  "measurements": {
+    "arrow_frame": {
+      "samples": 30,
+      "median_ms": 4.341,
+      "p95_ms": 4.823,
+      "max_ms": 5.187
+    },
+    "profile": {
+      "samples": 30,
+      "median_ms": 1.922,
+      "p95_ms": 2.073,
+      "max_ms": 2.156
+    },
+    "facet_values": {
+      "samples": 30,
+      "median_ms": 0.122,
+      "p95_ms": 0.132,
+      "max_ms": 0.205
+    },
+    "neighbourhood": {
+      "samples": 30,
+      "median_ms": 1.983,
+      "p95_ms": 2.094,
+      "max_ms": 2.198
+    },
+    "collective_graph": {
+      "samples": 30,
+      "median_ms": 3.578,
+      "p95_ms": 6.294,
+      "max_ms": 7.367
+    },
+    "sqlite_submit_and_refresh": {
+      "samples": 5,
+      "median_ms": 161.526,
+      "p95_ms": 174.859,
+      "max_ms": 174.924
+    }
+  }
+}

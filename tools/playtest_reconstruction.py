@@ -1,0 +1,106 @@
+"""Fictional two-player reconstruction through the actual terminal and SQLite store."""
+import argparse
+import asyncio
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / 'tools'))
+
+from playtest_matrix import Driver, PTY, fictional_world
+from commons_engine.store import SQLiteStore
+from commons_game import CommonsGame
+
+async def run(output):
+    output.mkdir(parents=True, exist_ok=False)
+    store = SQLiteStore(output/'reconstruction.sqlite', CommonsGame)
+    store.initialise(fictional_world())
+    port = PTY([sys.executable, '-B', '-m', 'commons_game', '--db', str(store.path), 'play', '--plain'])
+    d = Driver(port, output)
+    try:
+        await d.expect('SADDLE PATHWAYS')
+        await d.enter()
+        await d.expect('WHO WILL YOU PLAY?')
+        await d.choose('Alex')
+        await d.expect('CHOOSE YOUR PATH')
+        await d.send('4')
+        await d.expect('EXERCISES / WORKSHOP')
+        await d.send('4')
+        await d.expect('Can we reconstruct the network')
+        await d.enter()
+        await d.expect('DIRECTORY')
+        await d.send('\x1bOB')
+        await d.enter()
+        await d.expect('Motivation: Not yet recorded')
+        await d.send('c')
+        await d.expect('CONNECT WITH Casey')
+        await d.enter()
+        await d.answer('RECORD THIS CONNECTION?', 'y')
+        await d.expect('RECOLLECTION RECORDED')
+        d.snapshot('recorded-result')
+        await d.enter()
+        await d.expect('1 recalled pairs')
+        await d.send('p')
+        await d.expect('WHO WILL YOU PLAY?')
+        await d.choose('Casey')
+        await d.expect('Playing as: Casey')
+        await d.send('\t')
+        await d.expect('DIRECTORY')
+        await d.send('\x1bOA')
+        await d.send('c')
+        await d.expect('CONNECT WITH Alex')
+        await d.enter()
+        await d.answer('RECORD THIS CONNECTION?', 'y')
+        await d.expect('RECOLLECTION RECORDED')
+        await d.enter()
+        await d.expect('1 corroborated')
+        await port.resize(52, 20)
+        d.screen.resize(lines=20, columns=52)
+        await d.expect('NETWORK')
+        d.snapshot('narrow-network')
+        await d.send('n')
+        await d.expect('DIRECTORY')
+        d.snapshot('narrow-directory')
+        await d.send('n')
+        await port.resize(144, 34)
+        d.screen.resize(lines=34, columns=144)
+        await d.expect('PROFILE')
+        await d.expect('Mutual recollection')
+        d.snapshot('wide-network')
+        await d.send('q')
+    finally:
+        d.save()
+        await port.close()
+    restart_output = output/'restart'
+    restart_output.mkdir()
+    restart_port = PTY([sys.executable, '-B', '-m', 'commons_game', '--db', str(store.path), 'play', '--plain'])
+    restart = Driver(restart_port, restart_output)
+    try:
+        await restart.expect('SADDLE PATHWAYS')
+        await restart.enter()
+        await restart.expect('WHO WILL YOU PLAY?')
+        await restart.choose('Casey')
+        await restart.expect('CHOOSE YOUR PATH')
+        await restart.send('4')
+        await restart.expect('EXERCISES / WORKSHOP')
+        await restart.send('4')
+        await restart.expect('BEGIN RECONSTRUCTION')
+        await restart.enter()
+        await restart.expect('2 directed claims')
+        await restart.expect('1 corroborated')
+        await restart.send('n')
+        restart.snapshot('restored-reconstruction')
+        await restart.send('q')
+    finally:
+        restart.save()
+        await restart_port.close()
+    game = store.load()
+    assert game.get_world() == game.replay().get_world()
+    assert any(edge['layer'] == 'corroborated' for edge in game.project('network')['edges'])
+    print('PTY exercise, two actors, narrow/wide resize, application restart and replay passed')
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True)
+    asyncio.run(run(parser.parse_args().output.resolve()))

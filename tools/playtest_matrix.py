@@ -58,7 +58,7 @@ class PTY:
     def __init__(self, command, *, colour=False):
         self.master, slave = pty.openpty()
         fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',32,100,0,0))
-        import_env={**os.environ,'TERM':'xterm-256color','LC_ALL':'en_US.UTF-8'}
+        import_env={**os.environ,'TERM':'xterm-256color','LC_ALL':'en_US.UTF-8','COMMONS_REDUCED_MOTION':'1'}
         if colour:import_env.pop('NO_COLOR',None)
         self.process = subprocess.Popen(command,stdin=slave,stdout=slave,stderr=slave,cwd=ROOT,
             env=import_env,start_new_session=True)
@@ -170,7 +170,7 @@ async def exercise(driver):
     await d.send('b');await d.expect('POTENTIAL COMPLEMENTARITY')
     await d.send('b');await d.expect('COMPLEMENTARITY MATRIX')
     await d.send('p');await d.expect('WHO WILL YOU PLAY?');await d.choose('Casey')
-    await d.expect('Playing: Casey');await d.send('i');await d.expect('INBOX / INVITATIONS AND CONTRACTS');d.snapshot('05-received')
+    await d.expect('Playing as: Casey');await d.send('i');await d.expect('INBOX / INVITATIONS AND CONTRACTS');d.snapshot('05-received')
     await d.enter();await d.expect('CONTRACT INSPECTOR')
     await d.send('a');await d.expect('WHAT CAN I DO?');await d.choose('Negotiate revised terms')
     for prompt,value in [('Revised shared purpose?','Exchange expertise through a workshop'),

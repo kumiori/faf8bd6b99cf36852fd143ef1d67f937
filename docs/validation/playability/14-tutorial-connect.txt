@@ -1,0 +1,34 @@
+TUTORIAL / CONNECT                                                                                                                              
+Practice sandbox · Connect · Role: learner · v3                                                                                                 
+ISOLATED PRACTICE | Main-world navigation remains available through m/e/g/s                                                                     
+Ecosystem > Exercises > Casey (2) > Casey (1) > Exercises > Unresolved source reference                                                         
+ISOLATED PRACTICE · Main collective is separate.                                                                                                
+Connect                                                                                                                                         
+Step 5/5                                                                                                                                        
+TUTORIAL COMPLETE                                                                                                                               
+Inspect the resulting relationships, commitments and history below.                                                                             
+4 graph edges · 0 commitments                                                                                                                   
+contact invitation · accepted                                                                                                                   
+acknowledged connection · acknowledged                                                                                                          
+Recent history                                                                                                                                  
+world.initialized                                                                                                                               
+invitation.sent                                                                                                                                 
+invitation.accepted                                                                                                                             
+> [1] INSPECT PRACTICE GRAPH                                                                                                                    
+  [2] RESTART THIS TUTORIALH                                                                                                                    
+  [3] RETURN TO EXERCISESAL                                                                                                                     
+  [4] RETURN TO EXERCISES                                                                                                                       
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+                                                                                                                                                
+STEP COMPLETECTION: recipient_required                                                                                                          
+Esc/b Back  ? Help | Enter Choose · b Exercises                                                                                                 

@@ -4,6 +4,7 @@ from dataclasses import asdict
 from datetime import datetime, timedelta
 from threading import RLock
 from ..history.events import Mutation
+from ..transitions import observe_submission
 
 
 class WorldEngine:
@@ -21,6 +22,10 @@ class WorldEngine:
 
     def _validate_event(self, entry, before):
         """Optional domain replay checks, before applying an event's mutations."""
+
+    @property
+    def revision(self):
+        return len(self._log)
 
     def get_world(self):
         return deepcopy(self._world)
@@ -64,6 +69,7 @@ class WorldEngine:
                      e['command']['key'] == command.get('key')), None)
 
 
+    @observe_submission
     def submit(self, command, *, expected_version=None):
         with self._lock:
             if expected_version is not None and expected_version != len(self._log):
@@ -120,23 +126,32 @@ class WorldEngine:
             return self.from_log(self._log)
 
 
-    @classmethod
-    def from_log(cls, entries):
-        game = cls()
-        expected = {k: {} for k in game.tables}
-        previous_time = None
-        for seq, entry in enumerate(entries, 1):
+    def snapshot(self):
+        """Return a detached copy of an already validated history prefix."""
+        with self._lock:
+            game = type(self)()
+            game._world = deepcopy(self._world)
+            game._log = deepcopy(self._log)
+            return game
+
+    def _replay_events(self, entries):
+        previous_time = datetime.fromisoformat(self._log[-1]['occurred_at']) if self._log else None
+        for seq, entry in enumerate(entries, len(self._log)+1):
             timestamp = datetime.fromisoformat(entry['occurred_at'])
             if entry['sequence'] != seq or timestamp.tzinfo is None or (previous_time and timestamp <= previous_time):
                 raise ValueError('invalid_log_sequence')
-            game._validate_event(entry, expected)
+            self._validate_event(entry, self._world)
             previous_time = timestamp
             for mutation in entry['mutations']:
-                table = game.entity_tables[mutation['entity_type']]
+                table = self.entity_tables[mutation['entity_type']]
                 eid = mutation['entity_id']
-                if expected[table].get(eid) != mutation['before'] or mutation['after']['id'] != eid:
+                if self._world[table].get(eid) != mutation['before'] or mutation['after']['id'] != eid:
                     raise ValueError('invalid_mutation_chain')
-                expected[table][eid] = deepcopy(mutation['after'])
-        game._log = deepcopy(entries)
-        game._world = expected
+                self._world[table][eid] = deepcopy(mutation['after'])
+            self._log.append(deepcopy(entry))
+
+    @classmethod
+    def from_log(cls, entries):
+        game = cls()
+        game._replay_events(entries)
         return game

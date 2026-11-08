@@ -1,5 +1,5 @@
 """Apply host display labels to the reusable terminal network."""
-from game_gamer.tui.network import CATEGORIES as CATEGORIES
+from game_gamer.tui.network import CATEGORIES as CATEGORIES, OBJECT_TYPES as OBJECT_TYPES
 from game_gamer.tui.network import LAYERS as LAYERS, PRIORITY as PRIORITY, edge_category as edge_category
 from game_gamer.tui.network import draw_graph as render, focus_graph as focus
 

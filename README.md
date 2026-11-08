@@ -94,6 +94,21 @@ rather than documented collaboration or consent. A development-only simulation
 authority issues a role when the player explicitly selects it; imported presence
 or affiliation never grants real authority.
 
+The path chooser offers **4 EXERCISES**, with three isolated tutorials and the
+Montréal **Reconstruct the Network** collective exercise
+for recalling forum encounters, declaring prior relationships and inviting
+people to connect now. It includes a responsive participant directory,
+deterministic constellation portraits and a shared provenance-aware network.
+[Exercise controls, claim semantics and optional sources](docs/16-network-reconstruction.md).
+[Playability, curator operations, performance and validation](docs/18-playability-consolidation.md).
+[Contextual curation and global history](docs/20-contextual-curation-history.md):
+**u Context** follows the explicitly selected object; **Tab** switches Main/Panel.
+Ordinary players can request corrections and review; curator decisions remain
+engine-authorized. **H History**, **+/-** detail and **f** filters inspect the
+authoritative log. The network adds **T Types** alongside **L Layers**.
+[Release gates and the current Block decision](docs/17-release-discipline.md)
+record the Montréal reconstruction acceptance evidence and remaining work.
+
 See the [mechanics freeze and graph audit](docs/14-mechanics-freeze.md) and the
 [`game-gamer` extraction report](docs/15-game-gamer-extraction-readiness.md).
 
@@ -357,3 +372,17 @@ No blockchain, tokens, wallets, real financial escrow, legal enforcement or real
 institutional data exchange is implemented. Scoped
 delegation, contract-backed Hube and open-ended scenario trajectories remain
 explicit later milestones, not implied capabilities.
+
+### Decision graph extraction
+
+`python -m game_gamer inspect decisions --audit --audit-output decision_audit.json`
+inspects the installed engine and terminal sources without loading a player session.
+Use `--format json|mermaid|dot --output PATH` for exports and `--scope exercises`
+for reconstruction/workshop branches. See the portable package's
+[inspection API and audit limitations](game-gamer/docs/DECISION_INSPECTION.md).
+
+The reconstruction slice now runs through shared transition IDs and a tested
+runtime contract. The [completeness report](docs/decision-graphs/COMPLETENESS_REPORT.md)
+links the reconciled baseline inventory, four graph views, trace schema, actual
+scoped release gate and remaining application-wide uncertainty. Optional JSONL
+observations are available with `commons play --ui-trace-output ui.jsonl`.

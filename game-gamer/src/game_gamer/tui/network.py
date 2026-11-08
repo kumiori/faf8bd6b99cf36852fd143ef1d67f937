@@ -10,18 +10,38 @@ from .objects import OBJECTS
 from .text import display_width, folded, label as node_label
 from .renderers.hack_terminal import raster, project
 
+OBJECT_TYPES = {
+    'All types': None, 'People': 'person', 'Organisations': 'organisation',
+    'Resources': 'resource', 'Relationships': 'relationships', 'Agreements': 'agreement',
+    'Capacities': 'capacity', 'Needs': 'need', 'Evidence': 'evidence',
+    'Objectives': 'objective', 'Policies': 'policy', 'Invitations': 'invitation',
+}
+
 PRIORITY = {'invitation':0,'agreement':0,'objective':1,'policy':2,'resource':3,'person':4,'organisation':5,
             'evidence':6,'capacity':7,'need':8}
 LAYERS = {'inferred':('#8caac4','dotted'),'documented':('#a3bd95','solid'),
           'declared':('#c4a7e7','solid'),'agreement':('#d88356','solid'),
           'institutional':('#eee8d5','solid'),'invitation':('#e8b65e','dotted'),
-          'connection':('#a3bd95','solid')}
+          'connection':('#a3bd95','solid'),
+          'historical_whiteboard':('#a7b6ff','solid'), 'recollection':('#c4a7e7','dotted'),
+          'corroborated':('#78d8ba','solid'), 'disputed_recollection':('#e38a76','dotted'),
+          'prior_relationship':('#d7b494','solid'), 'reconstruction_invitation':('#e8b65e','dashed')}
+
+RECONSTRUCTION_CATEGORIES = {
+    'historical_whiteboard': 'Whiteboard evidence', 'recollection': 'One-sided recollection',
+    'corroborated': 'Mutual recollection', 'disputed_recollection': 'Disputed recollection',
+    'prior_relationship': 'Prior relationship declaration',
+}
 
 CATEGORIES = ('Recorded affiliations','Other documented relationships','Inferred complementarities',
-              'Pending invitations','Accepted connections','Proposed agreements','Accepted or active agreements','Verified outcomes')
+              'Pending invitations','Accepted connections','Proposed agreements','Accepted or active agreements','Verified outcomes', *RECONSTRUCTION_CATEGORIES.values())
 
 
 def edge_category(edge,lookup):
+    if edge['layer'] in RECONSTRUCTION_CATEGORIES:
+        return RECONSTRUCTION_CATEGORIES[edge['layer']]
+    if edge['layer'] == 'reconstruction_invitation':
+        return 'Pending invitations'
     if edge['layer']=='invitation':
         return 'Pending invitations' if edge.get('status')=='sent' else 'Accepted connections' if edge.get('status')=='accepted' else 'History'
     if edge['layer']=='connection':return 'Accepted connections'
@@ -35,7 +55,7 @@ def edge_category(edge,lookup):
 
 
 
-def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, scope='neighbourhood', categories=None, three_d=False, labeler=node_label):
+def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, scope='neighbourhood', categories=None, three_d=False, labeler=node_label, object_type=None):
     """All incident relations remain available; pages disclose visual reduction.
 
     Party contracts retain their policy/objective/resources even though those
@@ -52,6 +72,9 @@ def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, sc
         graph={'nodes':[n for n in graph['nodes'] if n['id'] in ids],'edges':edges}
     if centre not in lookup:
         return {'nodes':[],'edges':[],'total':0,'offset':0,'centre':centre}
+    if object_type == 'relationships':
+        relational = [edge for edge in graph['edges'] if edge['layer'] not in {'institutional', 'agreement'}]
+        graph = {**graph, 'edges': relational}
     adjacent = {e['target_id'] if e['source_id']==centre else e['source_id'] for e in graph['edges']
                 if centre in (e['source_id'],e['target_id'])}
     contracts = {key for key in adjacent if lookup.get(key,{}).get('kind')=='agreement'}
@@ -62,6 +85,8 @@ def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, sc
             adjacent.update((edge['source_id'],edge['target_id']))
     if scope in {'whole','connections'}:adjacent={n['id'] for n in graph['nodes']}
     adjacent.discard(centre)
+    if object_type and object_type != 'relationships':
+        adjacent = {key for key in adjacent if lookup.get(key, {}).get('kind') == object_type}
     ordered = sorted((key for key in adjacent if key in lookup and folded(query) in folded(labeler(lookup[key]))),
         key=lambda key:(0 if key==related else 1,PRIORITY.get(lookup[key]['kind'],99),folded(labeler(lookup[key])),key))
     offset = min(max(0,offset),max(0,((len(ordered)-1)//limit)*limit))

@@ -72,3 +72,25 @@ actions in this release have simulation authority.
 See the [semantic model](docs/SEMANTIC_MODEL.md),
 [transition contract](docs/STATE_TRANSITIONS.md),
 [governance](docs/GOVERNANCE.md) and [persistence](docs/PERSISTENCE.md).
+
+## Inspect the implemented decision graph
+
+```sh
+python -m game_gamer inspect decisions --format json --output decisions.json
+python -m game_gamer inspect decisions --format mermaid --output decisions.mmd
+python -m game_gamer inspect decisions --format dot --output decisions.dot
+python -m game_gamer inspect decisions --audit --audit-output decision_audit.json
+```
+
+Extraction is read-only and deterministic, including without the terminal extra.
+Engine schemas/rules and registered interface source drive the same canonical
+graph. Contextual availability, scope selection, observed test coverage and release
+comparison are described in [Decision inspection](docs/DECISION_INSPECTION.md).
+Imperative branches that remain unresolved are explicit audit findings.
+
+The reconstruction host now exposes an executable transition contract with stable
+IDs, structured UI traces and passed-test release evidence. Use
+`--scope exercise.reconstruct --view lifecycle` when Commons is installed.
+`--filter uninstrumented` and the other finding filters keep remaining source-only
+gaps visible. A scoped release gate never certifies the complete application;
+see [the verification extension](docs/DECISION_INSPECTION.md#executable-transition-contracts-and-scoped-release-verification).

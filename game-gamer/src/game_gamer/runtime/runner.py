@@ -44,6 +44,11 @@ class Collective:
         return collective
 
     @property
+    def revision(self):
+        revision = getattr(self._store, 'revision', None)
+        return revision() if callable(revision) else self._store.load().revision
+
+    @property
     def scope_id(self):
         return branch_scope(self._scope, self._fork) if self._fork else self._scope
 

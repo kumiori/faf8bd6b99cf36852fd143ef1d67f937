@@ -5,6 +5,8 @@ import importlib.util
 from pathlib import Path
 from uuid import UUID
 
+from game_gamer.runtime.reconstruction import CLAIM_KINDS
+
 from .engine import digest, instant, text
 from .model import Actor, Resource, require
 from dataclasses import asdict
@@ -178,7 +180,7 @@ def import_snapshot(game, snapshot):
                 for field in ('source_id', 'target_id'):
                     require(fields.get(field) in after['actors'], 'unresolved_source_reference')
                 relation = 'affiliated_with' if kind == 'affiliation' else text(fields.get('relation'))
-                require(relation not in {'authorised_to_represent', 'authorized_to_represent', 'party_to', 'has_party'}, 'authority_not_importable')
+                require(relation not in {'authorised_to_represent', 'authorized_to_represent', 'party_to', 'has_party', *CLAIM_KINDS}, 'authority_not_importable')
                 record = {**base, 'source_id': fields['source_id'], 'target_id': fields['target_id'],
                     'kind': relation, 'directed': fields.get('directed'), 'status': 'inferred' if status == 'inferred' else 'reported'}
             elif kind in {'capacity', 'need'}:
@@ -196,6 +198,9 @@ def import_snapshot(game, snapshot):
             if previous:
                 require(previous.get('provenance', {}).get('kind') == 'notion_snapshot', 'source_identity_conflict')
                 require(instant(previous['provenance']['captured_at']) <= instant(captured_at), 'stale_snapshot')
+                if table == 'actors':
+                    # Authority is assigned by the local host, independently of source metadata.
+                    record['roles'] = deepcopy(previous['roles'])
                 # Identical assertion observations do not reset gameplay state.
                 if previous['provenance']['source_fingerprint'] == provenance['source_fingerprint']:
                     report['skipped'].append({'id': rid, 'reason': 'unchanged'}); continue
@@ -228,3 +233,26 @@ def import_snapshot(game, snapshot):
         event = game._commit(before, after, 'ecosystem.imported')
         report['commit_id'] = event['commit']['id']
     return report
+
+
+def import_reconstruction_sources(game, document):
+    """Trusted local import. References and transcriptions are preserved verbatim."""
+    from game_gamer.schema.reconstruction_sources import prepare_reconstruction_sources
+
+    require(isinstance(document, dict) and set(document) == {'schema', 'records'}
+            and document['schema'] == 'game-gamer/reconstruction-sources/v1', 'invalid_reconstruction_source_document')
+    before = game.get_world()
+    records = prepare_reconstruction_sources(document['records'], before['actors'].keys())
+    after = deepcopy(before)
+    added = []
+    for ident, record in records.items():
+        existing = before['evidence'].get(ident)
+        if existing is not None:
+            require(existing == record, 'reconstruction_source_conflict')
+            continue
+        require(not any(ident in table for table in before.values()), 'reconstruction_source_id_conflict')
+        after['evidence'][ident] = record
+        added.append(ident)
+    if added:
+        game._commit(before, after, 'reconstruction.sources_imported')
+    return {'ok': True, 'imported': added, 'unchanged': len(records)-len(added)}

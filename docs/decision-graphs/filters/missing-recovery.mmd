@@ -1,0 +1,309 @@
+flowchart LR
+  %% Canonical IDs are retained in node/edge comments.
+  graph_limits["Coverage / audit: screens=59 · questions=203 · options=633 · engine actions=34 · unreachable screens=0 · unmapped options=126 · missing recovery paths=32 · untested transitions=515 · uninstrumented transitions=351 This contract verifies the reconstruction slice only. Shared handoff destinations and the remaining application require their own contracts and evidence.; Source-only adapters remain uncertain outside the declared scope."]
+  subgraph scope_570dd38dc5ba["Ecosystem"]
+    %% node commons.route.2bcb43cbc8f6
+    n17d87d31e195["view"]
+    %% node commons.route.586187c190a9
+    n5122175f4ca8["*target"]
+    %% node commons.route.cell
+    nf286e947cf9e["cell"]
+    %% node commons.route.network
+    n0771f695bc3d["network"]
+    %% node commons_game.fullscreen.FullScreenTerminal.open_network
+    n1ea1fad2aa8f["FullScreenTerminal.open_network"]
+  end
+  subgraph scope_000f14e10251["Exercises"]
+    %% node commons.route.exercises
+    n946f79d297ae["exercises"]
+    %% node commons.route.tutorial_graph
+    n08408549251d["tutorial_graph"]
+    %% node commons_game.exercises.tutorial_key
+    n194e93dff8a4["tutorial_key"]
+  end
+  subgraph scope_a4d26868017c["Shared"]
+    %% node commons.route.0b27c158feb3
+    ncef55c8e0107["kind"]
+    %% node commons.route.235cfe7b50a6
+    n322707ae2f49["{&#x27;open&#x27;: &#x27;inspect&#x27;, &#x27;history&#x27;: &#x27;history&#x27;, &#x27;metadata&#x27;: &#x27;details&#x27;}[name]"]
+    %% node commons.route.277539a4a5fe
+    nf8fcb280b0ce["{&#x27;contracts&#x27;: &#x27;contracts&#x27;, &#x27;inbox&#x27;: &#x27;inbox&#x27;, &#x27;trajectory&#x27;: &#x27;trajectory&#x27;, &#x27;help&#x27;: &#x27;help&#x27;}[name]"]
+    %% node commons.route.c9beed53cf09
+    nddfd26741d24["{&#x27;c&#x27;: &#x27;contracts&#x27;, &#x27;i&#x27;: &#x27;inbox&#x27;, &#x27;?&#x27;: &#x27;help&#x27;, &#x27;t&#x27;: &#x27;trajectory&#x27;}[key]"]
+    %% node commons.route.contracts
+    n1e0aa801219e["contracts"]
+    %% node commons.route.curator
+    n556944d226a5["curator"]
+    %% node commons.route.e642b12901a6
+    na838af53b02a["mode"]
+    %% node commons.route.inspect
+    n210b20fe8ece["inspect"]
+    %% node commons.route.invite_to
+    ne3300a1d8815["invite_to"]
+    %% node commons.route.network_of
+    n9c6a47c7fd6b["network_of"]
+    %% node commons.route.propose_to
+    n52334b99f5aa["propose_to"]
+    %% node commons.route.relation_to
+    n866a94d83cd3["relation_to"]
+    %% node commons_game.fullscreen.FullScreenTerminal.cell_screen.Screen.d2e2dc53e47a.entries
+    n67fdcf5f7224["Select an entry"]
+    %% node commons_game.fullscreen.FullScreenTerminal.choose_mode
+    n0ce3cf34406f["FullScreenTerminal.choose_mode"]
+    %% node commons_game.fullscreen.FullScreenTerminal.execute_action
+    n00df88fb15d0["FullScreenTerminal.execute_action"]
+    %% node commons_game.fullscreen.FullScreenTerminal.handle
+    n3864cad7c18c["FullScreenTerminal.handle"]
+    %% node commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.8c5819778c39.entries
+    nbd4f6352e5a3["Select an entry"]
+    %% node commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.9467da175157.69e6764b76eb.entries
+    n6aff9816665a["Select an entry"]
+    %% node commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.da7b7042ebdf.c6d8c0b1c35e.entries
+    ndf1e8256a072["Select an entry"]
+    %% node commons_game.fullscreen.FullScreenTerminal.push
+    nb6b804ae1895["FullScreenTerminal.push"]
+    %% node commons_game.fullscreen.FullScreenTerminal.resume_mode
+    n400f5ce9ac99["FullScreenTerminal.resume_mode"]
+    %% node commons_game.fullscreen.FullScreenTerminal.run
+    nc22671f89670["FullScreenTerminal.run"]
+    %% node commons_game.fullscreen.FullScreenTerminal.run.Screen.4703fb6b5eec
+    n45eae5f2da20["SADDLE PATHWAYS"]
+    %% node commons_game.fullscreen.FullScreenTerminal.switch_mode
+    nffda6f4c82c8["FullScreenTerminal.switch_mode"]
+    %% node commons_game.fullscreen.FullScreenTerminal.typed_command
+    n741277cc4df4["FullScreenTerminal.typed_command"]
+    %% node game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.entries
+    n95fd3f6bf1b7["Select an entry"]
+    %% node game_gamer.tui.application.TerminalGame.execute
+    n2fdd84c48b81["TerminalGame.execute"]
+    %% node game_gamer.tui.application.TerminalGame.handle
+    ncc5d38e51c15["TerminalGame.handle"]
+    %% node game_gamer.tui.application.TerminalGame.push
+    nf48723a688c5["TerminalGame.push"]
+    %% node game_gamer.tui.application.TerminalGame.select_entry
+    n3f1b88dad1e0["TerminalGame.select_entry"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose
+    n0f4456a6dacc["CursesViewport.choose"]
+    %% node game_gamer.tui.viewport.CursesViewport.choose.Screen.e293eef3ce8b.ff0b7ce6bba2
+    n8eca384dad69["PROFILE PREVIEW"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm
+    n10188806b19d["CursesViewport.confirm"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c
+    n7762668e7d15["title"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries
+    nd3135903cafb["Select an entry"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm_discard
+    n02061fda97a9["CursesViewport.confirm_discard"]
+    %% node game_gamer.tui.viewport.CursesViewport.confirm_discard.Screen.9cf87ce45164
+    nd2a416a1a5c9["DISCARD UNSUBMITTED INPUT?"]
+    %% node game_gamer.tui.viewport.CursesViewport.prompt
+    nf584dc507d5a["CursesViewport.prompt"]
+    %% node game_gamer.tui.viewport.CursesViewport.prompt.Screen.9a6ff02faea5
+    nf439ebc25dc7["title"]
+    %% node game_gamer.tui.viewport.LineViewport.prompt
+    n877847083faa["LineViewport.prompt"]
+    %% node game_gamer.tui.viewport.LineViewport.prompt.Screen.b836a6a2f378
+    n68f49d1fe166["title"]
+    %% node terminal.route.0b27c158feb3
+    n7dac6f53666a["kind"]
+    %% node terminal.route.88c11ac84b14
+    ndd56f6d71e25["self.pick(&#x27;CHOOSE YOUR PATH&#x27;, list(_MODE_NAMES), str.title)"]
+    %% node terminal.route.e16369c6bd7a
+    n4b8d266bfb07["{&#x27;c&#x27;: &#x27;contracts&#x27;, &#x27;i&#x27;: &#x27;inbox&#x27;, &#x27;?&#x27;: &#x27;help&#x27;, &#x27;x&#x27;: &#x27;people&#x27;, &#x27;h&#x27;: &#x27;history&#x27;}[key]"]
+    %% node terminal.route.e704b19734eb
+    n894f443046e9["MODE_KEYS[key]"]
+    %% node terminal.route.inspect
+    n7e091a4a4be0["inspect"]
+    %% node terminal.route.network
+    n2b576e60f46e["network"]
+    %% node terminal.route.people
+    n62fd9b438911["people"]
+  end
+  %% edge commons_game.exercises.tutorial_key.push.655411e11af8.36f59432d776.navigate
+  n194e93dff8a4 -->|"tutorial_graph"| n08408549251d
+  linkStyle 0 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.cell_screen.Screen.d2e2dc53e47a.entries.option.1e3cd1a4c7c8
+  n67fdcf5f7224 -->|"View in network"| n9c6a47c7fd6b
+  linkStyle 1 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.cell_screen.Screen.d2e2dc53e47a.entries.option.314eadd6c09b
+  n67fdcf5f7224 -->|"Invite to connect"| ne3300a1d8815
+  linkStyle 2 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.cell_screen.Screen.d2e2dc53e47a.entries.option.5035fd5c0c35
+  n67fdcf5f7224 -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 3 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.choose_mode.push.e17acaad4648.1a0cc52b9ecc.navigate
+  n0ce3cf34406f -->|"exercises"| n946f79d297ae
+  linkStyle 4 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.execute_action.push.465da5b4b8ae.ce10f65e150c.navigate
+  n00df88fb15d0 -->|"inspect"| n210b20fe8ece
+  linkStyle 5 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.execute_action.push.bf707e271cee.7b0eaeab0147.navigate
+  n00df88fb15d0 -->|"inspect"| n210b20fe8ece
+  linkStyle 6 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.execute_action.push.fe2c9e425447.1eb7107a50d7.navigate
+  n00df88fb15d0 -->|"cell"| nf286e947cf9e
+  linkStyle 7 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.2f9a068f8adc.01c2627885ce.navigate
+  n3864cad7c18c -->|"inspect"| n210b20fe8ece
+  linkStyle 8 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.5cd59e4b44e5.aa58b3e5b457.navigate
+  n3864cad7c18c -->|"cell"| nf286e947cf9e
+  linkStyle 9 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.8b0cf99a2c55.f00a9c290d95.navigate
+  n3864cad7c18c -->|"curator"| n556944d226a5
+  linkStyle 10 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.b97a25dbd585.3ba7ba61b6cc.navigate
+  n3864cad7c18c -->|"network"| n0771f695bc3d
+  linkStyle 11 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.bf707e271cee.3f9ef9c3e4ab.navigate
+  n3864cad7c18c -->|"inspect"| n210b20fe8ece
+  linkStyle 12 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.d1d1fa9f6509.95a730d3586a.navigate
+  n3864cad7c18c -->|"{&#x27;c&#x27;: &#x27;contracts&#x27;, &#x27;i&#x27;: &#x27;inbox&#x27;, &#x27;?&#x27;: &#x27;help&#x27;, &#x27;t&#x27;: &#x27;trajectory&#x27;}[key]"| nddfd26741d24
+  linkStyle 13 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.d715058121ab.7ad98a3b1bd9.navigate
+  n3864cad7c18c -->|"*target"| n5122175f4ca8
+  linkStyle 14 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.e33a8b4168f6.5bc7ba6e8ea4.navigate
+  n3864cad7c18c -->|"cell"| nf286e947cf9e
+  linkStyle 15 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.handle.push.e7928455a8cf.368c60b88879.navigate
+  n3864cad7c18c -->|"view"| n17d87d31e195
+  linkStyle 16 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.8c5819778c39.entries.option.5035fd5c0c35
+  nbd4f6352e5a3 -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 17 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.8c5819778c39.entries.option.836f8a88c42c
+  nbd4f6352e5a3 -->|"Invite to connect again"| ne3300a1d8815
+  linkStyle 18 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.8c5819778c39.entries.option.981fdada92b2
+  nbd4f6352e5a3 -->|"&#x27;Potential · &#x27; + self.label(p)"| n866a94d83cd3
+  linkStyle 19 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.8c5819778c39.entries.option.a5981e49a2ea
+  nbd4f6352e5a3 -->|"Invite to connect"| ne3300a1d8815
+  linkStyle 20 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.8c5819778c39.entries.option.c64bdd9b423b
+  nbd4f6352e5a3 -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 21 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.9467da175157.69e6764b76eb.entries.option.5035fd5c0c35
+  n6aff9816665a -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 22 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.9467da175157.69e6764b76eb.entries.option.836f8a88c42c
+  n6aff9816665a -->|"Invite to connect again"| ne3300a1d8815
+  linkStyle 23 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.9467da175157.69e6764b76eb.entries.option.981fdada92b2
+  n6aff9816665a -->|"&#x27;Potential · &#x27; + self.label(p)"| n866a94d83cd3
+  linkStyle 24 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.9467da175157.69e6764b76eb.entries.option.a5981e49a2ea
+  n6aff9816665a -->|"Invite to connect"| ne3300a1d8815
+  linkStyle 25 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.9467da175157.69e6764b76eb.entries.option.c64bdd9b423b
+  n6aff9816665a -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 26 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.da7b7042ebdf.c6d8c0b1c35e.entries.option.5035fd5c0c35
+  ndf1e8256a072 -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 27 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.da7b7042ebdf.c6d8c0b1c35e.entries.option.836f8a88c42c
+  ndf1e8256a072 -->|"Invite to connect again"| ne3300a1d8815
+  linkStyle 28 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.da7b7042ebdf.c6d8c0b1c35e.entries.option.981fdada92b2
+  ndf1e8256a072 -->|"&#x27;Potential · &#x27; + self.label(p)"| n866a94d83cd3
+  linkStyle 29 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.da7b7042ebdf.c6d8c0b1c35e.entries.option.a5981e49a2ea
+  ndf1e8256a072 -->|"Invite to connect"| ne3300a1d8815
+  linkStyle 30 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.inspector_screen.Screen.da7b7042ebdf.c6d8c0b1c35e.entries.option.c64bdd9b423b
+  ndf1e8256a072 -->|"Propose a contract directly"| n52334b99f5aa
+  linkStyle 31 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.open_network.push.eab7459aaaf2.navigate
+  n1ea1fad2aa8f -->|"network"| n0771f695bc3d
+  linkStyle 32 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.push.push.2a788cca2485.navigate
+  nb6b804ae1895 -->|"kind"| ncef55c8e0107
+  linkStyle 33 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.resume_mode.resume.90949c951738.navigate
+  n400f5ce9ac99 -->|"mode"| na838af53b02a
+  linkStyle 34 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.run.Screen.4703fb6b5eec.render
+  nc22671f89670 -->|"render"| n45eae5f2da20
+  linkStyle 35 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.switch_mode.resume.1af6899a303b.navigate
+  nffda6f4c82c8 -->|"mode"| na838af53b02a
+  linkStyle 36 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.typed_command.push.42fb9e06baa6.4cab3d16841b.navigate
+  n741277cc4df4 -->|"contracts"| n1e0aa801219e
+  linkStyle 37 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.typed_command.push.bf707e271cee.79f1f244d746.navigate
+  n741277cc4df4 -->|"inspect"| n210b20fe8ece
+  linkStyle 38 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.typed_command.push.c921b66e7c90.496ef2d7dd81.navigate
+  n741277cc4df4 -->|"{&#x27;open&#x27;: &#x27;inspect&#x27;, &#x27;history&#x27;: &#x27;history&#x27;, &#x27;metadata&#x27;: &#x27;details&#x27;}[name]"| n322707ae2f49
+  linkStyle 39 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.typed_command.push.e05d83a6bc84.05d59f0e55cf.navigate
+  n741277cc4df4 -->|"{&#x27;contracts&#x27;: &#x27;contracts&#x27;, &#x27;inbox&#x27;: &#x27;inbox&#x27;, &#x27;trajectory&#x27;: &#x27;trajectory&#x27;, &#x27;help&#x27;: &#x27;help&#x27;…"| nf8fcb280b0ce
+  linkStyle 40 stroke:#ef6c00
+  %% edge commons_game.fullscreen.FullScreenTerminal.typed_command.push.f3feca43ccfe.fd8fdcc039d6.navigate
+  n741277cc4df4 -->|"inspect"| n210b20fe8ece
+  linkStyle 41 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.build_screen.Screen.8d9a3581628a.987347347b12.entries.option.d359683a00d5
+  n95fd3f6bf1b7 -->|"self.name(key)"| n7e091a4a4be0
+  linkStyle 42 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.execute.push.06a43bdcc7e3.529f58f8aa58.navigate
+  n2fdd84c48b81 -->|"inspect"| n7e091a4a4be0
+  linkStyle 43 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.push.dba790964dc5.33338af08098.navigate
+  ncc5d38e51c15 -->|"{&#x27;c&#x27;: &#x27;contracts&#x27;, &#x27;i&#x27;: &#x27;inbox&#x27;, &#x27;?&#x27;: &#x27;help&#x27;, &#x27;x&#x27;: &#x27;people&#x27;, &#x27;h&#x27;: &#x27;history&#x27;}[key]"| n4b8d266bfb07
+  linkStyle 44 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.push.eab7459aaaf2.4004de978943.navigate
+  ncc5d38e51c15 -->|"network"| n2b576e60f46e
+  linkStyle 45 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.5aa90c256d0a.910e0c8cf2d0.navigate
+  ncc5d38e51c15 -->|"MODE_KEYS[key]"| n894f443046e9
+  linkStyle 46 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.6bae00507387.3caeebdbb448.navigate
+  ncc5d38e51c15 -->|"self.pick(&#x27;CHOOSE YOUR PATH&#x27;, list(_MODE_NAMES), str.title)"| ndd56f6d71e25
+  linkStyle 47 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.handle.resume.6bae00507387.84db0244d15b.navigate
+  ncc5d38e51c15 -->|"self.pick(&#x27;CHOOSE YOUR PATH&#x27;, list(_MODE_NAMES), str.title)"| ndd56f6d71e25
+  linkStyle 48 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.push.push.2a788cca2485.navigate
+  nf48723a688c5 -->|"kind"| n7dac6f53666a
+  linkStyle 49 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.0467897444f5.0ad4460ea8c1.navigate
+  n3f1b88dad1e0 -->|"kind"| n7dac6f53666a
+  linkStyle 50 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.2f9a068f8adc.5362bd6a57b8.navigate
+  n3f1b88dad1e0 -->|"inspect"| n7e091a4a4be0
+  linkStyle 51 stroke:#ef6c00
+  %% edge game_gamer.tui.application.TerminalGame.select_entry.push.42e6e7f8118d.d56a5587b327.navigate
+  n3f1b88dad1e0 -->|"people"| n62fd9b438911
+  linkStyle 52 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.choose.Screen.e293eef3ce8b.ff0b7ce6bba2.render
+  n0f4456a6dacc -->|"render"| n8eca384dad69
+  linkStyle 53 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries.open
+  n7762668e7d15 -->|"Choose"| nd3135903cafb
+  linkStyle 54 stroke:#ef6c00
+  unresolved_108a009fced3["Unresolved destination"]
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries.option.2a0768f9872a
+  nd3135903cafb -->|"CONFIRM"| unresolved_108a009fced3
+  linkStyle 55 stroke:#ef6c00
+  unresolved_03ae5597bcf0["Unresolved destination"]
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.entries.option.937044ee1919
+  nd3135903cafb -->|"CANCEL"| unresolved_03ae5597bcf0
+  linkStyle 56 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm.Screen.86a83030846c.render
+  n10188806b19d -->|"render"| n7762668e7d15
+  linkStyle 57 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.confirm_discard.Screen.9cf87ce45164.render
+  n02061fda97a9 -->|"render"| nd2a416a1a5c9
+  linkStyle 58 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.CursesViewport.prompt.Screen.9a6ff02faea5.render
+  nf584dc507d5a -->|"render"| nf439ebc25dc7
+  linkStyle 59 stroke:#ef6c00
+  %% edge game_gamer.tui.viewport.LineViewport.prompt.Screen.b836a6a2f378.render
+  n877847083faa -->|"render"| n68f49d1fe166
+  linkStyle 60 stroke:#ef6c00
+  subgraph legend["Legend (presentation only)"]
+    legend_text["Grey: navigation / disabled · Purple: state change · Amber: conditional or extraction uncertainty · Red: confirmed graph defect · Green: recovery"]
+  end

@@ -1,0 +1,21 @@
+digraph decisions {
+  rankdir=LR;
+  graph [newrank=true, splines=polyline, ranksep=1];
+  node [fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10];
+  label="Coverage / audit: screens=11 · questions=8 · options=59 · engine actions=6 · unreachable screens=0 · unmapped\noptions=0 · missing recovery paths=0 · untested transitions=18 · uninstrumented transitions=0\nThis contract verifies the reconstruction slice only. Shared handoff destinations and the remaining\napplication require their own contracts and evidence.";
+  subgraph cluster_ed9f6f250686 {
+    label="Engine";
+    "overview.engine" [id="overview.engine", label="engine · 6 states/definitions", shape=box];
+  }
+  subgraph cluster_e63fd7892e86 {
+    label="Exercise.Reconstruct";
+    "overview.exercise.reconstruct" [id="overview.exercise.reconstruct", label="exercise.reconstruct · 132 states/definitions", shape=box];
+  }
+  "overview.exercise.reconstruct" -> "overview.engine" [id="overview.exercise.reconstruct.to.overview.engine", label="Declared transitions", color="#607d8b", style=solid];
+  "overview.exercise.reconstruct" -> "overview.exercise.reconstruct" [id="overview.exercise.reconstruct.to.overview.exercise.reconstruct", label="Declared transitions", color="#7b1fa2", style=solid];
+  subgraph cluster_legend {
+    label="Legend (presentation only)";
+    legend [shape=note, label="Grey: navigation / disabled\nPurple: state change\nAmber: conditional / extraction uncertainty\nRed: confirmed graph defect\nGreen: recovery"];
+  }
+}

@@ -65,7 +65,9 @@ def raster(frame, width, height, *, layers, mode='structural', selected=None, as
             if fraction > limit or edge.get('fading') and (step % 4 != 0 or phase > .8):
                 continue
             x, y, z = [a[k] + fraction * (b[k] - a[k]) for k in range(3)]
-            if edge['layer'] == 'organizational' or edge.get('pattern') == 'solid':
+            if edge.get('pattern') == 'dashed' and step % 5 >= 3 and abs(fraction - .65) >= 1 / steps:
+                continue
+            if edge['layer'] == 'organizational' or edge.get('pattern') in {'solid', 'dashed'}:
                 dx, dy = b[0]-a[0], b[1]-a[1]
                 character = ('-' if ascii_only else '─') if abs(dy) < .4*abs(dx) else ('|' if ascii_only else '│') if abs(dx) < .4*abs(dy) else ('/' if dx*dy<0 else '\\') if ascii_only else ('╱' if dx*dy<0 else '╲')
             else:
