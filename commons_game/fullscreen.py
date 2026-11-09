@@ -19,6 +19,8 @@ from .heatmap import BANDS
 from .network_view import CATEGORIES, OBJECT_TYPES, focus_graph, draw_graph
 from .scenario_catalogue import catalogue, objectives_for, scenarios_for
 from . import curator, curation_panel
+from . import montreal_network
+from .montreal_sources import profile_statements
 from .global_history import history_screen, history_key
 from .exercises import exercise_menu, tutorial_screen, tutorial_key, tutorial_graph
 from .reconstruction import build_exercise, exercise_available, handle_exercise
@@ -104,7 +106,7 @@ class FullScreenTerminal(PlayableTerminal):
                 step = practice.definition['steps'][min(practice.index, len(practice.definition['steps'])-1)]
                 return f"Practice sandbox · {practice.definition['title']} · Role: {step['actor_id']} · v{practice.collective.project()['version']}"
         actor = self.label(self.session.actor) if self.session else 'Choose a person'
-        if self.route.kind.startswith('curator') or self.route.kind in {'reconstruction', 'reconstruction_graph'}:
+        if self.route.kind.startswith('curator') or self.route.kind in {'reconstruction', 'reconstruction_graph'} | montreal_network.ROUTES:
             target = self.route.target
         elif self.route.kind == 'network' and getattr(self, '_network', {}).get('nodes'):
             target = self._network['nodes'][self.route.index]['id']
@@ -191,12 +193,21 @@ class FullScreenTerminal(PlayableTerminal):
         self.notice = 'Now simulating '+display_label(actor)+'. The shared world is unchanged.'
 
     def choose_mode(self):
-        mode = self.picker('COMMONS GAME / CHOOSE YOUR PATH', [*MODES, 'exercises', 'history'],
-                           render=lambda name: name.upper()+' · '+MODES[name] if name in MODES else
-                           'EXERCISES · Learn the moves that transform a collective.' if name == 'exercises' else
-                           'HISTORY · Inspect the collective event history.',
-                           section=lambda name: 'EXPLORE THE WORLD' if name in MODES else 'WORKSHOP' if name == 'exercises' else 'YOUR ACTIVITY')
-        if mode in {'exercises', 'history'}:
+        options = [*MODES, 'exercises']
+        if exercise_available(self.world()):
+            options.append('montreal_network')
+        options.append('history')
+        workshop = {'exercises': 'EXERCISES · Learn the moves that transform a collective.',
+                    'montreal_network': 'MONTRÉAL NETWORK · Explore the connections we created together.'}
+        paths = {**{name: name.upper()+' · '+description for name, description in MODES.items()},
+                 **workshop, 'history': 'HISTORY · Inspect the collective event history.'}
+        mode = self.picker('COMMONS GAME / CHOOSE YOUR PATH', options, render=paths.__getitem__,
+                           section=lambda name: 'EXPLORE THE WORLD' if name in MODES else
+                           'WORKSHOP' if name in workshop else 'YOUR ACTIVITY')
+        if mode == 'montreal_network':
+            self.push(mode)
+            self.route.region = 'directory'
+        elif mode in {'exercises', 'history'}:
             self.push(mode)
         else:
             self.resume_mode(mode)
@@ -223,6 +234,13 @@ class FullScreenTerminal(PlayableTerminal):
         self.navigation.push(kind, target, **extra)
 
     def back(self):
+        if self.route.kind == 'montreal_network_graph' and len(self.stack) > 1:
+            parent = self.stack[-2]
+            parent.target = self.route.target
+            for key in ('graph_groups', 'zoom', 'angle', 'filter'):
+                if key in self.route.extra:
+                    parent.extra[key] = self.route.extra[key]
+            parent.extra.update(network_detail=0, network_page=0)
         if self.route.kind == 'reconstruction_graph' and len(self.stack) > 1:
             self.stack[-2].target = self.route.target
         if not self.navigation.back():
@@ -249,6 +267,8 @@ class FullScreenTerminal(PlayableTerminal):
 
     def build_screen(self):
         route = self.route
+        if route.kind in montreal_network.ROUTES:
+            return montreal_network.build(self)
         self.screen = 'inspector' if route.kind == 'inspect' else 'inbox' if route.kind == 'inbox' else 'explorer'
         if route.kind == 'exercises':
             return exercise_menu(self)
@@ -512,6 +532,14 @@ class FullScreenTerminal(PlayableTerminal):
             return Screen('INVITATION / CONNECT',lines,entries,'Enter Choose  a Actions  h History  w Network  d Provenance',route.index,route.scroll)
         if node['id'] in world['actors']:
             lines = [display_label(node),'Affiliation: '+(', '.join(affiliations(world,node['id'])) or 'Unknown / not recorded')]
+            statements = profile_statements(world, node['id'])
+            if statements:
+                if 'motivation' in node:
+                    lines.append('Motivation · '+(node['motivation'] or 'Not recorded'))
+                else:
+                    for row in statements:
+                        origin = row['provenance']
+                        lines.append(f"Motivation · {row['raw']['Pourquoi suis-je ici ?']} ({origin['file']}:{origin['line']})")
             for table, label in (('capacities','Offers'),('needs','Needs')):
                 records = [r for r in world[table].values() if r['actor_id']==node['id']]
                 lines.append(label+f' ({len(records)}): '+(', '.join(r['domain'] for r in records[:3]) or 'Not recorded')+(' …' if len(records)>3 else ''))
@@ -704,6 +732,8 @@ class FullScreenTerminal(PlayableTerminal):
             self.push('history')
             return
         if route.kind in {'history', 'history_event', 'history_object'} and history_key(self, key, screen):
+            return
+        if route.kind in montreal_network.ROUTES and montreal_network.handle(self, key, screen):
             return
         from .reconstruction_transitions import dispatch
         if dispatch(self,key,screen):

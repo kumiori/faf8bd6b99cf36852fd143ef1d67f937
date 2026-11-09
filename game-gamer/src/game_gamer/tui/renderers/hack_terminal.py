@@ -4,6 +4,7 @@
 """3D camera projection and clipped, depth-ordered terminal rasterisation."""
 import math
 from .raster_text import Text
+from .braille import draw_edges
 
 STYLES = {}
 
@@ -34,7 +35,9 @@ def project(coordinates, width, height, *, angle=0., axis='y', zoom=1., perspect
 
 def raster(frame, width, height, *, layers, mode='structural', selected=None, ascii_only=False,
            angle=0., axis='y', zoom=1., perspective=True, separation='superposed', backbone=False,
-           phase=1., positions=None, removed=None, visual=None, projected=None):
+           phase=1., positions=None, removed=None, visual=None, projected=None, edge_renderer='character'):
+    if edge_renderer not in {'braille', 'character'}:
+        raise ValueError('unknown_edge_renderer')
     width, height = max(8, width), max(3, height)
     visual = view(frame, layers=layers, separation=separation, backbone=backbone) if visual is None else visual
     coords = {n['visual_id']: n['position'] for n in visual['nodes']}
@@ -43,20 +46,32 @@ def raster(frame, width, height, *, layers, mode='structural', selected=None, as
     points = (project(coords, width, height, angle=angle, axis=axis, zoom=zoom, perspective=perspective)
               if projected is None else projected)
     cells = {}
-    def put(x, y, z, character, color, bold=False):
+    def put(x, y, z, character, color, bold=False, *, priority=0):
         ix, iy = int(round(x)), int(round(y))
         if 0 <= ix < width and 0 <= iy < height:
-            if (ix, iy) not in cells or z <= cells[ix, iy][0]:
-                cells[ix, iy] = (z, character, color, bold)
+            depth = (priority, z)
+            if (ix, iy) not in cells or depth <= cells[ix, iy][0]:
+                cells[ix, iy] = (depth, character, color, bold)
     edges = visual['edges']
     if removed and phase < 1:
         edges = edges + [{**e, 'visual_source': e['source'], 'visual_target': e['target'], 'fading': True} for e in removed]
     added = {e['id'] for e in frame['changes']['edges_added']}
+    def colour_for(edge):
+        return edge.get('colour', STYLES.get(edge['layer'], {'color': '#aaaaaa'})['color'])
+
+    def progress(edge):
+        forming = mode == 'crystal' and edge['id'] in added
+        return (phase if forming else 1.), forming or edge['weight'] >= 3
+
+    if edge_renderer == 'braille' and not ascii_only:
+        draw_edges([edge for edge in edges if not edge.get('fading') or phase <= .8],
+                   points, width, height, colour_for=colour_for, progress=progress, put=put)
+        edges = []
     for edge in edges:
         a, b = points.get(edge['visual_source']), points.get(edge['visual_target'])
         if a is None or b is None:
             continue
-        color = edge.get('colour', STYLES.get(edge['layer'], {'color': '#aaaaaa'})['color'])
+        color = colour_for(edge)
         steps = min(4 * (width + height), max(1, int(max(abs(b[0] - a[0]), abs(b[1] - a[1])))))
         forming = mode == 'crystal' and edge['id'] in added
         limit = phase if forming else 1.

@@ -18,7 +18,7 @@ def test_host_reconstruction_menu_preserves_distinct_authoritative_branches():
     assert any(e['id']=='exercise.reconstruct.connect.cancel' and e['recovery'] for e in options)
     path_menu = next(n for n in graph['nodes'] if n['kind'] == 'question'
                      and n['source']['function'] == 'FullScreenTerminal.choose_mode')
-    assert {'ecosystem', 'gathering', 'scenarios', 'exercises'} <= {
+    assert {'ecosystem', 'gathering', 'scenarios', 'exercises', 'montreal_network'} <= {
         e['option'] for e in graph['edges'] if e['source'] == path_menu['id']}
     assert any(e.get('dynamic_provider') and e['dynamic_provider'].get('provider_id')=='game_gamer.projections.participants.ParticipantDirectory.browse'
                for e in graph['edges'])

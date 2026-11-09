@@ -102,6 +102,10 @@ class PlayableTerminal(Terminal):
             if record:
                 if table=='actors':return actor_label(world,node_id)
                 return display_label(record)
+        from .montreal_sources import LAYER
+        names = world['configuration'].get(LAYER, {}).get('names', {}).get(node_id)
+        if names:
+            return names[0]
         return 'Unresolved source reference'
 
     def show_node(self, node, prefix=''):
@@ -433,6 +437,12 @@ class PlayableTerminal(Terminal):
             if node.get('purpose'):self.write('Purpose: '+node['purpose'])
             if node.get('response'):self.write('Response: '+node['response']['decision']+' · '+node['response']['message'])
             self.write('A simulated contact request. Acceptance acknowledges contact, never contractual obligations or real-world consent.')
+        elif node.get('source_only'):
+            from .montreal_sources import profile_statements
+            self.write('Montréal source identity · Roster binding pending')
+            for row in profile_statements(world, node_id):
+                self.write('Motivation: '+row['raw']['Pourquoi suis-je ici ?'])
+                self.write(f"Source: {row['provenance']['file']}:{row['provenance']['line']}")
         elif node_id in world['actors']:
             self.write('Affiliation: '+(', '.join(affiliations(world,node_id)) or 'Unknown / not recorded'))
             for table in ('capacities','needs'):

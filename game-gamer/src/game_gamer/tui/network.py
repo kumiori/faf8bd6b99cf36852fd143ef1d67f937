@@ -19,15 +19,17 @@ OBJECT_TYPES = {
 
 PRIORITY = {'invitation':0,'agreement':0,'objective':1,'policy':2,'resource':3,'person':4,'organisation':5,
             'evidence':6,'capacity':7,'need':8}
-LAYERS = {'inferred':('#8caac4','dotted'),'documented':('#a3bd95','solid'),
+LAYERS = {'inferred':('#71889f','dotted'),'documented':('#a3bd95','solid'),
           'declared':('#c4a7e7','solid'),'agreement':('#d88356','solid'),
           'institutional':('#eee8d5','solid'),'invitation':('#e8b65e','dotted'),
           'connection':('#a3bd95','solid'),
           'historical_whiteboard':('#a7b6ff','solid'), 'recollection':('#c4a7e7','dotted'),
           'corroborated':('#78d8ba','solid'), 'disputed_recollection':('#e38a76','dotted'),
           'prior_relationship':('#d7b494','solid'), 'reconstruction_invitation':('#e8b65e','dashed')}
+LAYERS['montreal_2026_reconstructed'] = ('#a7b6ff', 'solid')
 
 RECONSTRUCTION_CATEGORIES = {
+    'montreal_2026_reconstructed': 'Montréal source topology',
     'historical_whiteboard': 'Whiteboard evidence', 'recollection': 'One-sided recollection',
     'corroborated': 'Mutual recollection', 'disputed_recollection': 'Disputed recollection',
     'prior_relationship': 'Prior relationship declaration',
@@ -154,7 +156,7 @@ def _fit_points(points, width, height, margin, zoom, perspective):
             for key, (x, y, depth) in points.items()}
 
 
-def _place_labels(lines, nodes, points, labels, plain, labeler):
+def _place_labels(lines, nodes, points, labels, plain, labeler, *, numbered=False, selected=None):
     """Use only clear raster cells. Leave a numbered marker if text cannot fit."""
     height, width = len(lines), len(lines[0])
     for i, node in enumerate(nodes, 1):
@@ -164,7 +166,7 @@ def _place_labels(lines, nodes, points, labels, plain, labeler):
         x, y = map(round, points[key][:2])
         if not (0 <= x < width and 0 <= y < height):
             continue
-        name = (labels or {}).get(key, labeler(node))
+        name = '' if numbered and key != selected else (labels or {}).get(key, labeler(node))
         if plain:
             name = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode()
         # Raster coordinates are single-cell. Full names are available in Inspect.
@@ -252,16 +254,16 @@ def layout_graph(visual, width, height, *, angle=0., zoom=1., yaw=0., pitch=0., 
 
 
 def draw_graph(visual, width, height, *, selected=None, plain=False, angle=0., zoom=1., labels=None,
-               yaw=0., pitch=0., margin=None, background='dim', labeler=node_label):
+               yaw=0., pitch=0., margin=None, background='dim', labeler=node_label, edge_renderer='braille'):
     if background not in {'hidden', 'dim', 'full'}:
         raise ValueError('unknown_graph_background')
     layout = layout_graph(visual, width, height, angle=angle, zoom=zoom, yaw=yaw, pitch=pitch, margin=margin)
     width, height, points = layout.width, layout.height, layout.points
     frame = {'changes': {'nodes_added': [], 'edges_added': []}}
     image=raster(frame,width,height,layers=set(LAYERS),selected=selected,ascii_only=plain,
-                 visual=visual,projected=points)
+                 visual=visual,projected=points,edge_renderer=edge_renderer)
     lines=[list(line) for line in image.plain.splitlines()]
-    _place_labels(lines,visual['nodes'],points,labels,plain,labeler)
+    _place_labels(lines,visual['nodes'],points,labels,plain,labeler,numbered=zoom < .85,selected=selected)
     spans=[]
     for offset,length,style in image.spans:
         row,column=divmod(offset,width+1)

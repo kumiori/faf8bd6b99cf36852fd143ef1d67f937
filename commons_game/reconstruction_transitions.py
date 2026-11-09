@@ -19,7 +19,8 @@ LOCAL = tuple(dict.fromkeys((*BASE, *(value for key, value in ROUTES.items() if 
 EXTERNAL_ROUTES = ('matrix', 'gathering', 'scenarios', 'contracts', 'inbox', 'inspect', 'help',
                    'trajectory', 'history', 'history_event', 'history_object', 'network', 'curator', 'people', 'organisations', 'resources',
                    'details','notice','incidence','scenario','expertise','cell','tutorial','tutorial_graph',
-                   'curator_provenance','curator_merge_preview')
+                   'curator_provenance','curator_merge_preview', 'montreal_network', 'montreal_network_graph',
+                   'montreal_connection', 'montreal_profile_source', 'montreal_source_review')
 RESUMABLE=(*LOCAL,P+'workshop',*('host.'+route for route in EXTERNAL_ROUTES))
 
 

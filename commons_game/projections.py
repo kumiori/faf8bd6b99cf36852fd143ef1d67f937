@@ -5,6 +5,7 @@ from game_gamer.projections.network import network as project_network
 from game_gamer.projections.network import potential_complementarities as exact_domain_matches
 from .model import require
 from .presentation import person_labels
+from .montreal_sources import project_topology
 
 
 def network(world):
@@ -13,7 +14,7 @@ def network(world):
     for node in graph['nodes']:
         if node['kind'] == 'person' and node['id'] in labels:
             node['display_name'] = labels[node['id']]
-    return graph
+    return project_topology(world, graph)
 
 
 def potential_complementarities(world):

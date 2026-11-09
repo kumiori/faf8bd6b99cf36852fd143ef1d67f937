@@ -33,6 +33,11 @@ def main(argv=None):
     imp.add_argument('snapshot', type=Path)
     sources = commands.add_parser('import-reconstruction-sources', help='Import supplied historical references and transcriptions')
     sources.add_argument('snapshot', type=Path)
+    montreal = commands.add_parser('import-montreal-network', help='Import the supplied Montréal topology and statements')
+    montreal.add_argument('connections', type=Path)
+    montreal.add_argument('statements', type=Path)
+    montreal.add_argument('--identities', type=Path, help='Reviewed source ID to stable actor ID bindings (JSON)')
+    montreal.add_argument('--dry-run', action='store_true', help='Preview matches and counts without appending an event')
     access = commands.add_parser('curator-access', help='Trusted local operator setup of simulated curator permissions')
     access.add_argument('decision', choices=('grant', 'revoke'))
     access.add_argument('actor', help='Exact actor ID, full label or unique displayed name')
@@ -90,6 +95,15 @@ def main(argv=None):
             from .ecosystem_import import import_reconstruction_sources
             document = json.loads(args.snapshot.read_text())
             print(json.dumps(store.transact(lambda game: import_reconstruction_sources(game, document)), indent=2))
+        elif args.operation == 'import-montreal-network':
+            from .montreal_sources import import_montreal_network, read_sources
+            document = read_sources(args.connections, args.statements)
+            identities = json.loads(args.identities.read_text()) if args.identities else None
+            if args.dry_run:
+                report = import_montreal_network(store.load(), document, identities=identities, dry_run=True)
+            else:
+                report = store.transact(lambda game: import_montreal_network(game, document, identities=identities))
+            print(json.dumps(report, ensure_ascii=False, indent=2))
         elif args.operation == 'curator-access':
             from .curator_access import provision_curator
             result = store.transact(lambda game: provision_curator(

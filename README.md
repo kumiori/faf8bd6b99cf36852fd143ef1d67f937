@@ -109,6 +109,24 @@ authoritative log. The network adds **T Types** alongside **L Layers**.
 [Release gates and the current Block decision](docs/17-release-discipline.md)
 record the Montréal reconstruction acceptance evidence and remaining work.
 
+**MONTRÉAL NETWORK** is a separate Workshop entry in the Montréal world.
+Use **L** to choose source topology, player recollections or accepted connections,
+**G** for the collective graph, and **Tab** to switch regions. Focus a connection
+in the Network region and press **Enter** to inspect its records.
+
+Import the Montréal transcriptions into an existing saved world with:
+
+```sh
+python -m commons_game --db /path/to/commons.sqlite import-montreal-network connexions.csv description_strings.txt
+```
+
+Add `--dry-run` to preview counts and identity matches. Unresolved participants
+retain source-only profiles. Curators can inspect the review list with **U** and
+reimport the same sources with `--identities` pointing to a JSON object mapping
+reviewed source IDs to stable actor IDs. The save retains original statements,
+remarks, file hashes and row references. Unicode terminals draw Braille edges;
+`play --plain` uses the ASCII renderer.
+
 See the [mechanics freeze and graph audit](docs/14-mechanics-freeze.md) and the
 [`game-gamer` extraction report](docs/15-game-gamer-extraction-readiness.md).
 
