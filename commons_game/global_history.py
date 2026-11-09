@@ -1,18 +1,28 @@
 """History navigation and filters over the current authoritative log."""
-from dataclasses import replace
-import json
 
-from game_gamer.projections.history import HistoryFilters, DETAIL_LEVELS, history_rows, event_summary, overview, detail_lines, instant
+import json
+from dataclasses import replace
+
+from game_gamer.projections.history import (
+    HistoryFilters,
+    event_summary,
+    history_rows,
+    instant,
+)
 from game_gamer.runtime.curation_requests import records
+from game_gamer.tui.history import detail_level, detail_lines, overview
+from game_gamer.tui.i18n import current_language
 from game_gamer.tui.screen import Screen
+
+from .i18n import t
 
 
 def label(app, key):
     if key == 'system':
-        return 'System'
+        return t('history.system')
     request = records(app.world()).get(key)
     if request:
-        return 'Curation request · '+app.label(request['target_id'])
+        return t('history.curation_request')+app.label(request['target_id'])
     return app.label(key) if any(key in table for table in app.world().values()) else key
 
 
@@ -28,7 +38,7 @@ def rows(app, filters=HistoryFilters()):
 
 
 def details(app, row, level):
-    key = ('history_detail', row['event']['id'], level)
+    key = ('history_detail', row['event']['id'], level, current_language())
     if key not in app._projection_cache:
         app._projection_cache[key] = detail_lines(row, level, lambda ident: label(app, ident))
     return app._projection_cache[key]
@@ -46,16 +56,16 @@ def history_screen(app):
         world = app.current().world_at(event=sequence)
         request = records(world).get(route.target)
         record = request or next((table[route.target] for table in world.values() if route.target in table), None)
-        return Screen('HISTORICAL OBJECT / '+label(app, route.target),
-                      [f'Recorded state after event {sequence}', 'Read-only']+
+        return Screen(t('history.views.historical_object')+label(app, route.target),
+                      [t('history.views.recorded_state_after_event', sequence=sequence), t('history.views.read_only')]+
                       json.dumps(record, ensure_ascii=False, indent=2).splitlines(),
-                      footer='PgUp/PgDn Scroll · b Event', scroll=route.scroll)
+                      footer=t('history.views.pgup_pgdn_scroll_b_event'), scroll=route.scroll)
     if route.kind == 'history_event':
         event = next(event for event in events if event['sequence'] == route.extra['sequence'])
         row = event_summary(event)
         entries = [(label(app, ident), ident) for ident in row['affected_ids']]
-        return Screen('HISTORY / EVENT / '+DETAIL_LEVELS[level], details(app, row, level),
-                      entries, '+/- Detail · Enter Affected object · b History', route.index, route.scroll,
+        return Screen(t('history.views.history_event')+detail_level(level), details(app, row, level),
+                      entries, t('history.views.detail_enter_affected_object_b'), route.index, route.scroll,
                       wrap_entries=True)
     filters = route.extra.get('history_filters', HistoryFilters(object_id=route.target))
     selected_rows = rows(app, filters)
@@ -65,25 +75,25 @@ def history_screen(app):
         route.index = next((i for i, row in enumerate(selected_rows) if row['event']['sequence'] == anchor),
                            route.index)
     active = [key.replace('_id', '') for key, value in vars(filters).items() if value is not None]
-    lines = [f"{len(selected_rows)} events · {DETAIL_LEVELS[level]} · Filters: "+(', '.join(active) or 'All collective events')]
+    lines = [t('history.views.events_filters', selected_rows_count=len(selected_rows), detail_levels=detail_level(level))+(', '.join(active) or t('history.views.all_collective_events'))]
     if selected_rows and level >= 1:
         lines += details(app, selected_rows[route.index], level)
     entries = [(f"{row['event']['sequence']:03} · "+overview(row, lambda key: label(app, key)),
                 row['event']['sequence']) for row in selected_rows]
-    return Screen('HISTORY / '+('OBJECT' if route.target else 'COLLECTIVE')+' / '+DETAIL_LEVELS[level], lines, entries,
-                  '+/- Detail · f Filters · Enter Event · b Back', route.index, route.scroll, wrap_entries=True)
+    return Screen(t('line.cmd_history.history')+(t('history.views.object') if route.target else t('history.views.collective'))+' / '+detail_level(level), lines, entries,
+                  t('history.views.detail_f_filters_enter_event'), route.index, route.scroll, wrap_entries=True)
 
 
 def filter_history(app, screen):
     route = app.route
     filters = route.extra.get('history_filters', HistoryFilters(object_id=route.target))
-    field = app.choose('HISTORY FILTER', ['actor_id', 'object_id', 'action', 'mission_id', 'since', 'until', 'clear'],
-                       lambda name: {'since': 'From time', 'until': 'Until time', 'clear': 'CLEAR ALL'}.get(
+    field = app.choose(t('history.filters.history_filter'), ['actor_id', 'object_id', 'action', 'mission_id', 'since', 'until', 'clear'],
+                       lambda name: {'since': t('history.filters.from_time'), 'until': t('history.filters.until_time'), 'clear': t('history.filters.clear_all')}.get(
                            name, name.replace('_id', '').title()))
     if field == 'clear':
         updated = HistoryFilters()
     elif field in {'since', 'until'}:
-        value = app.read('ISO timestamp with timezone (blank clears)')
+        value = app.read(t('history.filters.iso_timestamp_with_timezone_blank'))
         if value:
             instant(value)
         updated = replace(filters, **{field: value or None})
@@ -95,8 +105,8 @@ def filter_history(app, screen):
             values = sorted({row['action'] for row in available})
         else:
             values = sorted({ident for row in available for ident in row['mission_ids' if field == 'mission_id' else 'affected_ids']})
-        chosen = app.choose('CHOOSE HISTORY '+field.replace('_id', '').upper(), [None, *values],
-                            lambda value: 'All' if value is None else value if field == 'action' else label(app, value))
+        chosen = app.choose(t('history.filters.choose_history')+field.replace('_id', '').upper(), [None, *values],
+                            lambda value: t('controls.all') if value is None else value if field == 'action' else label(app, value))
         updated = replace(filters, **{field: chosen})
     rows(app, updated)
     if screen.entries:

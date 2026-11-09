@@ -101,6 +101,11 @@ def test_splash_and_real_midi_assets_are_served(tmp_path):
     with running_server(tmp_path) as server:
         status, html = request(server, '/')
         assert status == 200 and b'I HEREBY DECLARE' in html and b'OF THE COMMONS' in html and b'SADDLE' in html and b'PATHWAYS' in html
+        status, french = request(server, '/?lang=fr-CA')
+        assert status == 200 and b'Entrer sans son' in french and b'Begin the experiment' in french
+        status, messages = request(server, '/api/i18n?lang=fr-CA')
+        assert status == 200 and messages['web.opening.enter_quiet'] == 'Entrer sans son'
+        assert messages['web.audio.off'] == 'Sound off ♫'
         status, midi = request(server, '/commons.mid')
         assert status == 200 and midi[:4] == b'MThd' and midi.count(b'MTrk') == 4
         status, result = request(server, '/api/state?scenario=not-a-world')

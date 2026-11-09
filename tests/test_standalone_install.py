@@ -1,14 +1,14 @@
 """Actual wheel installation without a sibling Hube or trajectory package."""
 import os
-from pathlib import Path
 import subprocess
 import sys
 import venv
+from pathlib import Path
 
 
 def test_core_wheel_installs_and_launches_without_neighbouring_projects(tmp_path):
     root=Path(__file__).resolve().parents[1];wheels=tmp_path/'wheels'
-    result=subprocess.run([sys.executable,'-m','pip','wheel','--no-deps','--no-build-isolation','--wheel-dir',str(wheels),str(root / "game-gamer"),str(root),"wcwidth>=0.2.12,<1"],
+    result=subprocess.run([sys.executable,'-m','pip','wheel','--no-deps','--no-build-isolation','--wheel-dir',str(wheels),str(root / "game-gamer"),str(root),"wcwidth>=0.2.12,<1","PyYAML>=6,<7"],
                           capture_output=True,text=True,timeout=60)
     assert result.returncode==0,result.stdout+result.stderr
     environment=tmp_path/'isolated';venv.EnvBuilder(with_pip=True).create(environment)

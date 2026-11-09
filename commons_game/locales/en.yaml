@@ -1,0 +1,1613 @@
+# Commons interface text. Reuse a key for the same meaning across surfaces.
+branding:
+  declaration: I hereby declare the right of the commons.
+  game_name: THE COMMONS GAME
+  simulation_mode_only: SIMULATION MODE ONLY
+  title: SADDLE PATHWAYS
+cli:
+  alternatives_left_authoritative_world_unchanged: 'ALTERNATIVES LEFT AUTHORITATIVE WORLD UNCHANGED: True'
+  captured_read_only_ecosystem_snapshot: 'Captured read-only ecosystem snapshot:'
+  configure_protohack_notion_token_or: Configure PROTOHACK_NOTION_TOKEN or NOTION_TOKEN; credentials are never stored
+    in snapshots
+  exported_read_only_package_document: 'Exported read-only package document:'
+  help:
+    actor: Active local actor ID; identity selection is not authentication
+    actor_2: Exact actor ID, full label or unique displayed name
+    capture_notion: Read allowlisted Notion sources using the existing sibling transport
+    choose_world: Select another simulation world explicitly
+    curator_access: Trusted local operator setup of simulated curator permissions
+    db: Saved world; ordinary play defaults to the private SADDLE data directory
+    description: SADDLE PATHWAYS / The Commons Game · V0.1
+    developer_ui: Use the previous scripted laboratory surface
+    dry_run: Preview matches and counts without appending an event
+    explore: Explore without assuming an actor role
+    hot_seat: Explicitly enable development identity switching
+    identities: Reviewed source ID to stable actor ID bindings (JSON)
+    import_ecosystem: Import a read-only ecosystem snapshot into this world
+    import_montreal_network: Import the supplied Montréal topology and statements
+    import_reconstruction_sources: Import supplied historical references and transcriptions
+    inspect_trajectory: Inspect exported package YAML without loading it into a live world
+    line_mode: Use the scripted text fallback instead of the full-screen viewport
+    mock_identities: Trusted local simulation identity/binding manifest
+    mock_player: Simulate sign-in as one provisioned mock subject
+    plain: Use portable text decorations
+    play: Interactive simulation game (the default operation)
+    reference: Reason or source for this role assignment
+    serve: Legacy browser scaffold; not required for terminal development
+    submit: Submit a JSON command from stdin
+    trajectory: Read-only native trajectory-package projection
+    trajectory_demo: Synthetic, explicitly hot-seat end-to-end integration
+    ui_trace_output: Write privacy-minimal reconstruction transition observations as JSONL
+    validate_text: Check interface catalogues and source references
+  install_the_notion_extra_to: Install the notion extra to use capture-notion; snapshot import remains available
+    offline.
+  interrupted_accepted_history_is_preserved: Interrupted. Accepted history is preserved.
+  outcome: 'OUTCOME:'
+  package_roundtrip_lossless_true: 'PACKAGE ROUNDTRIP LOSSLESS: True'
+  play:
+    commons_montreal_ecosystem: Commons · Montréal ecosystem
+    saddle_pathways_select_a_world: 'SADDLE PATHWAYS / Select a world:'
+    synthetic_fixture: ' · synthetic fixture'
+    world_commons_is_the_default: WORLD / COMMONS IS THE DEFAULT
+  replay_consistent_true: 'REPLAY CONSISTENT: True'
+  replay_identical: 'REPLAY IDENTICAL:'
+  saddle_pathways_explicit_synthetic_hot: SADDLE PATHWAYS / EXPLICIT SYNTHETIC HOT-SEAT DEMONSTRATION
+  the_commons_game_synthetic_demonstration: THE COMMONS GAME · {scenario} · synthetic demonstration
+  world_started: 'World started: {scenario} · {db}'
+commands:
+  actions:
+    help: Shows actions permitted by the engine for your current simulated actor; explains empty results.
+  back:
+    help: Return to the previous screen without changing state.
+  connect:
+    grammar: '[person]'
+    help: Propose contact inside the simulated game. It sends no real message and creates no contract.
+  contracts:
+    grammar: '[actor=... status=... objective=... resource=...]'
+    help: Browse all contracts, or the selected person's contracts. No ID is required.
+    label: Contract registry
+  ecosystem:
+    help: Explore the current world; does not start or reset a simulation.
+    label: Ecosystem mode
+  gathering:
+    help: Inspect collective event conditions in the same world.
+    label: Gathering mode
+  help:
+    help: All listed commands have handlers; unavailable actions give a reason.
+    label: Contextual help
+  history:
+    help: Choose a transition to inspect its historical graph; return to recover the current world.
+    label: Selected object history
+  inbox:
+    help: Proposals, amendments and obligations requiring this actor's attention.
+    label: Contract inbox
+  invite:
+    help: Only worlds with a gathering objective support invitations. Other worlds explain why it is unavailable.
+    label: Invite to a gathering
+  list:
+    help: Return to the typed graph projection of the current authoritative state.
+    label: World explorer
+  metadata:
+    help: Show source IDs and capture metadata on demand. Raw questionnaire answers and contact information are
+      never imported.
+    label: Source and technical details
+  object_grammar: '[object]'
+  open:
+    grammar: '[name, number or contract reference]'
+    help: Enter or a number inspects an item. open latest contract finds the newest proposal in this world.
+    label: Inspect selected object
+  past:
+    grammar: '[state number] [object]'
+    help: Without arguments, opens a history selector. past 3 K-001 inspects a particular state.
+    label: Historical graph
+  paths:
+    help: Choose a mode in the same saved world.
+    label: Choose a path
+  player:
+    help: Select another catalogue person. This changes perspective, never the shared world or real authority.
+    label: Change simulated player
+  quit:
+    help: Accepted events are already persisted. Quitting does not reset the world.
+    label: Quit and save
+  replay:
+    help: Reconstruct the authoritative log without changing the saved world.
+    label: Check saved history
+  respond:
+    help: Choose a pending invitation or a contract requiring your response.
+    label: Respond to pending items
+  scenarios:
+    help: Explore strategy and agreement possibilities without changing worlds.
+    label: Scenarios mode
+  search:
+    grammar: '[text]'
+    help: / followed by a name filters the catalogue. / alone asks for a search term.
+    label: Search by name
+  trajectory:
+    help: Inspect recorded transitions through the pinned trajectory adapter. This is recorded simulation history,
+      not an alternative experiment.
+    label: Recorded trajectory
+common:
+  outcome: '      Outcome: '
+  recorded_evidence: Recorded evidence
+  stable_id_prefix: 'Stable ID: '
+  status_prefix: 'Status: '
+  type_prefix: 'Type: '
+contact:
+  choose_recipient: WHOM WOULD YOU LIKE TO CONNECT WITH?
+  inspector:
+    connection_acknowledged_a_contract_remains: Connection acknowledged. A contract remains an independent decision.
+    direction: From {sender} to {recipient}
+    enter_choose_a_actions_h: Enter Choose  a Actions  h History  w Network  d Provenance
+    explore_a_possible_collaboration: Explore a possible collaboration
+    invitation_connect: INVITATION / CONNECT
+    invitation_to_connect: ' · Invitation to connect · '
+    invite_to_connect_again: Invite to connect again
+    no_decision_is_available_to: No decision is available to your role in this invitation state.
+    participants: 'From: {sender} · To: {recipient}'
+    response: 'Response: '
+    simulation_contact_only_no_contractual: Simulation contact only. No contractual obligations or real-world contact
+      are implied.
+  invite: Invite to connect
+  message_example: Would you like to explore a possible collaboration?
+  save_draft: Save draft
+  saved_invitation: Invitation sent to {recipient}. It remains pending their response.
+contracts:
+  actions:
+    accept: Accept this exact version
+    activate: Activate and reserve resources
+    amend: Negotiate revised terms
+    authorize: Record institutional authorisation
+    dispute: Record a dispute
+    draft_contact: Save invitation draft
+    fulfill: Report fulfilment with evidence
+    propose: Propose a contract
+    publish_contact: Send drafted invitation
+    publish_proposal: Publish a drafted contract
+    reject: Reject the proposal
+    respond_contact: Respond to invitation
+    resume: Resume the contract
+    suspend: Suspend the active contract
+    terminate: Terminate and release reservations
+    verify: Independently verify the outcome
+    withdraw: Withdraw before activation
+    withdraw_contact: Withdraw invitation
+  actions_title: WHAT CAN I DO?
+  available_actions: Available actions
+  defaults:
+    offer: Discuss and review the proposed collaboration
+    request: Review and negotiate the requested contribution
+    title: A proposed collaboration
+  effects:
+    accept: Record your simulated acceptance of this exact version. Other parties must still decide for themselves.
+    activate: Activate the accepted agreement, reserve its resources and create the agreed responsibilities.
+    amend: Create revised terms and clear current-version acceptance and authorisation. Previous versions remain
+      in history.
+    authorize: Record the additional approval permitted by this role. This does not replace each party's acceptance.
+    dispute: Record a dispute; the agreement and its evidence remain inspectable.
+    draft_contact: Save an invitation draft. It is not delivered to the recipient.
+    fulfill: Report completion against the agreed criteria. Independent verification is still required.
+    initiate: Record evidence that work has started. This does not report completion.
+    propose: Create one proposed contract in the shared world. The other parties have not accepted it.
+    publish_contact: Send the draft to the recipient’s simulated inbox.
+    publish_proposal: Make this drafted agreement available for party responses.
+    reject: Decline this proposal. The contract remains visible in history.
+    respond_contact: Record your response. Acceptance acknowledges contact only; it accepts no obligations.
+    resume: Resume the suspended agreement under the existing rules.
+    send_contact: Record a pending in-game contact invitation. No email is sent and no contract is created.
+    suspend: Suspend further execution pending resolution; held resources remain reserved.
+    terminate: Close the contract and release held resources.
+    verify: Record the designated independent review of reported evidence. Only simulation outcomes are affected.
+    withdraw: Withdraw this unactivated agreement while retaining its history.
+    withdraw_contact: Withdraw your pending contact request, retaining its history.
+  inline_outcome_prefix: ' · Outcome: '
+  inspector:
+    accept_invitation: Accept invitation
+    amendments_require_renewed_acceptance: ' · Amendments require renewed acceptance.'
+    condition: 'Condition: '
+    contract_inspector: CONTRACT INSPECTOR
+    decline_invitation: Decline invitation
+    evidence: 'Evidence: '
+    governing_policy: 'Governing policy: '
+    party_acceptance_and_institutional_authorisation: Party acceptance and institutional authorisation are separate.
+    record_s_d_source_details: ' record(s) · d Source details / h History'
+    reject_declines_a_proposal_withdraw: Reject declines a proposal; Withdraw closes it before activation under
+      the current party rule.
+    relevant_scenario: 'Relevant scenario · '
+    resource: 'Resource: '
+    tab_regions_a_actions_h: '  Tab Regions  a Actions  h History'
+  parties_prefix: 'Parties: '
+  proposal_requires_party_acceptance: Proposing does not accept the terms. Each party decides independently.
+  propose_directly: Propose a contract directly
+  proposer_prefix: 'Proposed by: '
+  purpose_prefix: 'Purpose: '
+  registry:
+    contract_registry_transversal_layer: CONTRACT REGISTRY / transversal layer
+    invite_to_connect_choose_a: Invite to connect / choose a person
+    propose_a_contract_choose_a: Propose a contract / choose a person
+  settings:
+    agreement_settings_valid_until: 'AGREEMENT SETTINGS / Valid until '
+    change_validity: Change validity
+    choose_governance_policy: Choose governance policy
+    choose_linked_objective: Choose linked objective
+    keep_these_settings: Keep these settings
+    linked_objective: LINKED OBJECTIVE
+    objective: ' / Objective: '
+    policy: ' / Policy: '
+    valid_until_iso_date_and: Valid until (ISO date and time with timezone)?
+  shortcuts:
+    accept: Accept
+    amend: Negotiate
+    reject: Reject
+    withdraw: Withdraw
+controls:
+  action: Action
+  begin_or_quit: Enter Begin · q Quit
+  choose_object: CHOOSE AN OBJECT
+  confirm_continue: Continue?
+curation:
+  action_failed: 'ACTION FAILED · '
+  actor: ' · Actor · '
+  canonical_id: 'Canonical ID: '
+  canonical_identity: 'Canonical identity: '
+  choose_another_profile: Choose another profile
+  confirm_verified_identity_and_merge: CONFIRM VERIFIED IDENTITY AND MERGE
+  correct_profile: Correct profile
+  corrected_field: Corrected {field}
+  curator_change_recorded: CURATOR CHANGE RECORDED
+  curator_merge_preview: CURATOR / MERGE PREVIEW
+  curator_profile: CURATOR / PROFILE
+  curator_provenance: CURATOR / PROVENANCE
+  curator_select_profile: CURATOR / SELECT PROFILE
+  curator_unavailable: CURATOR UNAVAILABLE
+  enter_choose_b_cancel: Enter Choose · b Cancel
+  enter_choose_b_return: Enter Choose · b Return
+  fields:
+    archived: Archived
+    hidden: Hidden
+    label: Label
+    motivation: Motivation
+    profile_role: Profile Role
+    visible: Visible
+  hide_archive_restore: Hide / archive / restore
+  historical_records_retain_their_original: Historical records retain their original identifiers.
+  identity_must_have_been_explicitly: Identity must have been explicitly checked with the participant or an authoritative
+    source.
+  indicator: ◆ CURATOR
+  inspect_event_history: Inspect event history
+  inspect_provenance: Inspect provenance
+  merge_preview_statement: Merge {source} [{source_id}] into {target} [{target_id}]
+  merge_these_verified_identities: MERGE THESE VERIFIED IDENTITIES?
+  no_active_identity_merges: No active identity merges.
+  panel:
+    add_clarification: ADD CLARIFICATION
+    all_recorded_requests: All recorded requests
+    approval_records_a_review_apply: Approval records a review. Apply changes through a separate confirmed action.
+    approve_request: APPROVE REQUEST
+    context_curation: CONTEXT / CURATION
+    context_object_unavailable: CONTEXT / OBJECT UNAVAILABLE
+    context_select_object: CONTEXT / SELECT OBJECT
+    curation_request: CURATION REQUEST
+    curation_request_recorded: CURATION REQUEST RECORDED
+    curation_request_review: CURATION / REQUEST REVIEW
+    curation_review_queue: CURATION / REVIEW QUEUE
+    curator_review_queue: Curator review queue
+    enter_choose_b_queue: Enter Choose · b Queue
+    enter_choose_tab_main_u: Enter Choose · Tab Main · u Close
+    enter_review_b_object: Enter Review · b Object
+    historical_context_is_read_only: Historical context is read-only. Return to the current world to submit changes.
+    my_curation_requests: My curation requests
+    not_present_in_this_historical: Not present in this historical state (read-only).
+    object_history: Object history
+    object_provenance: OBJECT / PROVENANCE
+    open_target_apply_separately: OPEN TARGET / APPLY SEPARATELY
+    other_possible_identity: OTHER POSSIBLE IDENTITY
+    pgup_pgdn_scroll_b_object: PgUp/PgDn Scroll · b Object
+    proposed_correction: 'Proposed correction: '
+    reason_for_the_curation_request: Reason for the curation request
+    record_this_curation_review: RECORD THIS CURATION REVIEW?
+    reject_request: REJECT REQUEST
+    related_id: 'Related ID: '
+    related_identity: 'Related identity: '
+    request: 'Request: '
+    request_clarification: REQUEST CLARIFICATION
+    request_correction: Request correction
+    request_duplicate_merge: Request duplicate merge
+    request_failed: 'REQUEST FAILED · '
+    request_id: 'Request ID: '
+    request_profile_review: Request profile review
+    request_unavailable: Request unavailable.
+    requester: 'Requester: '
+    return_to_the_object_panel: Return to the object panel before changing focus.
+    reverse_identity_merge: Reverse identity merge
+    review_reason_or_clarification: Review reason or clarification
+    select_an_explicit_object_for: Select an explicit object for curation.
+    submit_this_curation_request: SUBMIT THIS CURATION REQUEST?
+    tab_main_panel_u_close: ' · Tab Main/Panel · u Close panel'
+    tab_main_view_enter_choose: Tab Main view · Enter Choose
+    target: ' · Target: '
+    target_retained_after_curation_navigate: Target retained after curation. Navigate in Main to follow its focus
+      again.
+    your_requests: Your requests
+  permission_required: Curator permission required.
+  pgup_pgdn_scroll_b_curator: PgUp/PgDn Scroll · b Curator
+  preview_verified_identity_merge: Preview verified identity merge
+  profile_field: PROFILE FIELD
+  profile_visibility: PROFILE VISIBILITY
+  reference_for_the_corrected_identity: Reference for the corrected identity decision
+  reference_for_the_verified_identity: Reference for the verified identity check
+  relationships_touched: 'Relationships touched: {relationships}'
+  request_type: 'Type: {type} request'
+  reverse: 'Reverse '
+  reverse_an_identity_merge: Reverse an identity merge
+  reverse_identity_merge: REVERSE IDENTITY MERGE
+  reverse_this_identity_merge: REVERSE THIS IDENTITY MERGE?
+  role_suffix: ' · CURATOR'
+  save_this_curator_correction: SAVE THIS CURATOR CORRECTION?
+  select_verified_canonical_identity: SELECT VERIFIED CANONICAL IDENTITY
+  self_links_suppressed_in_projections: 'Self-links suppressed in projections: {self_links_hidden}'
+  source_identity: 'Source identity: '
+  source_or_reason_for_this: Source or reason for this correction
+  target_prefix: 'Target: '
+  this_role_requires_an_active: This role requires an active curator permission.
+errors:
+  ui_trace_output_failed: ui_trace_output_failed; accepted engine commits remain saved
+feedback:
+  no_state_changed: 'No state changed: '
+  rejected: 'REJECTED: {errors}. No state changed.'
+forms:
+  reason_question: Reason?
+gathering:
+  conditions_and_outcomes_come_from: Conditions and outcomes come from the existing engine, not inferred attendance.
+  contracts_are_available_with_c: Contracts are available with c. No collective event planner is implemented.
+  gathering_conditions: GATHERING / CONDITIONS
+  invitation_and_attendance_actions_are: Invitation and attendance actions are unavailable here.
+  j_invite_r_respond: j Invite  r Respond
+  no_gathering_objective_is_registered: No gathering objective is registered in this world.
+  registered_gathering_objectives_and_recorded: Registered gathering objectives and recorded invitations.
+  this_mode_remains_an_inspectable: This mode remains an inspectable view of this same saved world.
+help:
+  a_matrix_row_offers_expertise: A matrix row offers expertise; a column requests it. W = O N^T.
+  a_partially_observed_cell_shows: A partially observed cell shows bounds. A complete empty vector can establish
+    zero even with unknown inputs.
+  a_shows_permitted_actions_for: a shows permitted actions for an inspected object. c contracts; i inbox; h object
+    history.
+  arrows_move_the_heatmap_cell: Arrows move the heatmap cell or list selection. Enter opens the highlighted item.
+  b_or_esc_returns_to: b or Esc returns to the preceding screen with its selection and scroll position.
+  context_panel_tab_switches_main: 'Context panel: Tab switches Main/Panel. Only permitted curator operations are
+    shown.'
+  contextual_help: 'CONTEXTUAL HELP / '
+  contract_explore_decisions_details_network: 'Contract: Explore → Decisions → Details. Network: canvas ↔ object
+    list.'
+  currently_unavailable: '  Currently unavailable: '
+  d_opens_optional_source_and: d opens optional source and technical details. t trajectory. v verifies replay.
+  dark_points_are_off_scope: Dark points are off-scope actors; rings are isolated in the full projection. 3D is
+    experimental.
+  diagonal_self_pairings_are_excluded: Diagonal self-pairings are excluded from actions. Nothing in the matrix implies
+    consent.
+  first_names_only_1_2: First names only. (1), (2), … distinguish different people with the same first name; these
+    are stable creation-order labels.
+  h_opens_collective_history_changes: H opens collective History; +/- changes detail; f filters. u opens the focused
+    object context panel.
+  help_your_path_through_the: HELP / YOUR PATH THROUGH THE COMMONS
+  in_a_contract_y_accepts: 'In a contract: y accepts, j negotiates, R rejects and X withdraws, only where the engine
+    permits.'
+  in_a_relationship_j_invites: 'In a relationship: j invites to connect; k proposes directly. Neither pathway requires
+    the other.'
+  inbox_f_chooses_a_filter: 'Inbox: F chooses a filter. Each canonical object appears once; badges show overlapping
+    categories.'
+  m_chooses_a_path_e: m chooses a path; e/g/s resume paths with their previous navigation context.
+  marks_your_row_and_column: '* marks your row and column. [] marks the selected cell. ? means unknown; 0 means
+    a known zero.'
+  matrix_changes_detail_home_returns: 'Matrix: +/− changes detail, Home returns to origin, f fits the viewport.
+    A + in a numeric cell means inspect the exact value.'
+  network_people_organisations_and_resources: 'Network, People, Organisations and Resources: x alternative ecosystem
+    views.'
+  network_s_changes_scope_l: 'Network: S changes scope, L filters layers, B selects background, [ ] pages, +/− zooms,
+    r rotates.'
+  network_s_scope_l_layer: 'Network: S scope; L layer filter; 3 toggles experimental 3D; r yaw and {{ / }} pitch
+    in 3D. Coordinates carry no social meaning.'
+  opens_typed_commands_including_open: ': opens typed commands, including open K-001, contract history and available
+    actions.'
+  p_changes_simulated_perspective_it: p changes simulated perspective. It grants no real-world representation or
+    consent.
+  pgup_pgdn_scroll_long_content: PgUp/PgDn scroll long content. / searches lists and matrix participants.
+  playing_is_your_simulated_agency: Playing is your simulated agency. Focus and selected relationship never change
+    your player.
+  q_quits_completed_actions_are: q quits; completed actions are already saved.
+  reconstruct_c_connect_c_contracts: 'Reconstruct: c Connect, C Contracts, n Network, / Search, f Filter, o Sort,
+    L Layers, Tab Regions.'
+  shortcuts_are_followed_by_enter: Shortcuts are followed by Enter; arrow keys move the selection immediately. Enter
+    inspects the highlighted object. b or Esc returns. Numbered entries do not require internal IDs.
+  up_down_select_or_scroll: Up/Down select or scroll; Enter opens or confirms the selection. Tab changes regions.
+  uppercase_o_n_w_switch: Uppercase O / N / W switch offers, needs and matches. / finds a person or expertise domain.
+  w_opens_hack_network_tab: w opens Hack Network. Tab/Up/Down select nodes; Enter inspects; f centres a node; [
+    ] page neighbours; r rotates; + - zoom.
+  z_switches_heatmap_numbers_fixed: 'z switches heatmap/numbers. Fixed count bands: 0, 1, 2–3, 4–6, 7–10, 11+. No
+    normalisation.'
+history:
+  curation_request: 'Curation request · '
+  events:
+    accept: Party acceptance recorded
+    activate: Resources reserved; obligations active
+    amend: Conditions negotiated
+    authorize: Institutional authorisation recorded
+    dispute: Dispute recorded
+    draft: Contract drafted
+    ecosystem_imported: Source ecosystem captured and imported
+    fulfill: Fulfilment reported
+    initialize: World initialised
+    initiate: Execution recorded
+    invitation_accepted: Invitation accepted; connection acknowledged
+    invitation_declined: Invitation declined
+    invitation_drafted: Invitation drafted
+    invitation_sent: Invitation sent
+    invitation_withdrawn: Invitation withdrawn
+    propose: Contract proposed
+    publish_contact: Draft invitation sent
+    publish_proposal: Draft published as a proposal
+    reject: Proposal rejected
+    respond_contact: Invitation response recorded
+    resume: Contract resumed
+    suspend: Contract suspended
+    terminate: Contract terminated
+    verify: Outcome independently verified
+    withdraw: Contract withdrawn
+  filters:
+    choose_history: 'CHOOSE HISTORY '
+    clear_all: CLEAR ALL
+    from_time: From time
+    history_filter: HISTORY FILTER
+    iso_timestamp_with_timezone_blank: ISO timestamp with timezone (blank clears)
+    until_time: Until time
+  system: System
+  views:
+    all_collective_events: All collective events
+    collective: COLLECTIVE
+    detail_enter_affected_object_b: +/- Detail · Enter Affected object · b History
+    detail_f_filters_enter_event: +/- Detail · f Filters · Enter Event · b Back
+    events_filters: '{selected_rows_count} events · {detail_levels} · Filters: '
+    historical_object: 'HISTORICAL OBJECT / '
+    history_event: 'HISTORY / EVENT / '
+    object: OBJECT
+    pgup_pgdn_scroll_b_event: PgUp/PgDn Scroll · b Event
+    read_only: Read-only
+    recorded_state_after_event: Recorded state after event {sequence}
+inbox:
+  all_my_records: All my records
+  all_title: INBOX / INVITATIONS AND CONTRACTS
+  badges:
+    acceptance_pending: Your acceptance pending
+    amendment_waiting: Amendment awaiting your response
+    authorization_waiting: Awaiting your authorisation
+    counterparty_acceptance: '{actor}''s acceptance pending'
+    incoming: From {actor}
+    obligations_pending: Outstanding obligations
+    outcome: Outcome {status}
+    outgoing: To {actor}
+    own_acceptance_waiting: Your proposal awaiting your acceptance
+    proposal_received: Proposal received
+    proposal_waiting: Proposal awaiting your response
+    proposed_by_you: Proposed by you
+    simulation_contact: Simulation contact only
+    verification_requested: Independent verification requested
+  badges_describe_pending_decisions_filters: Badges describe pending decisions; filters do not create extra records.
+  categories:
+    in_progress: Agreements in progress
+    incoming: Incoming invitations
+    my_decision: Awaiting my decision
+    other_parties: Awaiting other parties
+    outgoing: Outgoing invitations
+    proposals: Contract proposals
+    verification: Verification requests
+  enter_review_a_actions_f: Enter Review  a Actions  F Filter
+  filter: 'Filter: '
+  no_items_in_this_view: No items in this view. F changes the filter; c opens all contracts.
+  one_entry_per_object: ' · One entry per object'
+  p_choose_a_simulated_player: p Choose a simulated player first.
+laboratory:
+  act:
+    available_actions_for: 'Available actions for '
+    no_actions_are_permitted_for: No actions are permitted for this actor on the current contract state. Check parties,
+      acceptance, authorisation and lifecycle conditions.
+  ask:
+    invalid_input_please_try_again: Invalid input; please try again.
+    shortcut_0_b_cancel_this_form: '0 / b: cancel this form. Invalid input repeats this question. No partial writes.'
+  bind_identity:
+    choose_an_explicitly_granted_simulation: 'Choose an explicitly granted simulation role:'
+    no_verified_simulation_binding_exploration: No verified simulation binding. Exploration and pending claims remain
+      available.
+  choose:
+    choice_0_cancels: Choice? 0 cancels.
+    no_available_choices: No available choices.
+  claim:
+    existing_actor_id_enter_new: Existing actor ID? Enter new to request a new profile.
+    no_acceptance_or_organisational_authority: . No acceptance or organisational authority granted.
+    pending_claim: 'PENDING CLAIM '
+    proposed_profile_label: Proposed profile label?
+    select_a_mock_player_before: Select a mock player before requesting a binding.
+  collect_action:
+    acting_as_acceptance_authorisation_execution: Acting as {actor}. Acceptance, authorisation, execution and verification
+      are different transitions.
+    choose_an_objective: 'Choose an objective:'
+    choose_another_actor_representation_simulation: 'Choose another actor representation (simulation only):'
+    conditions_separated_by: Conditions, separated by |?
+    contract_title: Contract title?
+    does_your_report_address: 'Does your report address: '
+    evidence_reference_or_concrete_action: Evidence reference or concrete action note?
+    purpose: Purpose?
+    quantity_for: Quantity for {resource_id}?
+    submit_this_action: Submit this action?
+    valid_until_iso_timestamp: Valid until (ISO timestamp)?
+  declare:
+    domain: Domain?
+    quantity: Quantity?
+    record_this_as_a_declaration: Record this as a declaration, not a verified fact?
+    source_or_note_for_your: Source or note for your report?
+    unit: Unit?
+    what_do_you_want_to: What do you want to declare?
+    whom_do_you_know: Whom do you know?
+  graph:
+    choose_a_historical_state: 'Choose a historical state:'
+    choose_a_listed_command_exploration: Choose a listed command. Exploration does not grant authority.
+    contract_summary: '{id} / {label} / {status} / outcome={outcome}'
+    open_id_history_id_past: open ID | history ID | past SEQUENCE ID | contracts [actor=ID status=STATE objective=ID
+      resource=ID] | act ID | list | b Back
+    outcome_suffix: ' / outcome={status}'
+    state: State {sequence} / {kind}
+    world_graph: '
+
+      WORLD GRAPH / '
+  history:
+    branch_from_which_transaction: Branch from which transaction?
+    cancelled: Cancelled.
+    export_path_existing_files_are: Export path? Existing files are preserved.
+    exported_read_only_trajectory: 'Exported read-only trajectory: '
+    h_history_t_current_trajectory: '[h] History  [t] Current trajectory  [p] Past state  [s] Simulate branch'
+    history_trajectories: '
+
+      HISTORY & TRAJECTORIES'
+    hypothetical_action_for_your_current: 'Hypothetical action for your current actor:'
+    hypothetical_branches: 'Hypothetical branches:'
+    hypothetical_only_authoritative_history_unchanged: HYPOTHETICAL ONLY. Authoritative history unchanged.
+    inspection_unavailable: 'Inspection unavailable: '
+    replay_consistent: 'REPLAY CONSISTENT: '
+    state_transaction_number: State transaction number?
+    v_inspect_branches_e_export: '[v] Inspect branches  [e] Export package YAML  [r] Replay  [b] Back'
+  inbox:
+    choose_a_simulated_player_with: Choose a simulated player with an explicit actor binding to open an inbox.
+    choose_an_inbox_contract_and: Choose an inbox contract and a listed command.
+    contract_inbox_simulation: '
+
+      CONTRACT INBOX / SIMULATION / '
+    no_contracts_currently_require_your: No contracts currently require your response.
+    open_id_act_id_b: open ID | act ID | b Back
+  inspect_contract:
+    accepted_by: 'Accepted by: '
+    authorisation_policy: 'Authorisation policy: '
+    authorised_by: 'Authorised by: '
+    condition: '  Condition: '
+    contract_version: CONTRACT {id} / VERSION {number} / {status}
+    designated_independent_verifier_s: 'Designated independent verifier(s): '
+    evidence: 'EVIDENCE '
+    obligation: '  Obligation / {actor_id}: {description}'
+    outcome_content_digest: 'Outcome: {outcome_status} / content digest: {content_digest}'
+    requested_resources: 'Requested resources: '
+    required_approvers: 'Required approvers: '
+    threshold_categories: ' / threshold: {threshold} / categories: {value}'
+    valid_until: 'Valid until: '
+    your_available_actions: 'Your available actions: '
+  inspect_mode:
+    a_available_actions_g_world: '[a] Available actions  [g] World graph  [o] Open latest contract  [h] Latest contract
+      history  [n] Inbox  [w] Full world  [b] Back'
+    actor: 'ACTOR {id}: {label} / {kind}'
+    commitment: 'COMMITMENT {actor}: {responsibility} / {status}'
+    contract_backed_hube_feasibility_remains: Contract-backed Hube feasibility remains an M4 gate; this is the existing
+      synthetic world.
+    contract_nodes: CONTRACT NODES
+    d_declare_a_capacity_need: '[d] Declare a capacity, need or relationship'
+    evidence: 'EVIDENCE {id}: {kind} / {actor} / {reference}'
+    i_invite_r_respond_to: '[i] Invite  [r] Respond to an invitation'
+    inferred_possibility_not_an_agreement: 'INFERRED POSSIBILITY (not an agreement): '
+    invitation: 'INVITATION {id}: {sender} → {recipient} / {status}'
+    no_contracts_yet_an_inferred: No contracts yet. An inferred possibility has not become an agreement.
+    objective: '{label}: {status} / supports={supports}'
+    resource_reserved: 'RESOURCE {label}: {held}/{quantity} {unit} reserved'
+    saddle_pathways: '
+
+      SADDLE PATHWAYS / '
+    unresolved_conditions_declared_objectives: UNRESOLVED CONDITIONS / DECLARED OBJECTIVES
+  inspect_node:
+    current_world: ' / CURRENT WORLD'
+    direction_unknown: '-- [direction unknown] '
+    historical_state: ' / HISTORICAL STATE {at}'
+    linked_nodes: 'Linked nodes: '
+    neighbourhood: NEIGHBOURHOOD
+    node: NODE {id} / {kind} / {label}
+  invitation:
+    gathering_objective: Gathering objective?
+    invite_not_available_in_this: 'INVITE: Not available in this scenario. The registered invitation action requires
+      a gathering objective.'
+    invite_whom: Invite whom?
+    respond_no_pending_invitations_require: 'RESPOND: No pending invitations require your response. Use the contract
+      inbox for proposals.'
+    response: Response?
+    select_a_simulated_actor_before: Select a simulated actor before inviting or responding.
+    submit_this_invitation_action: Submit this invitation action?
+    your_pending_invitations: 'Your pending invitations:'
+  mode:
+    a_engine_permitted_actions_g: 'a: engine-permitted actions; g: graph; o: latest contract; h: latest contract
+      history; n: inbox; invite/respond: gathering invitations when applicable; b: back.'
+    cancelled_no_incomplete_action_was: Cancelled; no incomplete action was submitted.
+    choose_one_of_the_listed: Choose one of the listed actions.
+  node_history:
+    creation_historical_graph: CREATION / HISTORICAL GRAPH
+    return_to_the_current_world: 'Return to the current world with: open '
+  onboarding:
+    being_represented_is_not_authentication: Being represented is not authentication, authorisation or consent.
+      Claims remain pending until independently reviewed.
+    local_role_selection_simulation_only: Local role selection / SIMULATION ONLY.
+    mock_player_label: Mock player label?
+    new_mock_subject_id: New mock subject ID?
+    new_unbound_mock_player: New unbound mock player
+    real_play_requires_a_production: Real play requires a production identity provider and verified authority. All
+      current actions are simulated.
+    simulate_sign_in_no_real: 'Simulate sign-in (no real authentication):'
+    unbound_mock_player_request_an: Unbound mock player. Request an existing actor or a new profile with c.
+    welcome_to_saddle_pathways_1: '
+
+      Welcome to SADDLE PATHWAYS.
+
+      [1] Explore the ecosystem
+
+      [2] Enter simulation mode
+
+      [4] Help
+
+      [c] Request an actor binding
+
+      [q] Quit'
+  profile:
+    authenticated_no_binding_status: 'Authenticated: no. Binding status: '
+    identity_simulation_only_mock_player: 'IDENTITY / SIMULATION ONLY
+
+      Mock player: {label} / subject: {subject}'
+    local_simulated_role_no_authenticated: Local simulated role; no authenticated player identity.
+    verified_in_mock_only: VERIFIED IN MOCK ONLY
+  reference:
+    choose_an_object: 'Choose an object:'
+  render_trajectory:
+    actor_event_commit: '  actor={value} event={event_id} commit={commit_id}
+
+      '
+    context: 'Context: {world_kind} / {history}
+
+      '
+    current_state_no_geometric_coordinates: 'CURRENT STATE: {last:03}
+
+      No geometric coordinates or physical quantities inferred.
+
+      '
+    hypothetical_branch: 'HYPOTHETICAL BRANCH '
+    recorded_history: RECORDED HISTORY
+    saddle_pathways_trajectory: 'SADDLE PATHWAYS / TRAJECTORY
+
+      '
+    state: 'STATE {sequence:03} [{history_kind}] {event}
+
+      '
+    v_outcome: '  {value} v{current_version}: {status} / outcome={outcome_status}
+
+      '
+    world: 'World: {scenario}
+
+      '
+  run:
+    a_central_authoritative_engine_enforcing: A central authoritative engine enforcing decentralised decision rules.
+    action_unavailable: 'Action unavailable: '
+    b_back_0_cancel_a: 'b: back; 0: cancel a form; q: quit. Invalid fields repeat locally.'
+    choose_one_of_the_listed: Choose one of the listed actions. Identity switching requires --hot-seat.
+    commitment_commit_acceptance_institutional_authorisation: Commitment ≠ commit. Acceptance ≠ institutional authorisation
+      ≠ verified outcome.
+    empirical_ecosystem_simulation_only: empirical ecosystem / SIMULATION ONLY
+    explicit_development_hot_seat_enabled: EXPLICIT DEVELOPMENT HOT-SEAT ENABLED.
+    g_world_graph_n_contract: '[g] World graph  [n] Contract inbox  [p] My profile  [c] Request binding  [x] Sign
+      out'
+    inspect_choose_a_valid_action: Inspect → choose a valid action → review version → explicitly submit.
+    local_simulation_selecting_an_identity: 'Local simulation: selecting an identity is not authentication.'
+    normal_play_stays_bound_to: Normal play stays bound to your actor. Hypothetical branches never change saved
+      history.
+    s_switch_local_actor_explicit: '[s] Switch local actor — explicit hot-seat'
+    shortcut_1_ecosystem_we_can_act: '[1] ECOSYSTEM — We can act together.'
+    shortcut_2_gathering_we_make_it: '[2] GATHERING — We make it happen.'
+    shortcut_3_scenarios_what_can_we: '[3] SCENARIOS — What can we accomplish together?'
+    shortcut_4_history_trajectories_5_help: '[4] HISTORY & TRAJECTORIES  [5] HELP  [Q] QUIT'
+    signed_out_the_authoritative_world: Signed out. The authoritative world is preserved.
+    synthetic_simulation: synthetic simulation
+    world_actor_state: '
+
+      World: {title} / {context} / Actor: {actor} / State {value_count:03}'
+  select_actor:
+    select_your_local_actor_identity: 'Select your local actor identity:'
+    selected_actor: 'ACTOR: {actor} ({id})'
+  submit:
+    committed_state: COMMITTED {commit_id} / state {state_version:03}
+    contract_o_open_contract_g: CONTRACT {contract_id} / [o] Open contract / [g] View graph / [h] View history
+    simulated_action_no_real_world: SIMULATED ACTION. No real-world consent or commitment recorded.
+line:
+  assume_actor:
+    explicitly_simulate_this_organisation_role: Explicitly simulate this organisation role? No real representation
+      authority is granted.
+    now_simulating: 'NOW SIMULATING: '
+    the_shared_world_is_unchanged: . The shared world is unchanged.
+  choose:
+    no_matching_choices_are_available: No matching choices are available in the current world.
+  cmd_actions:
+    choose_a_simulated_player_with: Choose a simulated player with p before acting.
+    no_action_is_permitted_for: No action is permitted for this actor on the selected object in its current state.
+      Inspect its parties, lifecycle and pending conditions; changing perspective does not bypass the engine.
+  cmd_contracts:
+    contract_registry: CONTRACT REGISTRY
+    no_contracts_match_these_filters: No contracts match these filters.
+    no_contracts_yet_for_this: No contracts yet for this selection. Use a on a person to propose an agreement.
+  cmd_history:
+    historical_graph_enter_returns_to: HISTORICAL GRAPH. Enter returns to the transition list; b returns too.
+    history: 'HISTORY / '
+    no_transitions_recorded_for_this: No transitions recorded for this object.
+    state: 'State {sequence} · '
+  cmd_inbox:
+    no_pending_contracts_require_your: No pending contracts require your response. c opens all contracts.
+  cmd_invite:
+    invite_not_available_in_this: INVITE · Not available in this scenario. The engine has an invitation action,
+      but this world has no gathering objective.
+    invite_select_a_simulated_actor: INVITE · Select a simulated actor first.
+  cmd_metadata:
+    internal_reference: 'Internal reference: '
+    source_technical_details: SOURCE / TECHNICAL DETAILS
+  cmd_respond:
+    respond_no_pending_invitations_or: RESPOND · No pending invitations or proposals require your response. c opens
+      all contracts.
+    respond_select_a_simulated_actor: RESPOND · Select a simulated actor first.
+  cmd_trajectory:
+    recorded_simulation_trajectory: RECORDED SIMULATION TRAJECTORY
+  collect_action:
+    action: 'ACTION: '
+    an_invitation_proposes_contact_it: An invitation proposes contact. It imposes no obligation.
+    conditions_for_this_revision: Conditions for this revision?
+    contribution_requested_from: 'Contribution requested from '
+    counterparty: 'Counterparty: '
+    describe_the_supplied_evidence_or: Describe the supplied evidence or action record?
+    include_a_resource_allocation: Include a resource allocation?
+    invitation_message: Invitation message?
+    link_this_agreement_to_a: Link this agreement to a wider scenario objective?
+    optional_conditions_blank_for_none: Optional conditions (blank for none)?
+    optional_invitation_purpose_blank_for: Optional invitation purpose (blank for none)?
+    optional_resource: OPTIONAL RESOURCE
+    optional_response_message_blank_for: Optional response message (blank for none)?
+    optional_wider_objective: OPTIONAL WIDER OBJECTIVE
+    proposed_contribution_from: 'Proposed contribution from '
+    proposing_actor: 'Proposing actor: '
+    purpose_of_this_agreement: Purpose of this agreement?
+    requested_quantity: Requested quantity?
+    revised_shared_purpose: Revised shared purpose?
+    simulating: 'Simulating: '
+    this_simulated_action_is_not: This simulated action is not genuine consent by the represented person.
+    what_will_change: 'What will change: '
+    who_is_affected: 'Who is affected: '
+    who_would_you_like_to: WHO WOULD YOU LIKE TO COLLABORATE WITH?
+    your_offered_contribution: Your offered contribution?
+  command_availability:
+    not_available_in_this_scenario: Not available in this scenario. A registered invitation requires a gathering
+      objective; this world has none.
+  context:
+    current_state: CURRENT STATE {state}
+    historical_state_current: HISTORICAL STATE {at} (current {state})
+    no_role_selected: No role selected
+    playing_simulation_only: '{title} · Playing: {actor}
+
+      SIMULATION ONLY · '
+  coverage:
+    coverage_eligible_source_people_imported: 'Coverage: {value} eligible source people / {imported_count} imported
+      people; {value_2} unresolved source identities.'
+    synthetic_support_roles_are_supplementary: '{supplements} synthetic support roles are supplementary, not source
+      participants.'
+    world_coverage_imported_people_complete: 'World coverage: {imported_count} imported people. Complete source
+      coverage has not been recorded.'
+  dispatch:
+    cancelled_no_incomplete_action_was: Cancelled. No incomplete action was submitted.
+    unknown_command_press_for_commands: Unknown command. Press ? for commands available on this screen.
+  explorer:
+    choose_a_displayed_number_or: Choose a displayed number or search with /.
+    contract_created_1_inspect_contract: CONTRACT CREATED · [1] Inspect contract · [2] View in graph · [3] Return
+      to ecosystem
+    modes_ecosystem_gathering_scenarios_clear: 'Modes: ecosystem · gathering · scenarios · Clear filter: list'
+    no_objects_match_this_view: No objects match this view. Use list to clear filters.
+    page_objects: Page {value}/{value_2} · {nodes_count} objects
+    this_world_has_no_gathering: This world has no gathering objective. Invitation actions explain that restriction;
+      exploration and contracts remain available.
+    world_explorer: ' / WORLD EXPLORER'
+  footer:
+    esc_b: Esc/b
+    select_enter_inspect_search: '
+
+      ↑↓ Select · Enter Inspect · / Search · '
+  inspect_node:
+    a_simulated_contact_request_acceptance: A simulated contact request. Acceptance acknowledges contact, never
+      contractual obligations or real-world consent.
+    additional_approval_threshold: 'Additional approval threshold: {threshold}'
+    contracts: '
+
+      CONTRACTS'
+    declared_domain_match_es: ' · {count} declared-domain match(es)'
+    designated_independent_reviewers: 'Designated independent reviewers: '
+    eligible_approvers: 'Eligible approvers: '
+    every_party_accepts_the_same: Every party accepts the same contract version before activation. An amendment
+      clears current-version receipts.
+    every_party_must_explicitly_accept: Every party must explicitly accept this version. Policy approvals are additional
+      to party consent.
+    governance_policy_rule_enforced: GOVERNANCE POLICY / RULE ENFORCED
+    governing_policy_governance_policy_node: 'Governing policy (governance-policy node): '
+    linked_objective: 'Linked objective: '
+    montreal_source_identity_roster_binding: Montréal source identity · Roster binding pending
+    named_approvers: '; named approvers: '
+    no_acceptance_recorded: no acceptance recorded
+    no_additional_approvals_recorded: No additional approvals recorded
+    no_parties_yet: No parties yet
+    not_recorded_this_does_not: Not recorded. This does not mean none.
+    obligation: 'Obligation: '
+    potential_complementarities_inferred_not_collaboration: '
+
+      POTENTIAL COMPLEMENTARITIES / INFERRED, NOT COLLABORATION'
+    provenance: '
+
+      Provenance: '
+    record_s: ' record(s).'
+    recorded_relationships: '
+
+      RECORDED RELATIONSHIPS'
+    recorded_simulation_fixture: Recorded simulation / fixture
+    required_approvals: 'Required approvals: '
+    required_categories: 'Required categories: '
+    source: 'Source: {file}:{line}'
+    source_assertion_unverified: Source assertion; unverified
+    source_details_metadata_optional: 'Source details: metadata (optional).'
+    terms: '
+
+      TERMS
+
+      '
+    terms_version: 'Terms version: '
+    these_rules_confer_no_real: These rules confer no real-world authorisation in a simulation.
+  inspector:
+    connected_objects_page_next_previous: Connected objects page {value}/{value_2} · > Next · < Previous
+    graph_neighbourhood_connected_objects: '
+
+      GRAPH NEIGHBOURHOOD / CONNECTED OBJECTS'
+    no_connected_objects_a_shows: No connected objects. a shows actions; b returns.
+  invitation:
+    how_do_you_respond: HOW DO YOU RESPOND?
+    invitation_from: 'Invitation from '
+    invitations_requiring_your_response: INVITATIONS REQUIRING YOUR RESPONSE
+    save_this_simulated_response: Save this simulated response?
+    send_this_simulated_invitation: Send this simulated invitation?
+    they_have_not_consented_by: . They have not consented by receiving it.
+    this_records_a_pending_invitation: 'This records a pending invitation to '
+    this_responds_to_an_event: This responds to an event invitation. It does not sign a contract or verify an outcome.
+    what_gathering_are_you_preparing: WHAT GATHERING ARE YOU PREPARING?
+    whom_would_you_like_to: WHOM WOULD YOU LIKE TO INVITE?
+  label:
+    unresolved_source_reference: Unresolved source reference
+  neighbours:
+    inferred_potential: INFERRED POTENTIAL
+  picker:
+    choose_a_visible_number_move: Choose a visible number, move the cursor, or search by name.
+    enter_to_return_to_selection: Enter to return to selection
+    matches_page: '{filtered_count} matches · page {value} / {value_2}'
+    numbers_refer_to_the_visible: Numbers refer to the visible ordered catalogue. Search is accent-insensitive.
+      No internal identifier is needed.
+    search_by_name: Search by name?
+    select_enter_confirm_number_select: ↑↓ Select · Enter Confirm · number Select · / Search · > Next · < Previous
+      · v Preview · b Back
+  select_actor:
+    affiliation_unknown: ' · Affiliation unknown'
+    choose_a_person_to_simulate: Choose a person to simulate. This is perspective selection, not authentication
+      or authority from Notion.
+    development_roles_include_organisations_and: Development roles include organisations and synthetic support roles.
+      They confer simulation authority only.
+    enter_open_people_catalogue_f: '[Enter] Open people catalogue · f Filter by organisation · d Development roles
+      · b Back'
+    enter_opens_the_catalogue_f: Enter opens the catalogue. f filters organisation; d explicitly enables development
+      roles.
+    no_eligible_imported_people_match: No eligible imported people match. Clear the filter or import a scoped ecosystem
+      snapshot.
+    organisation_name_blank_clears: Organisation name (blank clears)?
+    select_an_actor: SELECT AN ACTOR
+    who_will_you_play: WHO WILL YOU PLAY?
+  select_reference:
+    no_contracts_exist_yet: No contracts exist yet.
+    no_matching_object_exists: No matching object exists.
+  submit:
+    contract_created: CONTRACT CREATED
+    shared_world_updated: SHARED WORLD UPDATED
+    shortcut_1_inspect_contract_2_view: '[1] Inspect contract · [2] View in graph · [3] Return to ecosystem'
+    simulated_action_saved_other_parties: Simulated action saved. Other parties' decisions and outcome verification
+      remain separate.
+matrix:
+  complementarity_matrix: COMPLEMENTARITY MATRIX
+  current_player_selection_1_selected: '* Current player  > Selection  1 Selected  0 Not selected  ? Unknown'
+  domain: 'Domain: '
+  ecosystem_matrix_explorer: ECOSYSTEM / MATRIX EXPLORER
+  exact_matches: ' · Exact matches: '
+  expertise:
+    answer_state: 'Answer state: '
+    complete_declared_expertise_unknown_values: Complete declared expertise · unknown values remain ?
+    enter_profile_d_source_details: Enter Profile  d Source details  b Matrix
+    explore: 'Explore '
+    need: NEED
+    not_selected: Not selected
+    offer: OFFER
+    offers_and_needs: OFFERS AND NEEDS
+    pgup_pgdn_scroll_b_profile: PgUp/PgDn Scroll  b Profile
+    selected: Selected
+    value: 'Value: '
+    world_state: 'World state '
+  fixed_categories_1_selected_0: 'Fixed categories: 1 Selected / 0 Not selected / ? Unknown · z Numbers'
+  heatmap: HEATMAP
+  matching_domains: 'Matching domains: '
+  matrix_detail_columns_overflow_inspect: 'Matrix detail: {value} ({cell_width} columns) · + overflow: inspect exact
+    value'
+  n_needs: N / NEEDS
+  needs_n: NEEDS N
+  no_eligible_matrix_observations_in: No eligible matrix observations in this world.
+  none_in_the_observed_vocabulary: None in the observed vocabulary
+  numeric: NUMERIC
+  o_n_w_arrows_cell: O/N/W  Arrows Cell  Enter Inspect  +/- Detail  Home Origin  f Fit  z Numbers  w Network
+  o_offers: O / OFFERS
+  offers_o: OFFERS O
+  pair:
+    a_potential_connection_potential_complementarity: A POTENTIAL CONNECTION / POTENTIAL COMPLEMENTARITY
+    answer_coverage_offers: 'Answer coverage: offers '
+    contracts_here: 'Contracts here: '
+    d_source_details: ' · d Source details'
+    enter_choose_j_invite_k: Enter Choose  j Invite  k Propose contract  a Actions  w Network  d Source details
+    incomplete_coverage_confirmed_matches_form: Incomplete coverage. Confirmed matches form a lower bound; remaining
+      domains are unknown.
+    inspect_needs: 'Inspect needs · '
+    inspect_offers: 'Inspect offers · '
+    matching_declared_expertise_domain_s: ' matching declared expertise domain(s)'
+    matching_domain_s: ' matching domain(s)'
+    matching_expertise: 'Matching expertise: '
+    no_shared_selections_in_this: No shared selections in this vocabulary; this does not exclude other collaboration.
+    none_confirmed: None confirmed
+    observation_only_you_are_not: 'OBSERVATION ONLY: you are not a party to this relationship. Following a profile
+      does not change who you play.'
+    offers_needs: 'Offers → Needs: '
+    reverse: 'Reverse: '
+    reverse_expertise: 'Reverse expertise: '
+    scores_describe_potential_not_acknowledged: Scores describe potential, not acknowledged contact or accepted
+      obligations.
+    selected_link: 'Selected link: '
+    self_pairing_excluded_from_gameplay: Self-pairing excluded from gameplay. Choose a different row or column.
+    they_require_a_separate_decision: . They require a separate decision by the other party.
+    view_in_network: View in network
+    you_may_propose_new_terms: 'You may propose new terms as '
+  people_expertise_domains: ' · People × expertise domains'
+  rows_columns: Rows {value}–{stop}/{count} · Columns {value_2}–{stop_2}/{axis_count}
+  scale: 'Scale: '
+  score:
+    unknown_lower_bound: Unknown ({lower}–{upper}; lower bound {lower})
+  shared_vocabulary_and_snapshot_across: ' · Shared vocabulary and snapshot across O / N / W'
+  w_o_n_t_rows: W = O N^T · Rows OFFER → columns REQUEST
+  x_opens_alternative_ecosystem_views: x opens alternative ecosystem views.
+  your_row_column_selection_unknown: '* Your row/column  > Selection  ? Unknown  0 Known zero  - Self (excluded)'
+  z_heatmap_numbers: ' · z Heatmap/numbers'
+navigation:
+  commons_game_choose_your_path: COMMONS GAME / CHOOSE YOUR PATH
+  ecosystem:
+    description: Explore offers, needs and potential complementarities.
+  exercises:
+    description: Learn the moves that transform a collective.
+    title: EXERCISES
+  gathering:
+    description: Inspect gathering conditions and registered invitation actions.
+  history:
+    description: Inspect the collective event history.
+  montreal_network:
+    any: Any
+    b_network_pgup_pgdn_scroll: b Network · PgUp/PgDn Scroll
+    clear_filters: Clear filters
+    cleared_filters_to_focus_the: Cleared filters to focus the selected counterpart.
+    connections_participants: '{views} · {edges_count} connections · {profiles_count} participants'
+    description: Explore the connections we created together.
+    focus: 'Focus '
+    headings:
+      connection: '{title} / CONNECTION'
+      facet: '{title} / {field}'
+      filter: '{title} / FILTER'
+      layers: '{title} / LAYERS'
+      profile_sources: '{title} / PROFILE SOURCES'
+      source_review: '{title} / SOURCE REVIEW'
+    identities_awaiting_review: '{unresolved_count} identities awaiting review'
+    identity_pending_review: 'Identity pending review · '
+    layers:
+      connections: Newly established connections
+      recollections: Player recollections
+    no_connections_for_this_participant: No connections for this participant in the selected layer.
+    no_montreal_source_topology_has: No Montréal source topology has been imported.
+    none_supplied: None supplied
+    remarks: 'Remarks · '
+    roster_identity: 'Roster identity · '
+    search_participant_names_blank_clears: Search participant names (blank clears)
+    status: 'Status · '
+    title: MONTRÉAL NETWORK
+    use_reviewed_stable_actor_ids: Use reviewed stable actor IDs with import-montreal-network --identities.
+  path_entry: '{title} · {description}'
+  scenario:
+    label: Scenario
+  scenarios:
+    description: Inspect source scenarios, linked objectives and recorded trajectories.
+  workshop: WORKSHOP
+network:
+  camera:
+    experimental_3d: ' · EXPERIMENTAL 3D'
+    planar: ' · Planar'
+  centre: ' · Centre: '
+  context_off_scope_actors_background: 'Context: {context_actor_ids_count} off-scope actors · {value} background
+    · {value_2} isolated'
+  ecosystem_network_hack_renderer: ECOSYSTEM / NETWORK / HACK RENDERER
+  ecosystem_network_object_list: ECOSYSTEM / NETWORK / OBJECT LIST
+  enter_inspect_tab_view_t: Enter Inspect  Tab View  T Types  S Scope  L Layers  B Background  [ ] Page  f Centre  +
+    - Zoom  r Rotate
+  layers: ' · Layers: '
+  neighbours_page: Neighbours {value}–{value_2}/{total} · [ ] Page
+  network_hack_terminal: NETWORK / HACK TERMINAL
+  no_matching_graph_nodes_search: No matching graph nodes. / Search or b Back.
+  player_centred_neighbourhood: Player-centred neighbourhood
+  scope: 'Scope: '
+  selected_actor_neighbourhood: Selected-actor neighbourhood
+  showing_nodes_edges_bundles: Showing {nodes_count}/{full_node_count} nodes · {rendered_relationship_count}/{full_relationship_count}
+    edges ({edges_count} bundles)
+  types: 'Types: '
+  zoom_x_rotation_rad: ' · Zoom {zoom:.2f}x · Rotation {rotation:.1f} rad'
+objects:
+  inspector:
+    enter_follow_link_h_history: Enter Follow link  h History  d Details
+    scenario: 'Scenario · '
+profiles:
+  acknowledged_connection: 'Acknowledged connection · '
+  acknowledged_connections: 'Acknowledged connections: {connections_count}'
+  affiliation: 'Affiliation: '
+  complete_offers_and_needs: Complete offers and needs
+  contract: 'Contract · '
+  contract_proposal_unavailable_for_this: Contract proposal unavailable for this role/counterparty and the registered
+    scenario constraints.
+  enter_choose_a_actions_w: Enter Choose  a Actions  w Network  d Source details
+  enter_inspect_h_history_b: Enter Inspect · h History · b Back
+  historical_references_remain_available_through: Historical references remain available through h History.
+  inspect_canonical_profile: Inspect canonical profile
+  motivation: 'Motivation · '
+  motivation_source: Motivation · {question} ({source}:{field})
+  potential: 'Potential · '
+  potential_complementarities_are_declared_possibilities: Potential complementarities are declared possibilities.
+    They imply no consent.
+  potential_counterparties_w_opens_the: '{relevant_count} potential counterparties · w opens the paged network.'
+  profile_discovery_updated: PROFILE / DISCOVERY UPDATED
+  read_only_b_current_context: Read-only · b Current context
+  this_profile_has_a_recorded: This profile has a recorded identity or visibility correction.
+scenarios:
+  a_fixture_does_not_confer: A fixture does not confer real consent or institutional authority.
+  an_installed_deterministic_regression_situation: An installed deterministic regression situation, not empirical
+    workshop evidence.
+  conditions_steps: CONDITIONS / STEPS
+  enter_inspect_scenario_t_trajectory: Enter Inspect scenario  t Trajectory
+  enter_objective_t_recorded_trajectory: Enter Objective  t Recorded trajectory
+  linked_objectives_in_this_world: LINKED OBJECTIVES IN THIS WORLD
+  no_objective_is_registered_for: No objective is registered for this scenario in the current world.
+  playable_synthetic_fixture: PLAYABLE SYNTHETIC FIXTURE
+  possible_desired_conditions_source_prompts: POSSIBLE DESIRED CONDITIONS (source prompts, not achieved objectives)
+  registered_objective_in_this_synthetic: Registered objective in this synthetic scenario.
+  scenario_inspect: SCENARIO / INSPECT
+  scenario_situation_and_possible_transformation: Scenario = situation and possible transformation; objective =
+    desired condition; contract = proposed or accepted agreement.
+  scenarios_catalogue: SCENARIOS / CATALOGUE
+  separate_saved_world_description_only: SEPARATE SAVED WORLD / description only here
+  synthetic_fixtures_are_labelled_separately: Synthetic fixtures are labelled separately; selecting one never changes
+    this world.
+  workshop_source_material_is_inspectable: Workshop source material is inspectable. Strategy and coalition gameplay
+    are not implemented.
+session:
+  closed: Session closed. Accepted history is preserved.
+  player_required: Select a simulated player with p first.
+  role_changed: Now simulating {actor}. The shared world is unchanged.
+technical:
+  current_saved_state_version: 'Current saved state version: '
+  notice: NOTICE
+  optional_source_technical_details: OPTIONAL SOURCE / TECHNICAL DETAILS
+terminal:
+  a_new_proposal_is_unavailable: A new proposal is unavailable for this role/counterparty and the registered scenario
+    constraints.
+  actions_require_a_simulated_player: Actions require a simulated player in the current world.
+  all_layers: All layers
+  centre_on_contract: CENTRE ON CONTRACT
+  centre_on_person: CENTRE ON PERSON
+  choose_a_person: Choose a person
+  choose_a_person_2: CHOOSE A PERSON
+  choose_another_person_and_a: Choose another person and a simulated player first.
+  choose_your_own_row_or: Choose your own row or column to propose from this opportunity.
+  command_for_help: Command (? for help)
+  contact_invitations_currently_require_two: Contact invitations currently require two simulated people.
+  context: 'Playing as: {actor}{focus} · Simulation · {world} · v{revision}{historical}'
+  contract_created_proposed_acceptance_is: Contract created · PROPOSED · acceptance is still required.
+  contract_neighbourhood: Contract neighbourhood
+  counterparties: 'Counterparties: '
+  counterparty: Counterparty
+  declared_topic: DECLARED {topic}
+  development_roles_simulation_authority_only: DEVELOPMENT ROLES / simulation authority only
+  development_simulation_roles: Development simulation roles…
+  ecosystem: 'ECOSYSTEM / '
+  ecosystem_views: ECOSYSTEM VIEWS
+  enter_inspect_search: Enter Inspect  / Search
+  explicit_development_roles_grant_simulation: Explicit development roles grant simulation authority only. They
+    do not authenticate a real person.
+  find_matrix_participant: FIND MATRIX PARTICIPANT
+  find_matrix_participant_domain: FIND MATRIX PARTICIPANT / DOMAIN
+  historical_title: HISTORICAL / {title}
+  historical_view: ' · Historical view'
+  historical_views_are_read_only: Historical views are read-only. b returns to current state.
+  historical_views_are_read_only_2: Historical views are read-only.
+  inbox_filter: INBOX FILTER
+  inspecting: ' · Inspecting: '
+  inspecting_curation_requests: ' · Inspecting: Curation requests'
+  inspecting_request_for: ' · Inspecting: Request for '
+  invitation_and_connection_network: Invitation and connection network
+  invitation_saved_contact_and_contractual: Invitation saved · Contact and contractual consent remain separate.
+  invitation_sent_in_game_delivery: INVITATION SENT · In-game delivery only.
+  network: 'Network: '
+  network_layer: NETWORK LAYER
+  no_action_is_permitted_for: No action is permitted for this object, role and current lifecycle state.
+  no_matching_choices_are_available: No matching choices are available.
+  no_matching_objects_changes_the: No matching objects. / changes the search; b returns.
+  none_recorded: None recorded
+  observed_context: 'Observed context: '
+  optional_exact_source_references: OPTIONAL EXACT SOURCE REFERENCES
+  outcome: ' / Outcome: '
+  p_choose_a_simulated_player: p Choose a simulated player before acting.
+  practice_sandbox_role_v: 'Practice sandbox · {title} · Role: {actor_id} · v{version}'
+  press_for_contextual_help_arrows: Press ? for contextual help. Arrows select; Enter inspects.
+  proposer: Proposer
+  reading_details_tab_returns_to: Reading details. Tab returns to selectable regions.
+  relevant_declared_domains: 'Relevant declared domains: '
+  replay: Replay
+  replay_consistent: 'Replay consistent: '
+  saved_current_version_acceptance_and: Saved. Current-version acceptance and outcome verification remain separate.
+  scenario_resource: 'Scenario resource: '
+  search_by_first_name_or: Search by first name or expertise domain (blank clears)
+  selected_object_neighbourhood: Selected-object neighbourhood
+  self_pairing_is_excluded_from: Self-pairing is excluded from gameplay.
+  shortcut_3_enables_the_experimental_yaw: 3 enables the experimental yaw/pitch camera.
+  simulation_2: Simulation
+  source_provenance_prefix: 'PROVENANCE: '
+  that_decision_is_unavailable_for: That decision is unavailable for your role and this lifecycle state. a shows
+    valid actions.
+  these_are_suggested_terms_other: These are suggested terms. Other parties have not accepted them. Simulation only.
+  this_development_role_is_outside: This development role is outside the imported people matrix.
+  unknown_command_opens_help: Unknown command. ? opens help.
+  who_will_you_play_search: WHO WILL YOU PLAY? / search by first name
+  whole_graph: Whole graph
+  you_are_observing_this_pair: You are observing this pair. Choose your own row or column to act.
+trajectory:
+  contact_only: ' · contact only'
+  h_history_and_replay_remain: h History and replay remain available without it.
+  recorded_simulation_history_no_invented: RECORDED SIMULATION HISTORY / no invented real-world trajectory
+  recorded_trajectory: RECORDED TRAJECTORY
+  trajectory_package_unavailable_install_the: Trajectory package unavailable. Install the pinned trajectory extra.
+  v_verify_replay_pgup_pgdn: v Verify replay  PgUp/PgDn Scroll
+web:
+  accessibility:
+    skip: Skip to the game
+  action:
+    activate_this_agreement: Activate this agreement
+    close: Close dialogue
+    confirm_that_you_have_reviewed_the: Confirm that you have reviewed the delivery evidence against every criterion.
+      This records your independent attestation.
+    decline_this_agreement: Decline this agreement
+    describe_the_concrete_action_or_reason: Describe the concrete action or reason. The engine will record its author
+      and provenance.
+    describe_the_delivered_work_and_reference: Describe the delivered work and reference evidence. Your report remains
+      unverified until the independent reviewer acts.
+    describe_the_synthetic_action_and_where: Describe the synthetic action and where its evidence can be reviewed.
+    evidence_reference_or_action_note: Evidence reference or action note
+    kicker: A CONSEQUENTIAL ACTION
+    receipt: Your actor, agreement version and evidence are recorded in the shared history.
+    submit: Submit to the engine
+    terminate_the_agreement: Terminate the agreement
+    the_engine_will_check_the_approvals: The engine will check the approvals and reserve capacity. All requested
+      resources must be available in the same transaction.
+    you_are_acceptance_records_your_undertaking: You are {value}. Acceptance records your undertaking under version
+      {number}; it does not verify fulfilment.
+    you_are_your_approval_will_apply: You are {value}. Your approval will apply only to these exact terms and version.
+      This is a simulated approval receipt, not a digital signature.
+  agreement:
+    a_possibility_becomes: A possibility becomes
+    accepted_commitment_verified_fulfilment: Accepted commitment ≠ verified fulfilment.
+    actions:
+      a_new_collective_possibility: A new collective possibility.
+      a_verified_outcome: A verified outcome.
+      accept_version: Accept version {number}
+      activate_reserve_resources: Activate & reserve resources
+      authorise_version: Authorise version {number}
+      decline_the_agreement: Decline the agreement
+      negotiate_revise_terms: Negotiate / revise terms
+      report_fulfilment: Report fulfilment
+      terminate_release_resources: Terminate & release resources
+      this_move_belongs: This move belongs
+      to_another_actor: to another actor.
+      verify_the_outcome: Verify the outcome
+    an_agreement: an agreement.
+    authorisation: AUTHORISATION
+    conditions: CONDITIONS
+    editor:
+      actor_id_responsibility_one_per_line: ACTOR ID | RESPONSIBILITY · ONE PER LINE
+      conditions_one_per_line: CONDITIONS · ONE PER LINE
+      owned_by: '{label} · owned by {owner_id}'
+      parties_every_party_must_hold_a: 'Parties: {value}. Every party must hold a responsibility.'
+      propose_revised_terms: Propose revised terms
+      propose_this_agreement: Propose this agreement
+      resource_quantity: RESOURCE QUANTITY
+      responsibilities_resource_verification_criteria: Responsibilities, resource & verification criteria
+      shared_purpose: SHARED PURPOSE
+      use_actor_id_responsibility_on_every: Use actor ID | responsibility on every line.
+      valid_until_governance: 'Valid until: {valid_until}. Governance: {label}.'
+      verification_requires: 'Verification requires: {value}'
+    evidence:
+      actions_evidence_to_review: ACTIONS & EVIDENCE TO REVIEW
+      criteria: 'CRITERIA: {value}'
+    guidance:
+      a_party_may_now_activate_the: A party may now activate the agreement. The engine will check and reserve every
+        requested resource atomically.
+      agreement_is_its_recorded_history_remains: Agreement is {status}. Its recorded history remains available.
+      all_parties_accepted_the_same_terms: 'All parties accepted the same terms. Authorisation remains separate:
+        {label}. Eligible approvers: {value}.'
+      delivery_is_reported_but_remains_unverified: Delivery is reported, but remains unverified. {value} must independently
+        review the outcome.
+      each_responsible_party_records_its_action: Each responsible party records its action, then reports fulfilment
+        with evidence for every agreed criterion. A promise alone does not complete the objective.
+      review_version_waiting_for_acceptance_from: Review version {number}. Waiting for acceptance from {value}.
+        Change actor using the local hot-seat selector.
+      the_independent_reviewer_has_verified_the: The independent reviewer has verified the agreed criteria. The
+        objective is supported by evidence and the resource reservation is released.
+    inspect_version_s_approvals_evidence: Inspect {value} version(s), approvals & evidence
+    lifecycle:
+      accepted: Accepted
+      active: Active
+      agreement_lifecycle: Agreement lifecycle
+      authorised: Authorised
+      fulfilled: Fulfilled
+      proposed: Proposed
+      revised: Revised
+      verified: Verified
+      version_marker: V{number}
+    local_approvals_no_cryptographic_signature: LOCAL APPROVALS · NO CRYPTOGRAPHIC SIGNATURE
+    no_commitment_yet: NO COMMITMENT YET
+    none_yet: NONE YET
+    parties: '{value} PARTIES'
+    recorded_approvers: 'RECORDED APPROVERS: {value}'
+    responsibilities_not_transaction_commits: RESPONSIBILITIES, NOT TRANSACTION COMMITS
+    review_and_change_these_proposed_terms: Review and change these proposed terms. Each party must accept the same
+      version; institutional authorisation comes afterwards.
+    step_01_propose_a_shared_undertaking: 01 / PROPOSE A SHARED UNDERTAKING
+    suggestion_authorisation_commit: Suggestion ≠ authorisation ≠ commit.
+    the_agreement_version: THE AGREEMENT / VERSION {number}
+    verified_outcome: VERIFIED OUTCOME
+    what_we_undertake: WHAT WE UNDERTAKE
+  audio:
+    download: Download the MIDI score ↓
+    'off': Sound off ♫
+    'on': Sound on ♫
+    unavailable: The MIDI score could not be played.
+  connection:
+    connecting: CONNECTING TO THE ENGINE
+    engine_connection: 'Engine connection: '
+    shared_world_commit: SHARED WORLD / COMMIT {value}
+    the_engine_could_not_complete_this: The engine could not complete this request.
+    world_changed: World changed
+  declaration:
+    declare_a_capacity_or_a_need: Declare a capacity or a need
+    for_example_digital_commons: 'For example: digital commons'
+    for_example_session: 'For example: session'
+    i_can_offer: I can offer
+    i_need: I need
+    signal: Signal
+    the_action_was_rejected_review_the: The action was rejected. Review the message and current world before retrying.
+    this_updates_what_the_collective_knows: This updates what the collective knows. It does not create a resource
+      reservation, an agreement or a verified fact.
+  ecosystem:
+    a_connection_is_a_beginning: A connection is a beginning.
+    a_new_possibility_begins_with_a: A new possibility begins with a capacity or a need.
+    a_potential_complementarity: A POTENTIAL COMPLEMENTARITY
+    a_potential_connection_is_not_an: A potential connection is not an accepted collaboration.
+    a_world_in_relation: A WORLD IN RELATION
+    actor: ACTOR
+    actors_agreements: '{value} ACTORS / {value2} AGREEMENTS'
+    agreement_party: Agreement party
+    capacity: CAPACITY
+    declare_a_signal: Declare a signal
+    enter_the_scenario: Enter the scenario
+    inferred_from_reported_capacities: ' / INFERRED FROM REPORTED CAPACITIES'
+    inhabit: Inhabit {id}
+    inhabit_2: INHABIT ↗
+    knowledge_status: KNOWLEDGE STATUS
+    network:
+      agreement: AGREEMENT
+      declared_relationships_and_agreement_parties_in: Declared relationships and agreement parties in the fictional
+        ecosystem
+      possibility: POSSIBILITY
+      synthetic_world: SYNTHETIC WORLD
+    no_matches_reported: NO MATCHES REPORTED
+    offers_what_needs: '{source} offers what {target} needs.'
+    quantity: QUANTITY
+    reported: REPORTED / {value}
+    reported_signal: REPORTED SIGNAL
+    the_people_organisations: THE PEOPLE & ORGANISATIONS
+    turn_potential_into_an_agreement_a: Turn potential into an agreement, a responsibility, and an inspectable outcome.
+    what_we_bring_what_we_need: What we bring. What we need.
+  forms:
+    domain: Domain
+    quantity: Quantity
+    unit: Unit
+  gathering:
+    a_collective_does_not: A collective does not
+    a_mode_of_collective_formation: A MODE OF COLLECTIVE FORMATION
+    accept: Accept ↗
+    agree_the_next_step: Agree the next step ↗
+    appear_by_declaration: appear by declaration.
+    consent_creates_a_possibility: Consent creates a possibility.
+    decline: Decline ×
+    gathering_has_its_own_objective_and: Gathering has its own objective and attendance constraint. It uses the
+      same agreement, authorisation, resource and evidence primitives.
+    invite: Invite ↗
+    invite_participants_obtain_their_consent_agree: Invite participants. Obtain their consent. Agree facilitation,
+      hospitality and documentation. Reserve a room, hold the assembly, and record what follows.
+    make_room_for: Make room for
+    open_the_gathering_world: Open the gathering world
+    the_assembly_consent_to_gather: THE ASSEMBLY / CONSENT TO GATHER
+    the_assembly_still_needs_an_authorised: The assembly still needs an authorised agreement and verified outcomes.
+    the_collective: the collective.
+    the_room_can_be_reserved_only: The room can be reserved only after three agreement parties have consented to
+      gather, including the host. Every invitation belongs to its recipient.
+  headings:
+    ecosystem:
+      emphasis: together?
+      kicker: 01 / ECOSYSTEM
+      question: Who can act
+    gathering:
+      emphasis: come into being?
+      kicker: 03 / GATHERING
+      question: How does a collective
+    scenarios:
+      emphasis: make possible?
+      kicker: 02 / SCENARIOS
+      question: What can we
+  history:
+    a_commit_records_an_authorised_state: A commit records an authorised state change. It does not, by itself, establish
+      successful real-world execution.
+    action: 'Action: {value}'
+    after: 'After: {value}…'
+    author: 'Author: {author_id}'
+    before: 'Before: {value}…'
+    commits: '{version} COMMITS'
+    events:
+      accept: Version accepted
+      activate: Resources reserved
+      amend: Terms revised
+      authorize: Approval recorded
+      initiate: Action initiated
+      invite: Invitation recorded
+      propose: Agreement proposed
+      respond_invitation: Invitation answered
+      verify: Outcome verified
+    fictional_world_initialised: Fictional world initialised
+    inspect_authorisation_state_change: Inspect authorisation & state change
+    rule: 'Rule: {rule}'
+    scenario_seed: scenario seed
+    the_shared_history: THE SHARED HISTORY
+    version: 'Version: {previous_version} → {resulting_version}'
+  meta:
+    description: The Commons Game. From collective intelligence to collective action. An experiment in making things
+      possible, together.
+    title: SADDLE PATHWAYS — The Commons Game
+  navigation:
+    actor_picker: INHABIT AN ACTOR
+    edition: COMMONS / V0.1
+    engine: A central authoritative engine.
+    modes_aria: Game modes
+    modes_heading: WAYS INTO THE COMMONS
+    objective: THE OBJECTIVE IS TO MAKE SOMETHING PREVIOUSLY IMPOSSIBLE.
+    recorded_decisions: Consequential, recorded decisions.
+    rules: Decentralised decision rules.
+    simulated_identity: LOCAL HOT-SEAT · SIMULATED IDENTITY
+    synthetic_participants: Fictional actors. Synthetic resources.
+    tagline: FROM COLLECTIVE INTELLIGENCE TO COLLECTIVE ACTION
+    world_picker: YOUR EXPERIMENT
+  opening:
+    action: to collective action.
+    begin: Begin the experiment
+    collective_premise: No one can make it happen alone.
+    collective_question: What becomes possible when we act together?
+    commons: OF THE COMMONS
+    declaration_kicker: A SHARED POSSIBILITY. A CONSEQUENT ACT.
+    declare: I HEREBY DECLARE
+    edition: AN EXPERIMENT IN COLLECTIVE AGENCY · V0.1
+    enter_quiet: Enter quietly
+    enter_sound: Enter with sound
+    intelligence: From collective intelligence
+    invitation: A POSSIBILITY, WAITING TO BECOME REAL
+    moves: DISCOVER · NEGOTIATE · COMMIT · MAKE REAL
+    optional_audio: ORIGINAL MIDI SCORE / OPTIONAL SOUND
+    right: THE RIGHT
+  principles:
+    authorisation: Institutional authorisation is separate from agreement between parties.
+    close: Close principles
+    commit: A commitment is a responsibility. A commit is a recorded state change.
+    edition: THE COMMONS GAME / V0.1
+    emphasis: capable of acting?
+    inference: A potential connection is an inference, not a collaboration.
+    intro: Explore a shared world. Reveal a capacity. Express a need. Negotiate an agreement. Accept a responsibility.
+      Act, and make the outcome inspectable.
+    open: The rules of this experiment ↗
+    question: What makes us
+    resources: Shared resources cannot be reserved twice.
+    simulation: This is a local simulation, not legal contracting, production identity verification or real institutional
+      data access.
+    verification: Promises and reported delivery remain separate from verified outcomes.
+    version: Every party accepts the same version. Amendments require new acceptance.
+  resources:
+    held_2: '{value}/{quantity} held'
+    reserved_capacity: '{label} reserved capacity'
+  server:
+    local_only: Local fictional hot-seat play. Ctrl+C stops the server.
+    url: 'The Commons Game: http://127.0.0.1:{port}'
+workshop:
+  filters:
+    active_choices: 'Active choices: {value}'
+    apply: APPLY · {count} people
+    clear: CLEAR
+    enter_toggle_b_fields: Enter Toggle · b Fields
+    field_summary: '{field} · {count} selected'
+    field_title: FILTER / {field}
+    filter_people: FILTER PEOPLE
+    or_within_a_field_and: OR within a field · AND across fields
+    people_matching: 'People matching: {count}'
+    values:
+      complementarity: Offers what I need
+      connected: Has a recorded recollection
+      connections: Connections
+      neighbourhood: Connected to selected person
+      not_connected: No recorded recollection
+      recalled_by_me: Recalled by me
+      roles: Role
+  menu:
+    collective_entry: Montréal · {title} · shared collective
+    exercises_workshop: EXERCISES / WORKSHOP
+    practice_in_a_fictional_sandbox: Practice in a fictional sandbox, or contribute to the collective exercise.
+    tutorial_isolated_practice: Tutorial {index:02} · {title} · isolated practice
+  reconstruction:
+    action_cancelled: Action cancelled.
+    action_failed: ACTION FAILED
+    action_recorded: ACTION RECORDED
+    cancel: Cancel
+    connect_with: CONNECT WITH {actor}
+    connection_provenance: CONNECTION / PROVENANCE
+    continue: CONTINUE
+    dispute_this_participants_recollection: Dispute this participant’s recollection
+    enable_observations_independently: Enable observations independently.
+    enter_choose_b_continue: Enter Choose · b Continue
+    enter_toggle_b_done: Enter Toggle · b Done
+    groups:
+      existing: Existing relationships
+      invitations: Invitations and accepted connections
+      potential: Potential complementarities
+    i_would_like_to_connect: I would like to connect now
+    introduction:
+      can_we_reconstruct_the_network: Can we reconstruct the network we created together?
+      connections_appeared: Connections appeared.
+      each_of_us_brought_a: Each of us brought a motivation, a question, a possibility.
+      find_yourself_find_someone_you: Find yourself. Find someone you connected with. Draw the link.
+      in_montreal_we_gathered_around: In Montréal, we gathered around a whiteboard.
+      wording_pending_natalies_review: Wording pending Natalie’s review.
+      your_recollection_is_attributed_to: Your recollection is attributed to you. A new invitation goes to the recipient’s
+        inbox.
+    layer: Montréal reconstruction
+    network_directed_claims: 'Network: {before_count} → {after_count} directed claims'
+    network_layers: NETWORK / LAYERS
+    no_recorded_observations_for_this: No recorded observations for this participant.
+    pgup_pgdn_scroll_b_return: PgUp/PgDn Scroll · b Return
+    question: Who did you connect with in Montréal?
+    recollection_recorded: RECOLLECTION RECORDED
+    record_this_connection: RECORD THIS CONNECTION?
+    retract_my_montreal_recollection: Retract my Montréal recollection
+    retract_my_prior_relationship_declaration: Retract my prior relationship declaration
+    retract_my_relationship_declaration: Retract my relationship declaration
+    search_participants_by_name: Search participants by name
+    select_another_participant_while_playing: Select another participant while playing as a person.
+    sort:
+      connections: Number of recalled connections
+      name: Name
+      recent: Recent recollection activity
+      shared_needs: Shared needs with you
+      shared_offers: Shared offers with you
+    sort_participants: SORT PARTICIPANTS
+    this_action_does_not_match: This action does not match the selected interaction.
+    this_records_your_account_in: This records your account in the shared simulation.
+    title: Reconstruct the Network
+    use_the_reconstruction_controls_or: Use the reconstruction controls or ? for help.
+    view_connection: VIEW CONNECTION
+    view_the_connection_to_inspect: View the connection to inspect corroboration and provenance.
+    we_already_knew_each_other: We already knew each other before Montréal
+    we_connected_in_montreal: We connected in Montréal
+  tutorial:
+    acting_practice_role: 'Acting practice role: '
+    b_tutorial: b Tutorial
+    confirm_step: CONTINUE AS {actor} IN PRACTICE?
+    enter_choose_b_exercises: Enter Choose · b Exercises
+    expected_rejection: 'EXPECTED REJECTION: '
+    fictional_tutorial_world: Fictional tutorial world
+    graph_edges_commitments: '{edges_count} graph edges · {commitments_count} commitments'
+    inspect_practice_graph: INSPECT PRACTICE GRAPH
+    inspect_the_resulting_relationships_commitments: Inspect the resulting relationships, commitments and history
+      below.
+    isolated_practice_main_collective_is: ISOLATED PRACTICE · Main collective is separate.
+    isolated_practice_main_world_navigation: ISOLATED PRACTICE | Main-world navigation remains available through
+      m/e/g/s
+    perform_this_step: PERFORM THIS STEP
+    practice_graph: PRACTICE GRAPH
+    recent_history: Recent history
+    restart_this_practice: RESTART THIS PRACTICE?
+    restart_this_tutorial: RESTART THIS TUTORIAL
+    return_to_exercises: RETURN TO EXERCISES
+    screen_title: TUTORIAL / {title}
+    step: Step {value}/{steps_count}
+    step_complete: STEP COMPLETE
+    step_failed: 'STEP FAILED: '
+    tutorial_complete: TUTORIAL COMPLETE
+montreal_ui:
+  profile: PROFILE
+  network: NETWORK
+  scopes:
+    local: LOCAL
+    community: COMMUNITY
+    global: GLOBAL
+  motivation: MOTIVATION
+  partial: Partial record
+  filtered: filtered
+  directory_stats: '{count} matches · {sort}'
+  shape: 'Linked groups {components} · Isolated actors {isolates}'
+  stats_compact: 'Actors {profiles_count} · Links {edges_count} · {views}'
+  local_links: 'Direct links {count}'
+  local_page: 'Neighbours {first}–{last} / {total}'
+  empty_scope: No actors in this scope.
+  actor_types: FILTER GRAPH BY ACTOR TYPE
+  focus_title: FOCUS A PARTICIPANT
+  sort_title: SORT THE DIRECTORY
+  keys:
+    directory: '↑↓ Select  Enter Profile  / Search  f Filter  o Sort  Tab Panels'
+    directory_compact: 'Tab Panels  Enter Profile  / Search'
+    profile: 'D Expand profile  ↑↓ Scroll  Tab Panels'
+    profile_less: 'D Collapse profile  ↑↓ Scroll  Tab Panels'
+    panels: Tab Panels
+    network: 'S Scope  Enter Connection  F Focus  L Layers  T Types'
+    network_empty: 'S Scope  F Focus  L Layers  T Types'
+    network_no_actors: 'S Scope  T Types  L Layers'
+    network_compact: 'S Scope  F Focus'
+    connection: 'Enter Focus counterpart  d Source  PgUp/PgDn Scroll'
+    help: 'PgUp/PgDn Scroll'
+  help:
+    scopes: 'Montréal network — S cycles LOCAL (direct neighbours), COMMUNITY (connected group) and GLOBAL (all actors in the selected layers).'
+    overview: 'Montréal overview — ◆ or + groups actors to fit the window, ∘ or o marks an isolate, @ marks the focus. F finds an actor in the current scope and opens their local network.'
+    directory: 'Montréal directory — / searches by name, f filters, o sorts. Tab and Shift+Tab move between panels. Enter opens a profile, and D expands or collapses it.'
+    network: 'Montréal graph — n focuses the network, G opens it full width, v toggles local/global, L selects layers and T filters actor types. [ ] pages local neighbours, +/− zooms and r rotates.'
+    source: 'Montréal sources — ↑↓ selects a connection, Enter inspects it or focuses its counterpart. d opens source details. Curators can use U to review identities.'
+terminal_polish:
+  context: '{world}  ·  {actor}  ·  {mode} / Simulation{historical}'
+  scenario_source: d opens scenario sources.
+  world: WORLD
+  activity: ACTIVITY

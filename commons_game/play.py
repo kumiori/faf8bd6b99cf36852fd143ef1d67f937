@@ -1,36 +1,49 @@
 """Player-facing terminal screens over existing projections and command rules."""
+
+import json
 from collections import Counter
 from copy import deepcopy
-import json
+
+from game_gamer.tui.errors import error_message
+from game_gamer.tui.i18n import message_key
+from game_gamer.tui.navigation import navigation_label
 
 from .catalogue import SimulationAuthority, affiliations, people
 from .commands import contract_aliases, invitation_aliases, menu, parse, resolve
+from .i18n import t
 from .player import ActorSession
-from .presentation import OBJECTS, Presentation, actor_label, display_label, folded, status
+from .presentation import (
+    OBJECTS,
+    Presentation,
+    actor_label,
+    display_label,
+    folded,
+    status,
+)
 from .terminal_input import navigation
-from .tui import ACTION_NAMES, EVENT_NAMES, Cancelled, Terminal
+from .tui import Cancelled, Terminal, action_name, event_name
 
 ACTION_EFFECTS = {
-    'send_contact': 'Record a pending in-game contact invitation. No email is sent and no contract is created.',
-    'draft_contact': 'Save an invitation draft. It is not delivered to the recipient.',
-    'publish_contact': 'Send the draft to the recipient’s simulated inbox.',
-    'respond_contact': 'Record your response. Acceptance acknowledges contact only; it accepts no obligations.',
-    'withdraw_contact': 'Withdraw your pending contact request, retaining its history.',
-    'propose': 'Create one proposed contract in the shared world. The other parties have not accepted it.',
-    'accept': 'Record your simulated acceptance of this exact version. Other parties must still decide for themselves.',
-    'amend': 'Create revised terms and clear current-version acceptance and authorisation. Previous versions remain in history.',
-    'authorize': 'Record the additional approval permitted by this role. This does not replace each party\'s acceptance.',
-    'activate': 'Activate the accepted agreement, reserve its resources and create the agreed responsibilities.',
-    'initiate': 'Record evidence that work has started. This does not report completion.',
-    'fulfill': 'Report completion against the agreed criteria. Independent verification is still required.',
-    'verify': 'Record the designated independent review of reported evidence. Only simulation outcomes are affected.',
-    'reject': 'Decline this proposal. The contract remains visible in history.',
-    'withdraw': 'Withdraw this unactivated agreement while retaining its history.',
-    'terminate': 'Close the contract and release held resources.',
-    'suspend': 'Suspend further execution pending resolution; held resources remain reserved.',
-    'resume': 'Resume the suspended agreement under the existing rules.',
-    'dispute': 'Record a dispute; the agreement and its evidence remain inspectable.',
-    'publish_proposal': 'Make this drafted agreement available for party responses.',
+    'send_contact': message_key('contracts.effects.send_contact'),
+    'draft_contact': message_key('contracts.effects.draft_contact'),
+    'publish_contact': message_key('contracts.effects.publish_contact'),
+    'respond_contact': message_key('contracts.effects.respond_contact'),
+    'withdraw_contact': message_key('contracts.effects.withdraw_contact'),
+    'propose': message_key('contracts.effects.propose'),
+    'accept': message_key('contracts.effects.accept'),
+    'amend': message_key('contracts.effects.amend'),
+    'authorize': message_key('contracts.effects.authorize'),
+    'activate': message_key('contracts.effects.activate'),
+    'initiate': message_key('contracts.effects.initiate'),
+    'fulfill': message_key('contracts.effects.fulfill'),
+    'verify': message_key('contracts.effects.verify'),
+    'reject': message_key('contracts.effects.reject'),
+    'withdraw': message_key('contracts.effects.withdraw'),
+    'terminate': message_key('contracts.effects.terminate'),
+    'suspend': message_key('contracts.effects.suspend'),
+    'resume': message_key('contracts.effects.resume'),
+    'dispute': message_key('contracts.effects.dispute'),
+    'publish_proposal': message_key('contracts.effects.publish_proposal'),
 }
 
 
@@ -84,9 +97,9 @@ class PlayableTerminal(Terminal):
 
     def context(self, *, at=None):
         world = self.world()
-        actor = actor_label(world,self.session.actor) if self.session else 'No role selected'
+        actor = actor_label(world,self.session.actor) if self.session else t('line.context.no_role_selected')
         state = len(self.current().project('log'))
-        return f"{world['configuration']['world']['title']} · Playing: {actor}\nSIMULATION ONLY · " + (f'HISTORICAL STATE {at} (current {state})' if at is not None else f'CURRENT STATE {state}')
+        return t('line.context.playing_simulation_only', title=world['configuration']['world']['title'], actor=actor) + (t('line.context.historical_state_current', at=at, state=state) if at is not None else t('line.context.current_state', state=state))
 
     def aliases(self):
         return self._frame_aliases
@@ -106,7 +119,7 @@ class PlayableTerminal(Terminal):
         names = world['configuration'].get(LAYER, {}).get('names', {}).get(node_id)
         if names:
             return names[0]
-        return 'Unresolved source reference'
+        return t('line.label.unresolved_source_reference')
 
     def show_node(self, node, prefix=''):
         self.view.node(node,prefix=prefix,alias=self.aliases().get(node['id']))
@@ -120,7 +133,7 @@ class PlayableTerminal(Terminal):
             index = min(index,max(0,len(filtered)-1)); start = (index//page_size)*page_size
             self.view.heading(title,self.context())
             if query:
-                self.write('Search: '+query)
+                self.write(t('controls.search_prefix')+query)
             for i,item in enumerate(filtered[start:start+page_size],start+1):
                 prefix = ('> ' if i-1==index else '  ')+f'[{i}] '
                 if render and isinstance(item,dict) and item.get('kind') in OBJECTS:
@@ -129,8 +142,8 @@ class PlayableTerminal(Terminal):
                     self.write(prefix+render(item))
                 else:
                     self.show_node(item,prefix)
-            self.write(f'{len(filtered)} matches · page {start//page_size+1} / {max(1,(len(filtered)+page_size-1)//page_size)}')
-            self.write('↑↓ Select · Enter Confirm · number Select · / Search · > Next · < Previous · v Preview · b Back')
+            self.write(t('line.picker.matches_page', filtered_count=len(filtered), value=start // page_size + 1, value_2=max(1, (len(filtered) + page_size - 1) // page_size)))
+            self.write(t('line.picker.select_enter_confirm_number_select'))
             raw = self.nav()
             if raw in {'b','q','0'}:
                 raise Cancelled
@@ -143,22 +156,22 @@ class PlayableTerminal(Terminal):
             if raw in {'prev','<'}:
                 index = max(0,index-page_size); continue
             if raw.startswith('/'):
-                query = raw[1:].strip() or self.ask('Search by name?'); index=0; continue
+                query = raw[1:].strip() or self.ask(t('line.picker.search_by_name')); index=0; continue
             if raw == '?':
-                self.write('Numbers refer to the visible ordered catalogue. Search is accent-insensitive. No internal identifier is needed.'); continue
+                self.write(t('line.picker.numbers_refer_to_the_visible')); continue
             if raw == 'v' and preview and filtered:
-                preview(filtered[index]); self.read('Enter to return to selection'); continue
+                preview(filtered[index]); self.read(t('line.picker.enter_to_return_to_selection')); continue
             try:
                 chosen = int(raw)-1 if raw else index
                 if not 0<=chosen<len(filtered):
                     raise ValueError
                 return filtered[chosen]
             except ValueError:
-                self.write('Choose a visible number, move the cursor, or search by name.')
+                self.write(t('line.picker.choose_a_visible_number_move'))
 
     def choose(self, prompt, items, label=str):
         if not items:
-            self.write('No matching choices are available in the current world.'); raise Cancelled
+            self.write(t('line.choose.no_matching_choices_are_available')); raise Cancelled
         return self.picker(prompt,items,render=label)
 
     def select_actor(self):
@@ -166,19 +179,19 @@ class PlayableTerminal(Terminal):
         organisation = ''; development = False
         while True:
             actors = people(world,organisation=organisation,development=development)
-            self.view.heading('WHO WILL YOU PLAY?',self.context())
-            self.write('Choose a person to simulate. This is perspective selection, not authentication or authority from Notion.')
+            self.view.heading(t('line.select_actor.who_will_you_play'),self.context())
+            self.write(t('line.select_actor.choose_a_person_to_simulate'))
             if not actors:
-                self.write('No eligible imported people match. Clear the filter or import a scoped ecosystem snapshot.')
-            self.write('[Enter] Open people catalogue · f Filter by organisation · d Development roles · b Back')
+                self.write(t('line.select_actor.no_eligible_imported_people_match'))
+            self.write(t('line.select_actor.enter_open_people_catalogue_f'))
             raw = self.nav()
             if raw in {'b','q','0'}:
                 raise Cancelled
             if raw == 'f':
-                organisation = self.read('Organisation name (blank clears)?'); continue
+                organisation = self.read(t('line.select_actor.organisation_name_blank_clears')); continue
             if raw == 'd':
                 development = not development
-                self.write('Development roles include organisations and synthetic support roles. They confer simulation authority only.'); continue
+                self.write(t('line.select_actor.development_roles_include_organisations_and')); continue
             # A direct number or /query also works without an extra confirmation.
             if raw and raw not in {'people','?'}:
                 if raw.startswith('/'):
@@ -187,34 +200,33 @@ class PlayableTerminal(Terminal):
                     selected = actors[int(raw)-1]
                     self.assume_actor(selected); return
                 else:
-                    self.write('Enter opens the catalogue. f filters organisation; d explicitly enables development roles.'); continue
+                    self.write(t('line.select_actor.enter_opens_the_catalogue_f')); continue
             try:
-                selected = self.picker('SELECT AN ACTOR',actors,render=lambda a:display_label(a)+
-                    (' · '+', '.join(affiliations(world,a['id'])) if affiliations(world,a['id']) else ' · Affiliation unknown'),
+                selected = self.picker(t('line.select_actor.select_an_actor'),actors,render=lambda a:display_label(a)+
+                    (' · '+', '.join(affiliations(world,a['id'])) if affiliations(world,a['id']) else t('line.select_actor.affiliation_unknown')),
                     preview=lambda a:self.inspect_node(a['id']))
                 self.assume_actor(selected); return
             except Cancelled:
                 continue
 
     def assume_actor(self, actor):
-        if actor['kind']=='organisation' and not self.confirm('Explicitly simulate this organisation role? No real representation authority is granted.'):
+        if actor['kind']=='organisation' and not self.confirm(t('line.assume_actor.explicitly_simulate_this_organisation_role')):
             raise Cancelled
         identity,binding = self.authority.assume(actor,organisation_confirmed=actor['kind']=='organisation')
         self.session = ActorSession(self.game,actor['id'],store=self.store,identity=identity,binding=binding,provider=self.authority)
         self.identity = identity
-        self.write('NOW SIMULATING: '+display_label(actor)+'. The shared world is unchanged.')
+        self.write(t('line.assume_actor.now_simulating')+display_label(actor)+t('line.assume_actor.the_shared_world_is_unchanged'))
 
     def coverage(self):
         world=self.world()
         imported = [a for a in world['actors'].values() if a.get('provenance',{}).get('kind')=='notion_snapshot' and a['kind']=='person']
         summary = world['configuration'].get('ecosystem-coverage',{}).get('summary')
         if summary:
-            self.write(f"Coverage: {summary.get('eligible_people',0)} eligible source people / {len(imported)} imported people; "
-                       f"{summary.get('unresolved_identity_count',0)} unresolved source identities.")
+            self.write(t('line.coverage.coverage_eligible_source_people_imported', value=summary.get('eligible_people', 0), imported_count=len(imported), value_2=summary.get('unresolved_identity_count', 0)))
             supplements=sum(a.get('provenance',{}).get('kind')!='notion_snapshot' for a in world['actors'].values())
-            if supplements:self.write(f'{supplements} synthetic support roles are supplementary, not source participants.')
+            if supplements:self.write(t('line.coverage.synthetic_support_roles_are_supplementary', supplements=supplements))
         elif not world['configuration']['world'].get('synthetic',True):
-            self.write(f'World coverage: {len(imported)} imported people. Complete source coverage has not been recorded.')
+            self.write(t('line.coverage.world_coverage_imported_people_complete', imported_count=len(imported)))
 
     def visible_nodes(self):
         world=self.world();nodes=self.graph_projection()['nodes']
@@ -237,7 +249,7 @@ class PlayableTerminal(Terminal):
                 self.select_actor()
             self.explorer()
         except (EOFError,Cancelled,KeyboardInterrupt):
-            self.write('Session closed. Accepted history is preserved.')
+            self.write(t('session.closed'))
         return self.current()
 
     def splash(self):
@@ -245,11 +257,11 @@ class PlayableTerminal(Terminal):
         width=max(20,min(46,self.view.width-2))
         plain=self.view.plain
         self.write(('+' if plain else '╔')+('-' if plain else '═')*width+('+' if plain else '╗'))
-        for title in ('','SADDLE PATHWAYS','THE COMMONS GAME','','I hereby declare the right of the commons.',''):
+        for title in ('',t('branding.title'),t('branding.game_name'),'',t('branding.declaration'),''):
             for line in textwrap.wrap(title,width=width) or ['']:
                 self.write(('|' if plain else '║')+line.center(width)+('|' if plain else '║'))
         self.write(('+' if plain else '╚')+('-' if plain else '═')*width+('+' if plain else '╝'))
-        self.write('SIMULATION MODE ONLY')
+        self.write(t('branding.simulation_mode_only'))
 
     def explorer(self):
         index = 0; page_size = 12
@@ -257,23 +269,23 @@ class PlayableTerminal(Terminal):
             self.refresh()
             self.screen='explorer'; nodes = self.visible_nodes()
             index = min(index,max(0,len(nodes)-1)); start=index//page_size*page_size
-            self.view.heading(self.mode_name.upper()+' / WORLD EXPLORER',self.context())
+            self.view.heading(navigation_label(self.mode_name).upper()+t('line.explorer.world_explorer'),self.context())
             self.coverage()
             world = self.current().get_world()
             if self.mode_name=='gathering' and not any(o['mode']=='gathering' for o in world['objectives'].values()):
-                self.write('This world has no gathering objective. Invitation actions explain that restriction; exploration and contracts remain available.')
+                self.write(t('line.explorer.this_world_has_no_gathering'))
             if self.post_action:
-                self.write('CONTRACT CREATED · [1] Inspect contract · [2] View in graph · [3] Return to ecosystem')
+                self.write(t('line.explorer.contract_created_1_inspect_contract'))
             else:
-                self.write('Modes: ecosystem · gathering · scenarios · Clear filter: list')
+                self.write(t('line.explorer.modes_ecosystem_gathering_scenarios_clear'))
             previous_kind=None
             for i,node in enumerate(nodes[start:start+page_size],start+1):
                 if previous_kind!=node['kind']:
                     self.write('\n'+OBJECTS.get(node['kind'],OBJECTS['evidence']).plural.upper());previous_kind=node['kind']
                 self.show_node(node,('> ' if i-1==index else '  ')+f'[{i}] ')
             if not nodes:
-                self.write('No objects match this view. Use list to clear filters.')
-            self.write(f'Page {start//page_size+1}/{max(1,(len(nodes)+page_size-1)//page_size)} · {len(nodes)} objects')
+                self.write(t('line.explorer.no_objects_match_this_view'))
+            self.write(t('line.explorer.page_objects', value=start // page_size + 1, value_2=max(1, (len(nodes) + page_size - 1) // page_size), nodes_count=len(nodes)))
             self.footer()
             raw = self.nav()
             if self.post_action and raw in {'1','2','3'}:
@@ -290,22 +302,22 @@ class PlayableTerminal(Terminal):
                 if 0<=chosen<len(nodes):
                     self.selected=nodes[chosen]['id']; self.inspector(self.selected)
                 else:
-                    self.write('Choose a displayed number or search with /.')
+                    self.write(t('line.explorer.choose_a_displayed_number_or'))
                 continue
             self.selected = nodes[index]['id'] if nodes else None
             self.dispatch(raw)
 
     def footer(self):
         shortcuts={'paths':'m','ecosystem':'e','gathering':'g','scenarios':'s','actions':'a','contracts':'c',
-                   'inbox':'i','player':'p','history':'h','help':'?','back':'Esc/b','quit':'q'}
-        self.write('\n↑↓ Select · Enter Inspect · / Search · '+ ' · '.join(shortcuts[c.name]+' '+c.description
+                   'inbox':'i','player':'p','history':'h','help':'?','back':t('line.footer.esc_b'),'quit':'q'}
+        self.write(t('line.footer.select_enter_inspect_search')+ ' · '.join(shortcuts[c.name]+' '+c.description
                    for c in menu(self.screen) if c.name in shortcuts))
 
     def dispatch(self, raw):
         self.refresh()
         command,arg = parse(raw)
         if not command or self.screen not in command.screens:
-            self.write('Unknown command. Press ? for commands available on this screen.'); return
+            self.write(t('line.dispatch.unknown_command_press_for_commands')); return
         try:
             reason=getattr(self,command.availability)(command.name)
             if reason:
@@ -314,16 +326,16 @@ class PlayableTerminal(Terminal):
                 arg=self.select_reference(contracts_only=True)
             return getattr(self,command.handler)(arg)
         except Cancelled:
-            self.write('Cancelled. No incomplete action was submitted.')
+            self.write(t('line.dispatch.cancelled_no_incomplete_action_was'))
         except (ValueError,RuntimeError) as error:
-            self.write('Unavailable: '+str(error).replace('_',' ')+'.')
+            self.write(t('feedback.unavailable_prefix')+error_message(error).replace('_',' ')+'.')
 
     def command_availability(self,name):
         world=self.current().get_world()
         if name in {'actions','inbox','invite','respond','connect'} and not self.session:
-            return 'Select a simulated player with p first.'
+            return t('session.player_required')
         if name=='invite' and not any(o['mode']=='gathering' for o in world['objectives'].values()):
-            return 'Not available in this scenario. A registered invitation requires a gathering objective; this world has none.'
+            return t('line.command_availability.not_available_in_this_scenario')
         return None
 
     def select_reference(self, arg='', *, contracts_only=False):
@@ -341,8 +353,8 @@ class PlayableTerminal(Terminal):
             candidates=[n for n in nodes if folded(arg) in folded(display_label(n))]
             if candidates:nodes=candidates
         if not nodes:
-            self.write('No contracts exist yet.' if contracts_only else 'No matching object exists.');raise Cancelled
-        return self.picker('CHOOSE AN OBJECT',nodes)['id']
+            self.write(t('line.select_reference.no_contracts_exist_yet') if contracts_only else t('line.select_reference.no_matching_object_exists'));raise Cancelled
+        return self.picker(t('controls.choose_object'),nodes)['id']
 
     def inspector(self, node_id):
         index=0;page_size=10;parents=[]
@@ -351,12 +363,12 @@ class PlayableTerminal(Terminal):
             self.screen='inspector';self.selected=node_id
             self.inspect_node(node_id)
             neighbours=self.neighbours(node_id)
-            self.write('\nGRAPH NEIGHBOURHOOD / CONNECTED OBJECTS')
+            self.write(t('line.inspector.graph_neighbourhood_connected_objects'))
             index=min(index,max(0,len(neighbours)-1));start=index//page_size*page_size
             for i,node in enumerate(neighbours[start:start+page_size],start+1):
                 decorated={**node,'label':node['label']+(' · '+node['_relationship_label'] if node.get('_relationship_label') else '')}
                 self.show_node(decorated,('> ' if i-1==index else '  ')+f'[{i}] ')
-            self.write(f'Connected objects page {start//page_size+1}/{max(1,(len(neighbours)+page_size-1)//page_size)} · > Next · < Previous')
+            self.write(t('line.inspector.connected_objects_page_next_previous', value=start // page_size + 1, value_2=max(1, (len(neighbours) + page_size - 1) // page_size)))
             self.footer()
             raw=self.nav()
             if self.post_action and raw in {'1','2','3'}:
@@ -380,7 +392,7 @@ class PlayableTerminal(Terminal):
                 if neighbours:
                     parents.append((node_id,index))
                     node_id=neighbours[index]['id'];index=0
-                else:self.write('No connected objects. a shows actions; b returns.')
+                else:self.write(t('line.inspector.no_connected_objects_a_shows'))
                 continue
             outcome=self.dispatch(raw)
             if outcome=='back':return
@@ -391,90 +403,91 @@ class PlayableTerminal(Terminal):
         nodes=[n for n in graph['nodes'] if n['id']!=node_id]
         for node in nodes:
             kinds={edge['kind'] for edge in graph['edges'] if node['id'] in (edge['source_id'],edge['target_id'])}
-            if kinds=={'potential_complementarity'}:node['_relationship_label']='INFERRED POTENTIAL'
+            if kinds=={'potential_complementarity'}:node['_relationship_label']=t('line.neighbours.inferred_potential')
         return nodes
 
     def inspect_node(self, node_id, *, at=None):
         game=self.current();world=game.world_at(event=at) if at is not None else self.world()
         node=self.node(node_id,at=at)
         if not node:raise ValueError('object_not_present_at_this_state')
-        self.view.heading('INSPECT / '+OBJECTS.get(node['kind'],OBJECTS['evidence']).label,self.context(at=at))
+        self.view.heading(t('objects.inspect_title', kind=OBJECTS.get(node['kind'], OBJECTS['evidence']).label),self.context(at=at))
         self.show_node(node)
         if node['kind']=='agreement':
             version=node['versions'][node['current_version']-1]
-            self.write('Proposed by: '+self.label(node['created_by'],world))
-            self.write('Parties: '+', '.join(self.label(p,world) for p in node['parties']))
-            self.write('Proposing does not accept the terms. Each party decides independently.')
+            self.write(t('contracts.proposer_prefix')+self.label(node['created_by'],world))
+            self.write(t('contracts.parties_prefix')+', '.join(self.label(p,world) for p in node['parties']))
+            self.write(t('contracts.proposal_requires_party_acceptance'))
             for party in node['parties']:
-                role='Proposer' if party==node['created_by'] else 'Counterparty'
-                receipt='accepted' if party in version['acceptances'] else 'no acceptance recorded'
+                role=t('terminal.proposer') if party==node['created_by'] else t('terminal.counterparty')
+                receipt='accepted' if party in version['acceptances'] else t('line.inspect_node.no_acceptance_recorded')
                 self.write(f'{role}: {self.label(party,world)} · {receipt}')
-            self.write('Linked objective: '+self.label(node['objective_id'],world))
-            self.write('\nTERMS\n'+version['terms']['purpose'])
+            self.write(t('line.inspect_node.linked_objective')+self.label(node['objective_id'],world))
+            self.write(t('line.inspect_node.terms')+version['terms']['purpose'])
             for responsibility in version['terms']['responsibilities']:
                 self.write('  '+self.label(responsibility['actor_id'],world)+': '+responsibility['description'])
-            for condition in version['terms']['conditions']:self.write('  Condition: '+condition)
-            self.write('Accepted by: '+(', '.join(self.label(p,world) for p in version['acceptances']) or 'No parties yet'))
-            self.write('Terms version: '+str(version['number']))
-            self.write('Authorised by: '+(', '.join(self.label(p,world) for p in version['authorizations']) or 'No additional approvals recorded'))
+            for condition in version['terms']['conditions']:self.write(t('laboratory.inspect_contract.condition')+condition)
+            self.write(t('laboratory.inspect_contract.accepted_by')+(', '.join(self.label(p,world) for p in version['acceptances']) or t('line.inspect_node.no_parties_yet')))
+            self.write(t('line.inspect_node.terms_version')+str(version['number']))
+            self.write(t('laboratory.inspect_contract.authorised_by')+(', '.join(self.label(p,world) for p in version['authorizations']) or t('line.inspect_node.no_additional_approvals_recorded')))
             policy=world['governance'][version['policy_id']]
-            self.write('Governing policy (governance-policy node): '+policy['label'])
-            self.write('Every party must explicitly accept this version. Policy approvals are additional to party consent.')
-            self.write('Required approvals: '+str(policy['threshold'])+'; named approvers: '+(', '.join(self.label(p,world) for p in policy['required_actors']) or 'none'))
-            self.write('Designated independent reviewers: '+', '.join(self.label(p,world) for p in version['verification']['verifier_ids']))
-            for resource in version['resources']:self.write('Resource: '+self.label(resource['resource_id'],world)+f" × {resource['quantity']}")
-            self.write('Evidence: '+str(len(node['evidence_ids']))+' record(s).')
+            self.write(t('line.inspect_node.governing_policy_governance_policy_node')+policy['label'])
+            self.write(t('line.inspect_node.every_party_must_explicitly_accept'))
+            self.write(t('line.inspect_node.required_approvals')+str(policy['threshold'])+t('line.inspect_node.named_approvers')+(', '.join(self.label(p,world) for p in policy['required_actors']) or 'none'))
+            self.write(t('line.inspect_node.designated_independent_reviewers')+', '.join(self.label(p,world) for p in version['verification']['verifier_ids']))
+            for resource in version['resources']:self.write(t('contracts.inspector.resource')+self.label(resource['resource_id'],world)+f" × {resource['quantity']}")
+            self.write(t('contracts.inspector.evidence')+str(len(node['evidence_ids']))+t('line.inspect_node.record_s'))
             for evidence_id in node['evidence_ids']:
                 evidence=world['evidence'][evidence_id]
                 self.write('  '+evidence['kind'].replace('_',' ')+': '+evidence['reference'])
             for commitment in world['commitments'].values():
                 if commitment['agreement_id']==node_id:
-                    self.write('Obligation: '+self.label(commitment['actor_id'],world)+' · '+status(commitment['status']))
+                    self.write(t('line.inspect_node.obligation')+self.label(commitment['actor_id'],world)+' · '+status(commitment['status']))
         elif node['kind']=='invitation':
-            self.write('From: '+self.label(node['source_id'],world)+' · To: '+self.label(node['target_id'],world))
-            self.write('Status: '+status(node['status']))
+            self.write(t('contact.inspector.participants', sender=self.label(node['source_id'], world),
+                         recipient=self.label(node['target_id'], world)))
+            self.write(t('common.status_prefix')+status(node['status']))
             self.write(node['message'])
-            if node.get('purpose'):self.write('Purpose: '+node['purpose'])
-            if node.get('response'):self.write('Response: '+node['response']['decision']+' · '+node['response']['message'])
-            self.write('A simulated contact request. Acceptance acknowledges contact, never contractual obligations or real-world consent.')
+            if node.get('purpose'):self.write(t('contracts.purpose_prefix')+node['purpose'])
+            if node.get('response'):self.write(t('contact.inspector.response')+node['response']['decision']+' · '+node['response']['message'])
+            self.write(t('line.inspect_node.a_simulated_contact_request_acceptance'))
         elif node.get('source_only'):
             from .montreal_sources import profile_statements
-            self.write('Montréal source identity · Roster binding pending')
+            self.write(t('line.inspect_node.montreal_source_identity_roster_binding'))
             for row in profile_statements(world, node_id):
-                self.write('Motivation: '+row['raw']['Pourquoi suis-je ici ?'])
-                self.write(f"Source: {row['provenance']['file']}:{row['provenance']['line']}")
+                self.write(t('workshop.directory.motivation')+row['raw']['Pourquoi suis-je ici ?'])
+                self.write(t('line.inspect_node.source', file=row['provenance']['file'], line=row['provenance']['line']))
         elif node_id in world['actors']:
-            self.write('Affiliation: '+(', '.join(affiliations(world,node_id)) or 'Unknown / not recorded'))
+            self.write(t('profiles.affiliation')+(', '.join(affiliations(world,node_id)) or t('common.unknown_or_not_recorded')))
             for table in ('capacities','needs'):
                 self.write('\n'+table.upper())
                 records=[r for r in world[table].values() if r['actor_id']==node_id]
                 for record in records:self.show_node({**record,'kind':'capacity' if table=='capacities' else 'need','label':record['domain']})
-                if not records:self.write('Not recorded. This does not mean none.')
-            self.write('\nRECORDED RELATIONSHIPS')
+                if not records:self.write(t('line.inspect_node.not_recorded_this_does_not'))
+            self.write(t('line.inspect_node.recorded_relationships'))
             for relation in world['relationships'].values():
                 if node_id in (relation['source_id'],relation['target_id']):
                     other=relation['target_id'] if relation['source_id']==node_id else relation['source_id']
                     self.write(relation['kind'].replace('_',' ')+' · '+self.label(other,world)+' · '+relation.get('status','unknown'))
-            self.write('\nPOTENTIAL COMPLEMENTARITIES / INFERRED, NOT COLLABORATION')
+            self.write(t('line.inspect_node.potential_complementarities_inferred_not_collaboration'))
             potentials=[p for p in game.derive_possibilities(world) if node_id in (p['source_id'],p['target_id'])]
             grouped=Counter(p['target_id'] if p['source_id']==node_id else p['source_id'] for p in potentials)
-            for other,count in grouped.most_common(8):self.write(self.label(other,world)+f' · {count} declared-domain match(es)')
-            self.write('\nCONTRACTS')
+            for other,count in grouped.most_common(8):self.write(self.label(other,world)+t('line.inspect_node.declared_domain_match_es', count=count))
+            self.write(t('line.inspect_node.contracts'))
             for agreement in world['agreements'].values():
                 if node_id in agreement['parties']:self.show_node({**agreement,'kind':'agreement'})
         elif node['kind']=='policy':
-            self.write('GOVERNANCE POLICY / RULE ENFORCED')
-            self.write('Every party accepts the same contract version before activation. An amendment clears current-version receipts.')
-            self.write(f"Additional approval threshold: {node['threshold']}")
-            self.write('Required approvers: '+(', '.join(self.label(p,world) for p in node['required_actors']) or 'None'))
-            self.write('Eligible approvers: '+(', '.join(self.label(p,world) for p in node['eligible_actors']) or 'None'))
-            self.write('Required categories: '+(', '.join(node['required_categories']) or 'None'))
-            self.write('These rules confer no real-world authorisation in a simulation.')
+            self.write(t('line.inspect_node.governance_policy_rule_enforced'))
+            self.write(t('line.inspect_node.every_party_accepts_the_same'))
+            self.write(t('line.inspect_node.additional_approval_threshold', threshold=node['threshold']))
+            self.write(t('laboratory.inspect_contract.required_approvers')+(', '.join(self.label(p,world) for p in node['required_actors']) or t('common.none')))
+            self.write(t('line.inspect_node.eligible_approvers')+(', '.join(self.label(p,world) for p in node['eligible_actors']) or t('common.none')))
+            self.write(t('line.inspect_node.required_categories')+(', '.join(node['required_categories']) or t('common.none')))
+            self.write(t('line.inspect_node.these_rules_confer_no_real'))
         else:
             for field in ('domain','quantity','unit','status','reference','label'):
-                if field in node and field!='label':self.write(field.replace('_',' ').capitalize()+': '+('Unknown' if node[field] is None else str(node[field])))
-        self.write('\nProvenance: '+('Source assertion; unverified' if node.get('provenance',{}).get('kind')=='notion_snapshot' else 'Recorded simulation / fixture'))
-        self.write('Source details: metadata (optional).')
+                if field in node and field!='label':self.write(field.replace('_',' ').capitalize()+': '+(t('common.unknown') if node[field] is None else str(node[field])))
+        self.write(t('line.inspect_node.provenance')+(t('line.inspect_node.source_assertion_unverified') if node.get('provenance',{}).get('kind')=='notion_snapshot' else t('line.inspect_node.recorded_simulation_fixture')))
+        self.write(t('line.inspect_node.source_details_metadata_optional'))
 
     def cmd_open(self,arg):
         node_id=self.select_reference(arg);self.selected=node_id;self.inspector(node_id)
@@ -495,15 +508,15 @@ class PlayableTerminal(Terminal):
                 if field in filters:
                     filters[field]=resolve(world,filters[field]) or filters[field]
             contracts=contract_registry(world,**filters)
-            if not contracts:self.write('No contracts match these filters.');return
-            chosen=self.picker('CONTRACT REGISTRY',[{**a,'kind':'agreement'} for a in contracts]);self.inspector(chosen['id']);return
+            if not contracts:self.write(t('line.cmd_contracts.no_contracts_match_these_filters'));return
+            chosen=self.picker(t('line.cmd_contracts.contract_registry'),[{**a,'kind':'agreement'} for a in contracts]);self.inspector(chosen['id']);return
         contracts=[a for a in world['agreements'].values() if not self.focus_actor or self.focus_actor in a['parties']]
-        if not contracts:self.write('No contracts yet for this selection. Use a on a person to propose an agreement.');return
-        chosen=self.picker('CONTRACT REGISTRY',[{**a,'kind':'agreement'} for a in contracts]);self.inspector(chosen['id'])
+        if not contracts:self.write(t('line.cmd_contracts.no_contracts_yet_for_this'));return
+        chosen=self.picker(t('line.cmd_contracts.contract_registry'),[{**a,'kind':'agreement'} for a in contracts]);self.inspector(chosen['id'])
 
     def cmd_actions(self,arg):
         if not self.session:
-            self.write('Choose a simulated player with p before acting.');return
+            self.write(t('line.cmd_actions.choose_a_simulated_player_with'));return
         world=self.current().get_world();target=resolve(world,arg,selected=self.selected) if arg else self.selected
         if arg and not target:target=self.select_reference(arg)
         self._proposal_target=target if target in world['actors'] and target!=self.session.actor else None
@@ -517,46 +530,47 @@ class PlayableTerminal(Terminal):
         elif target in world['relationships']:
             candidates=[c for c in candidates if c.get('invitation_id')==target]
         if not candidates:
-            self.write('No action is permitted for this actor on the selected object in its current state. Inspect its parties, lifecycle and pending conditions; changing perspective does not bypass the engine.');return
-        candidate=self.choose('WHAT CAN I DO?',candidates,lambda c:ACTION_NAMES[c['kind']]+(' · '+c['response'] if c.get('response') else '')+(' · '+self.label(c['agreement_id']) if c.get('agreement_id') else ''))
+            self.write(t('line.cmd_actions.no_action_is_permitted_for'));return
+        candidate=self.choose(t('contracts.actions_title'),candidates,lambda c:action_name(c['kind'])+(' · '+c['response'] if c.get('response') else '')+(' · '+self.label(c['agreement_id']) if c.get('agreement_id') else ''))
         payload=self.collect_action(candidate,self.current());self.submit(payload,version)
 
     def collect_action(self,candidate,game):
-        from game_gamer.transitions import active_transition_id,stage
+        from game_gamer.transitions import active_transition_id, stage
         tracing_invite=active_transition_id()=='exercise.reconstruct.connect.invite'
         world=game.get_world();kind=candidate['kind']
         if kind in {'send_contact','draft_contact'}:
             target=world['actors'].get(candidate.get('recipient_id') or self._proposal_target)
             if not target or target['id']==self.session.actor:
-                target=self.picker('WHOM WOULD YOU LIKE TO CONNECT WITH?',[a for a in people(world) if a['id']!=self.session.actor])
-            self.write('Simulating: '+self.label(self.session.actor)+' → '+self.label(target['id']))
-            self.write('An invitation proposes contact. It imposes no obligation.')
+                target=self.picker(t('contact.choose_recipient'),[a for a in people(world) if a['id']!=self.session.actor])
+            self.write(t('line.collect_action.simulating')+self.label(self.session.actor)+' → '+self.label(target['id']))
+            self.write(t('line.collect_action.an_invitation_proposes_contact_it'))
             if tracing_invite:stage('question',state_id='exercise.reconstruct.invite.message')
-            message=self.ask('Invitation message?',default='Would you like to explore a possible collaboration?')
+            message=self.ask(t('line.collect_action.invitation_message'),default=t('contact.message_example'))
             if tracing_invite:stage('question',state_id='exercise.reconstruct.invite.purpose')
-            purpose=self.ask('Optional invitation purpose (blank for none)?',default='',parse=lambda value:value.strip())
+            purpose=self.ask(t('line.collect_action.optional_invitation_purpose_blank_for'),default='',parse=lambda value:value.strip())
             payload={'kind':kind,'id':f'contact-{len(world["actions"])+1:06}', 'recipient_id':target['id'],
                      'message':message,'purpose':purpose}
             if candidate.get('context'):payload['context']=deepcopy(candidate['context'])
             if kind=='send_contact':
                 if tracing_invite:
-                    from .reconstruction_transitions import REGISTRY,P
+                    from .reconstruction_transitions import REGISTRY, P, choice
                     self._reconstruction_modal=P+'invite.delivery'
                     stage('question',state_id=P+'invite.delivery')
-                    delivery=self.choose('INVITATION DELIVERY',[REGISTRY.choice(P+'invite.delivery.send'),
-                        REGISTRY.choice(P+'invite.delivery.draft')],lambda choice:choice.label)
+                    delivery=self.choose(t('contact.delivery_title'),[choice('invite.delivery.send'),
+                        choice('invite.delivery.draft')],lambda choice:choice.label)
                     selected=REGISTRY.execute(delivery.transition_id,self)
                     if selected.outcome=='aborted':raise KeyboardInterrupt
                     if selected.outcome!='completed':raise ValueError('invitation_delivery_failed')
                     kind=payload['kind']=selected.value
                     self._reconstruction_modal=None
                 else:
-                    delivery=self.choose('INVITATION DELIVERY', ['Send now','Save draft'],str)
-                    if delivery=='Save draft':kind=payload['kind']='draft_contact'
+                    delivery = self.choose(t('contact.delivery_title'), ['send_contact', 'draft_contact'],
+                                           lambda action: t('contact.send_now') if action == 'send_contact' else t('contact.save_draft'))
+                    kind = payload['kind'] = delivery
         elif kind in {'publish_contact','withdraw_contact','respond_contact'}:
             payload=deepcopy(candidate)
             if kind=='respond_contact':
-                payload['response_message']=self.ask('Optional response message (blank for none)?',default='',parse=lambda value:value.strip())
+                payload['response_message']=self.ask(t('line.collect_action.optional_response_message_blank_for'),default='',parse=lambda value:value.strip())
         elif kind=='propose':
             template=world['configuration']['world']['proposal']
             if template:
@@ -565,23 +579,23 @@ class PlayableTerminal(Terminal):
                 target=world['actors'].get(self._proposal_target)
                 if not target or target['id']==self.session.actor:
                     choices=[a for a in people(world) if a['id']!=self.session.actor]
-                    target=self.picker('WHO WOULD YOU LIKE TO COLLABORATE WITH?',choices)
+                    target=self.picker(t('line.collect_action.who_would_you_like_to'),choices)
                 objectives=list(world['objectives'].values())
                 objective=objectives[0]
-                if len(objectives)>1 and self.confirm('Link this agreement to a wider scenario objective?'):
-                    objective=self.choose('OPTIONAL WIDER OBJECTIVE',objectives,lambda o:o['label'])
+                if len(objectives)>1 and self.confirm(t('line.collect_action.link_this_agreement_to_a')):
+                    objective=self.choose(t('line.collect_action.optional_wider_objective'),objectives,lambda o:o['label'])
                 parties=[self.session.actor,target['id']]
-                self.write('Proposing actor: '+self.label(self.session.actor))
-                self.write('Counterparty: '+self.label(target['id']))
-                title=self.ask('Contract title?',default='A proposed collaboration')
-                purpose=self.ask('Purpose of this agreement?',default=title)
-                offered=self.ask('Your offered contribution?',default='Discuss and review the proposed collaboration')
-                requested=self.ask('Contribution requested from '+self.label(target['id'])+'?',default='Review and negotiate the requested contribution')
-                condition=self.ask('Optional conditions (blank for none)?',default='',parse=lambda value:value.strip())
+                self.write(t('line.collect_action.proposing_actor')+self.label(self.session.actor))
+                self.write(t('line.collect_action.counterparty')+self.label(target['id']))
+                title=self.ask(t('laboratory.collect_action.contract_title'),default=t('contracts.defaults.title'))
+                purpose=self.ask(t('line.collect_action.purpose_of_this_agreement'),default=title)
+                offered=self.ask(t('line.collect_action.your_offered_contribution'),default=t('contracts.defaults.offer'))
+                requested=self.ask(t('line.collect_action.contribution_requested_from')+self.label(target['id'])+'?',default=t('contracts.defaults.request'))
+                condition=self.ask(t('line.collect_action.optional_conditions_blank_for_none'),default='',parse=lambda value:value.strip())
                 resources=[]
-                if world['resources'] and self.confirm('Include a resource allocation?'):
-                    resource=self.choose('OPTIONAL RESOURCE',list(world['resources'].values()),display_label)
-                    quantity=self.ask('Requested quantity?',default=1,parse=self.positive)
+                if world['resources'] and self.confirm(t('line.collect_action.include_a_resource_allocation')):
+                    resource=self.choose(t('line.collect_action.optional_resource'),list(world['resources'].values()),display_label)
+                    quantity=self.ask(t('line.collect_action.requested_quantity'),default=1,parse=self.positive)
                     resources=[{'resource_id':resource['id'],'quantity':quantity}]
                 payload={'kind':kind,'id':f'contract-{len(world["agreements"])+1:04}',
                     'label':title,
@@ -597,30 +611,30 @@ class PlayableTerminal(Terminal):
             agreement=world['agreements'][candidate['agreement_id']]
             current=agreement['versions'][agreement['current_version']-1]
             if kind=='amend':
-                terms=deepcopy(current['terms']);terms['purpose']=self.ask('Revised shared purpose?',default=terms['purpose'])
+                terms=deepcopy(current['terms']);terms['purpose']=self.ask(t('line.collect_action.revised_shared_purpose'),default=terms['purpose'])
                 for responsibility in terms['responsibilities']:
-                    responsibility['description']=self.ask('Proposed contribution from '+self.label(responsibility['actor_id'])+'?',default=responsibility['description'])
-                condition=self.ask('Conditions for this revision?',default='; '.join(terms['conditions']))
+                    responsibility['description']=self.ask(t('line.collect_action.proposed_contribution_from')+self.label(responsibility['actor_id'])+'?',default=responsibility['description'])
+                condition=self.ask(t('line.collect_action.conditions_for_this_revision'),default='; '.join(terms['conditions']))
                 terms['conditions']=[condition] if condition else []
                 payload['terms']=terms
             if kind in {'initiate','fulfill','verify'}:
                 if kind=='fulfill':
                     for criterion in current['verification']['criteria']:
-                        if not self.confirm('Does your report address: '+criterion+'?'):raise Cancelled
+                        if not self.confirm(t('laboratory.collect_action.does_your_report_address')+criterion+'?'):raise Cancelled
                     payload['criteria']=deepcopy(current['verification']['criteria'])
-                payload['reference']=self.ask('Describe the supplied evidence or action record?')
-            if kind in {'reject','withdraw','terminate','suspend','dispute'}:payload['reason']=self.ask('Reason?')
+                payload['reference']=self.ask(t('line.collect_action.describe_the_supplied_evidence_or'))
+            if kind in {'reject','withdraw','terminate','suspend','dispute'}:payload['reason']=self.ask(t('forms.reason_question'))
         if kind=='propose':payload=self.refine_proposal(payload,world)
-        self.view.heading('ACTION: '+ACTION_NAMES[kind],self.context())
+        self.view.heading(t('line.collect_action.action')+action_name(kind),self.context())
         affected=payload.get('parties',world['agreements'].get(payload.get('agreement_id'),{}).get('parties',[]))
         if kind in {'send_contact','draft_contact'}:affected=[self.session.actor,payload['recipient_id']]
         elif kind in {'respond_contact','publish_contact','withdraw_contact'}:
             item=world['relationships'][payload['invitation_id']];affected=[item['source_id'],item['target_id']]
-        self.write('Who is affected: '+', '.join(self.label(p) for p in affected))
-        self.write('What will change: '+ACTION_EFFECTS[kind])
-        self.write('This simulated action is not genuine consent by the represented person.')
+        self.write(t('line.collect_action.who_is_affected')+', '.join(self.label(p) for p in affected))
+        self.write(t('line.collect_action.what_will_change')+t(ACTION_EFFECTS[kind]))
+        self.write(t('line.collect_action.this_simulated_action_is_not'))
         if tracing_invite:stage('question',state_id='exercise.reconstruct.invite.confirm')
-        if not self.confirm('Continue?'):raise Cancelled
+        if not self.confirm(t('controls.confirm_continue')):raise Cancelled
         return payload
 
     def refine_proposal(self,payload,world):
@@ -628,47 +642,47 @@ class PlayableTerminal(Terminal):
         return payload
 
     def submit(self,payload,version):
-        from game_gamer.transitions import observe_engine_result,stage
+        from game_gamer.transitions import observe_engine_result, stage
         stage('submission_requested')
         result=self.session.submit(payload,expected_version=version)
         observe_engine_result(payload['kind'],result,boundary='host')
         self.refresh()
         if result['ok']:
             target=payload.get('agreement_id') or payload.get('id')
-            self.view.heading('CONTRACT CREATED' if payload['kind']=='propose' else 'SHARED WORLD UPDATED',self.context())
+            self.view.heading(t('line.submit.contract_created') if payload['kind']=='propose' else t('line.submit.shared_world_updated'),self.context())
             if target in self.current().get_world()['agreements']:
                 self.last_contract=target;self.selected=target;self.show_node(self.node(target));self.post_action=True
-                self.write('[1] Inspect contract · [2] View in graph · [3] Return to ecosystem')
+                self.write(t('line.submit.shortcut_1_inspect_contract_2_view'))
             elif payload['kind']=='invite':
-                self.write('Invitation sent to '+self.label(payload['recipient_id'])+'. It remains pending their response.')
-            self.write('Simulated action saved. Other parties\' decisions and outcome verification remain separate.')
-        else:self.write('No state changed: '+', '.join(error.replace('_',' ') for error in result['errors']))
+                self.write(t('contact.saved_invitation', recipient=self.label(payload['recipient_id'])))
+            self.write(t('line.submit.simulated_action_saved_other_parties'))
+        else:self.write(t('feedback.no_state_changed')+', '.join(error.replace('_',' ') for error in result['errors']))
         return result
 
     def cmd_player(self,arg):
         self.select_actor()
 
     def cmd_search(self,arg):
-        self.query=arg or self.read('Search by name?');self.focus_actor=None
+        self.query=arg or self.read(t('line.picker.search_by_name'));self.focus_actor=None
         if self.screen!='explorer':return 'back'
 
     def cmd_help(self,arg):
-        self.view.heading('CONTEXTUAL HELP / '+self.screen,self.context())
+        self.view.heading(t('help.contextual_help')+self.screen,self.context())
         for command in menu(self.screen):
             self.write(command.name+' '+command.grammar+' · '+command.description+'\n  '+command.help)
             reason=self.command_availability(command.name)
-            if reason:self.write('  Currently unavailable: '+reason)
-        self.write('Shortcuts are followed by Enter; arrow keys move the selection immediately. Enter inspects the highlighted object. b or Esc returns. Numbered entries do not require internal IDs.')
+            if reason:self.write(t('help.currently_unavailable')+reason)
+        self.write(t('help.shortcuts_are_followed_by_enter'))
 
     def cmd_history(self,arg):
         target=self.select_reference(arg)
         entries=[e for e in self.current().project('log') if any(m['entity_id']==target for m in e['mutations'])]
-        if not entries:self.write('No transitions recorded for this object.');return
+        if not entries:self.write(t('line.cmd_history.no_transitions_recorded_for_this'));return
         while True:
             try:
-                event=self.picker('HISTORY / '+self.label(target),entries,render=lambda e:f"State {e['sequence']} · "+EVENT_NAMES.get(e['kind'].split('.')[0],e['kind'].replace('_',' ')))
+                event=self.picker(t('line.cmd_history.history')+self.label(target),entries,render=lambda e:t('line.cmd_history.state', sequence=e['sequence'])+event_name(e['kind'].split('.')[0], e['kind'].replace('_', ' ')))
                 self.inspect_node(target,at=event['sequence'])
-                self.read('HISTORICAL GRAPH. Enter returns to the transition list; b returns too.')
+                self.read(t('line.cmd_history.historical_graph_enter_returns_to'))
             except Cancelled:return
 
     def cmd_past(self,arg):
@@ -678,73 +692,73 @@ class PlayableTerminal(Terminal):
         self.inspect_node(target,at=int(sequence))
 
     def cmd_inbox(self,arg):
-        if not self.session:self.write('Select a simulated player with p first.');return
+        if not self.session:self.write(t('session.player_required'));return
         while not self.finished:
-            items=self.session.inbox_records()
-            if not items:self.write('No pending contracts require your response. c opens all contracts.');return
+            items=self.session.inbox_records(localized=True)
+            if not items:self.write(t('line.cmd_inbox.no_pending_contracts_require_your'));return
             try:
-                item=self.picker('INBOX / INVITATIONS AND CONTRACTS',items,render=lambda item:self.aliases().get(item['id'],'')+' · '+item['label']+' · '+'; '.join(item['badges']))
+                item=self.picker(t('inbox.all_title'),items,render=lambda item:self.aliases().get(item['id'],'')+' · '+item['label']+' · '+'; '.join(item['badges']))
                 self.inspector(item['id'])
             except Cancelled:return
 
     def cmd_invite(self,arg):
         world=self.current().get_world()
         if not any(o['mode']=='gathering' for o in world['objectives'].values()):
-            self.write('INVITE · Not available in this scenario. The engine has an invitation action, but this world has no gathering objective.');return
-        if not self.session:self.write('INVITE · Select a simulated actor first.');return
+            self.write(t('line.cmd_invite.invite_not_available_in_this'));return
+        if not self.session:self.write(t('line.cmd_invite.invite_select_a_simulated_actor'));return
         self.invitation()
 
     def cmd_connect(self,arg):
         target=resolve(self.world(),arg,selected=self.selected) if arg else self.selected
         if target not in self.world()['actors'] or target==self.session.actor:
-            target=self.picker('WHOM WOULD YOU LIKE TO CONNECT WITH?',[a for a in people(self.world()) if a['id']!=self.session.actor])['id']
+            target=self.picker(t('contact.choose_recipient'),[a for a in people(self.world()) if a['id']!=self.session.actor])['id']
         self._proposal_target=target
         self.submit(self.collect_action({'kind':'send_contact','recipient_id':target},self.current()),len(self.current().project('log')))
 
     def cmd_respond(self,arg):
-        if not self.session:self.write('RESPOND · Select a simulated actor first.');return
+        if not self.session:self.write(t('line.cmd_respond.respond_select_a_simulated_actor'));return
         pending=[r for r in self.current().get_world()['relationships'].values() if r['kind']=='invited' and r['target_id']==self.session.actor and r['status']=='proposed']
         if pending:self.invitation(respond=True)
         elif self.session.inbox_records('Awaiting my decision'):self.cmd_inbox('')
-        else:self.write('RESPOND · No pending invitations or proposals require your response. c opens all contracts.')
+        else:self.write(t('line.cmd_respond.respond_no_pending_invitations_or'))
 
     def invitation(self,respond=False):
         world=self.world();version=len(self.current().project('log'))
         if respond:
             pending=[r for r in world['relationships'].values() if r['kind']=='invited' and r['status']=='proposed' and r['target_id']==self.session.actor]
-            item=self.choose('INVITATIONS REQUIRING YOUR RESPONSE',pending,
-                             lambda r:'Invitation from '+self.label(r['source_id'])+' · '+self.label(r['objective_id']))
-            response=self.choose('HOW DO YOU RESPOND?', ['accept','decline'],str)
+            item=self.choose(t('line.invitation.invitations_requiring_your_response'),pending,
+                             lambda r:t('line.invitation.invitation_from')+self.label(r['source_id'])+' · '+self.label(r['objective_id']))
+            response=self.choose(t('line.invitation.how_do_you_respond'), ['accept','decline'],str)
             payload={'kind':'respond_invitation','invitation_id':item['id'],'response':response}
-            self.write('This responds to an event invitation. It does not sign a contract or verify an outcome.')
+            self.write(t('line.invitation.this_responds_to_an_event'))
         else:
-            objective=self.choose('WHAT GATHERING ARE YOU PREPARING?',
+            objective=self.choose(t('line.invitation.what_gathering_are_you_preparing'),
                 [o for o in world['objectives'].values() if o['mode']=='gathering'],lambda o:o['label'])
-            recipient=self.choose('WHOM WOULD YOU LIKE TO INVITE?',
+            recipient=self.choose(t('line.invitation.whom_would_you_like_to'),
                 [a for a in world['actors'].values() if a['id']!=self.session.actor and a['status']=='active'],display_label)
             payload={'kind':'invite','recipient_id':recipient['id'],'objective_id':objective['id']}
-            self.write('This records a pending invitation to '+display_label(recipient)+'. They have not consented by receiving it.')
-        if self.confirm('Save this simulated response?' if respond else 'Send this simulated invitation?'):
+            self.write(t('line.invitation.this_records_a_pending_invitation')+display_label(recipient)+t('line.invitation.they_have_not_consented_by'))
+        if self.confirm(t('line.invitation.save_this_simulated_response') if respond else t('line.invitation.send_this_simulated_invitation')):
             self.submit(payload,version)
 
     def cmd_trajectory(self,arg):
-        from .trajectory import project_trajectory,frames
+        from .trajectory import frames, project_trajectory
         document=project_trajectory(self.current())
-        self.view.heading('RECORDED SIMULATION TRAJECTORY',self.context())
+        self.view.heading(t('line.cmd_trajectory.recorded_simulation_trajectory'),self.context())
         for frame in frames(document):
-            self.write(f"State {frame['sequence']} · "+EVENT_NAMES.get(frame['kind'],frame['kind'].replace('_',' ')))
+            self.write(t('line.cmd_history.state', sequence=frame['sequence'])+event_name(frame['kind'], frame['kind'].replace('_', ' ')))
             for agreement in frame['agreements']:
                 node=self.node(agreement['id'])
                 self.show_node({**node,**agreement,'kind':'agreement'})
 
     def cmd_replay(self,arg):
         game=self.current()
-        self.write('REPLAY CONSISTENT: '+str(game.replay().get_world()==game.get_world()))
+        self.write(t('laboratory.history.replay_consistent')+str(game.replay().get_world()==game.get_world()))
 
     def cmd_metadata(self,arg):
         target=self.select_reference(arg);node=self.node(target)
-        self.view.heading('SOURCE / TECHNICAL DETAILS',self.context())
-        self.write('Internal reference: '+target)
+        self.view.heading(t('line.cmd_metadata.source_technical_details'),self.context())
+        self.write(t('line.cmd_metadata.internal_reference')+target)
         for field in ('kind','record_id','data_source_id','database_id','captured_at','created_at','last_edited_at','epistemic_status','import_version','synchronisation_status'):
             if field in node.get('provenance',{}):
                 self.write(field.replace('_',' ')+': '+str(node['provenance'][field]))
@@ -759,7 +773,7 @@ class PlayableTerminal(Terminal):
         return 'back' if self.screen!='explorer' else None
 
     def cmd_paths(self,arg):
-        mode=self.choose('CHOOSE YOUR PATH',['ecosystem','gathering','scenarios'],str.capitalize)
+        mode=self.choose(t('terminal.standalone.choose_your_path'),['ecosystem','gathering','scenarios'],navigation_label)
         return getattr(self,'cmd_'+mode)('')
 
     def cmd_gathering(self,arg):

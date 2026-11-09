@@ -1,23 +1,49 @@
 """Shared, read-only presentation vocabulary; independent of any terminal toolkit."""
-from dataclasses import asdict
+
 import os
 import shutil
 import textwrap
 import unicodedata
 
-from game_gamer.tui.objects import OBJECTS as OBJECTS, ObjectStyle as ObjectStyle
+from game_gamer.tui.i18n import message_key
+from game_gamer.tui.objects import OBJECTS as OBJECTS
+from game_gamer.tui.objects import ObjectStyle as ObjectStyle
 
+from .i18n import t
 
-STATUS_LABELS = {'authorized': 'AUTHORISED', 'unverified': 'UNVERIFIED'}
+STATUS_LABELS = {'authorized': message_key('status.authorized'), 'unverified': message_key('status.unverified')}
 
 
 def status(value):
-    return STATUS_LABELS.get(value, str(value).replace('_', ' ').upper())
+    key = STATUS_LABELS.get(value)
+    if key is None:
+        return str(value).replace('_', ' ').upper()
+    return t(key)
+
+
+# English category names are stable inputs to ActorSession's compatibility API.
+INBOX_CATEGORIES = {
+    None: message_key('inbox.all_my_records'),
+    'Incoming invitations': message_key('inbox.categories.incoming'),
+    'Outgoing invitations': message_key('inbox.categories.outgoing'),
+    'Accepted connections': message_key('network.layers.accepted_connections'),
+    'Contract proposals': message_key('inbox.categories.proposals'),
+    'Awaiting my decision': message_key('inbox.categories.my_decision'),
+    'Awaiting other parties': message_key('inbox.categories.other_parties'),
+    'Agreements in progress': message_key('inbox.categories.in_progress'),
+    'Verification requests': message_key('inbox.categories.verification'),
+    'History': message_key('history.title'),
+}
+
+
+def inbox_category(category):
+    return t(INBOX_CATEGORIES[category])
 
 
 def dictionary():
     """Serializable vocabulary for future graphical clients; never mutates world."""
-    return {kind: asdict(style) for kind, style in OBJECTS.items()}
+    return {kind: {'label': style.label, 'plural': style.plural, 'symbol': style.symbol,
+                   'plain': style.plain, 'colour': style.colour} for kind, style in OBJECTS.items()}
 
 
 def clean(value):
@@ -37,7 +63,7 @@ def display_label(record):
     """
     if record.get('kind')=='person' and 'display_name' in record:
         return record['display_name']
-    label = str(record.get('label', record.get('domain', 'Recorded evidence')))
+    label = str(record.get('label', record.get('domain', t('common.recorded_evidence'))))
     if record.get('kind') != 'person':
         return label
     if record.get('provenance',{}).get('kind') == 'fictional_fixture' and label.endswith('(synthetic)'):
@@ -136,7 +162,7 @@ class Presentation:
         for part in textwrap.wrap(line, self.width) or ['']:
             self.output.write(self.paint(part, style.colour) + '\n')
         if node['kind'] == 'agreement':
-            self.write('      Outcome: ' + status(node.get('outcome_status', 'unverified')))
+            self.write(t('common.outcome') + status(node.get('outcome_status', 'unverified')))
         self.output.flush()
 
     def safe_encoding(self,value):

@@ -3,11 +3,16 @@
 The UI consumes these bindings/options; inspection consumes the same registry.
 Shared application surfaces are explicit handoff boundaries, not verified here.
 """
-from dataclasses import replace
-from copy import deepcopy
 
-from game_gamer.transitions import Registry, Result, stage,active_transition_id
+from copy import deepcopy
+from dataclasses import replace
+
+from game_gamer.transitions import Registry, Result, active_transition_id, stage
+from game_gamer.tui.i18n import message_key
+from game_gamer.tui.navigation import navigation_label
 from game_gamer.tui.screen import Cancelled
+
+from .i18n import t
 
 P = 'exercise.reconstruct.'
 BASE = tuple(P + name for name in ('directory', 'profile', 'network', 'graph'))
@@ -79,6 +84,21 @@ for route in EXTERNAL_ROUTES:
 REGISTRY.state('host.command', 'Shared developer command request', boundary=True,kind='boundary')
 
 
+CHOICE_MESSAGES = {}
+
+
+def choice(name, payload=None):
+    return REGISTRY.choice(P+name, payload, label=t(CHOICE_MESSAGES[name]))
+
+
+def define_choice(name, key, *args, **kwargs):
+    CHOICE_MESSAGES[name] = key
+    # Inspection reports carry the canonical labels across all runs.
+    from game_gamer.tui.i18n import using_language
+    with using_language('en'):
+        return define(name, t(key), *args, **kwargs)
+
+
 def define(name, label, sources, destinations, **kwargs):
     destinations={**destinations,'error':BASE if any(s in {P+'connect.menu',P+'invite.delivery'} for s in sources) else tuple(sources),
                   'aborted':(P+'quit',)}
@@ -147,7 +167,7 @@ def graph_close(app, **_):
 def search(app, **_):
     from game_gamer.projections.participants import ParticipantFilters
     stage('question',state_id=P+'search.input')
-    query=app.read('Search participants by name')
+    query=app.read(t('workshop.reconstruction.search_participants_by_name'))
     app.route.extra['filter']=replace(app.route.extra.get('filter',ParticipantFilters()),field='name',query=query)
     return Result(feedback='reconstruction.search_applied')
 
@@ -156,9 +176,10 @@ def search(app, **_):
         provider='game_gamer.projections.participants.SORT_FIELDS')
 def sort(app, **_):
     from game_gamer.projections.participants import SORT_FIELDS
+
     from .reconstruction import SORT_LABELS
     stage('question',state_id=P+'sort.input')
-    app.route.extra['sort']=app.choose('SORT PARTICIPANTS',SORT_FIELDS,lambda v:SORT_LABELS.get(v,v.title()))
+    app.route.extra['sort']=app.choose(t('workshop.reconstruction.sort_participants'),SORT_FIELDS,lambda value: t(SORT_LABELS[value]))
     return Result(feedback='reconstruction.sort_applied')
 
 
@@ -301,7 +322,7 @@ def handoff(app, *, key, screen=None, **_):
     elif key=='h':
         app.push('history',app.route.target)
     elif key=='x':
-        view=app.choose('ECOSYSTEM VIEWS',['matrix','network','people','organisations','resources'],str.capitalize)
+        view=app.choose(t('terminal.ecosystem_views'),['matrix','network','people','organisations','resources'],navigation_label)
         if view=='matrix':app.switch_mode('ecosystem')
         elif view=='network':app.open_network()
         else:app.push(view)
@@ -357,35 +378,35 @@ def select_delivery(app,**_):
     return Result(value=action,feedback='invitation.delivery_selected')
 
 
-for name,label,kind in [('send','Send now','send_contact'),('draft','Save draft','draft_contact')]:
-    define('invite.delivery.'+name,label,(P+'invite.delivery',),{'completed':(P+'invite.delivery',)},
+for name,label,kind in [('send',message_key('contact.send_now'),'send_contact'),('draft',message_key('contact.save_draft'),'draft_contact')]:
+    define_choice('invite.delivery.'+name,label,(P+'invite.delivery',),{'completed':(P+'invite.delivery',)},
            critical=True,action_reference=kind)(select_delivery)
 
 
 def bind_connection_handlers():
     """Called after owning UI functions are defined, avoiding circular imports."""
-    from .reconstruction import connection_menu, execute_connection, cancel_connection
+    from .reconstruction import cancel_connection, connection_menu, execute_connection
     define('connect.open','Choose connection type',BASE,
            {'selected':(P+'connect.menu',),'cancelled':BASE,'blocked':BASE},keys=('c',),
            critical=True,provider='commons_game.reconstruction.connection_options',
            questions=(P+'connect.menu',),requirements=('selected','blocked','cancelled','feedback','recovery'),
            guards=('bound_person_and_distinct_active_person',))(connection_menu)
     for name,label,actions in [
-        ('recall','We connected in Montréal',('recall_connection',)),
-        ('prior_relationship','We already knew each other before Montréal',('record_prior_relationship',)),
-        ('invite','I would like to connect now',('send_contact','draft_contact')),
-        ('dispute','Dispute this participant’s recollection',('dispute_recollection',)),
-        ('retract','Retract my relationship declaration',('retract_relationship_claim',)),
+        ('recall',message_key('workshop.reconstruction.we_connected_in_montreal'),('recall_connection',)),
+        ('prior_relationship',message_key('workshop.reconstruction.we_already_knew_each_other'),('record_prior_relationship',)),
+        ('invite',message_key('workshop.reconstruction.i_would_like_to_connect'),('send_contact','draft_contact')),
+        ('dispute',message_key('workshop.reconstruction.dispute_this_participants_recollection'),('dispute_recollection',)),
+        ('retract',message_key('workshop.reconstruction.retract_my_relationship_declaration'),('retract_relationship_claim',)),
     ]:
         targets=('host.inspect',) if name=='invite' else (P+'result',)
-        define('connect.'+name,label,(P+'connect.menu',),
+        define_choice('connect.'+name,label,(P+'connect.menu',),
                {'committed':targets,'idempotent':targets,
                 'rejected':BASE if name=='invite' else (P+'result',),'cancelled':BASE,'blocked':BASE},
                critical=True,engine_actions=actions,guards=('engine_validation',),
                questions=(P+'invite.message',P+'invite.purpose',P+'invite.delivery',P+'invite.confirm') if name=='invite' else (P+'connect.confirm',),
                requirements=('committed','rejected','cancelled','persistence','replay','engine_consistency','feedback','recovery')+
                             (('idempotency',) if name=='prior_relationship' else ()))(execute_connection)
-    define('connect.cancel','Cancel',(P+'connect.menu',),{'cancelled':BASE},critical=True,recovery=True)(cancel_connection)
+    define_choice('connect.cancel',message_key('workshop.reconstruction.cancel'),(P+'connect.menu',),{'cancelled':BASE},critical=True,recovery=True)(cancel_connection)
     REGISTRY.validate()
 
 
@@ -407,7 +428,7 @@ def dispatch(app,key,screen):
         return True
     id=REGISTRY.bindings.get((state,key))
     if id is None:
-        app.notice='Use the reconstruction controls or ? for help.'
+        app.notice=t('workshop.reconstruction.use_the_reconstruction_controls_or')
         return True
     if id==P+'handoff.command':
         REGISTRY.execute(id,app)

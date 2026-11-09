@@ -1,92 +1,103 @@
 """SADDLE PATHWAYS terminal entry point; domain rules stay in the shared engine."""
+
 import argparse
 import json
-from pathlib import Path
-import sys
 import os
+import sys
+from pathlib import Path
+
 import tomllib
+from game_gamer.tui.errors import error_message
+
 from commons_engine.store import SQLiteStore
+
 from .engine import CommonsGame
-from .scenario import SCENARIOS, load_scenario, demo_commands
+from .i18n import t
+from .scenario import SCENARIOS, demo_commands, load_scenario
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='SADDLE PATHWAYS / The Commons Game · V0.1')
-    parser.add_argument('--db', help='Saved world; ordinary play defaults to the private SADDLE data directory')
+    parser = argparse.ArgumentParser(description=t('cli.help.description'))
+    parser.add_argument('--db', help=t('cli.help.db'))
     commands = parser.add_subparsers(dest='operation')
     for name in ('start', 'demo'):
         command = commands.add_parser(name)
         command.add_argument('scenario', choices=SCENARIOS, nargs='?', default='bilateral-logs')
-    play = commands.add_parser('play', help='Interactive simulation game (the default operation)')
+    play = commands.add_parser('play', help=t('cli.help.play'))
     play.add_argument('scenario', choices=SCENARIOS, nargs='?')
-    play.add_argument('--actor', help='Active local actor ID; identity selection is not authentication')
-    play.add_argument('--hot-seat', action='store_true', help='Explicitly enable development identity switching')
-    play.add_argument('--mock-identities', type=Path, help='Trusted local simulation identity/binding manifest')
-    play.add_argument('--mock-player', help='Simulate sign-in as one provisioned mock subject')
-    play.add_argument('--explore', action='store_true', help='Explore without assuming an actor role')
-    play.add_argument('--plain', action='store_true', help='Use portable text decorations')
-    play.add_argument('--line-mode', action='store_true', help='Use the scripted text fallback instead of the full-screen viewport')
-    play.add_argument('--ui-trace-output',type=Path,help='Write privacy-minimal reconstruction transition observations as JSONL')
-    play.add_argument('--developer-ui', action='store_true', help='Use the previous scripted laboratory surface')
-    play.add_argument('--choose-world', action='store_true', help='Select another simulation world explicitly')
-    imp = commands.add_parser('import-ecosystem', help='Import a read-only ecosystem snapshot into this world')
+    play.add_argument('--actor', help=t('cli.help.actor'))
+    play.add_argument('--hot-seat', action='store_true', help=t('cli.help.hot_seat'))
+    play.add_argument('--mock-identities', type=Path, help=t('cli.help.mock_identities'))
+    play.add_argument('--mock-player', help=t('cli.help.mock_player'))
+    play.add_argument('--explore', action='store_true', help=t('cli.help.explore'))
+    play.add_argument('--plain', action='store_true', help=t('cli.help.plain'))
+    play.add_argument('--line-mode', action='store_true', help=t('cli.help.line_mode'))
+    play.add_argument('--ui-trace-output',type=Path,help=t('cli.help.ui_trace_output'))
+    play.add_argument('--developer-ui', action='store_true', help=t('cli.help.developer_ui'))
+    play.add_argument('--choose-world', action='store_true', help=t('cli.help.choose_world'))
+    imp = commands.add_parser('import-ecosystem', help=t('cli.help.import_ecosystem'))
     imp.add_argument('snapshot', type=Path)
-    sources = commands.add_parser('import-reconstruction-sources', help='Import supplied historical references and transcriptions')
+    sources = commands.add_parser('import-reconstruction-sources', help=t('cli.help.import_reconstruction_sources'))
     sources.add_argument('snapshot', type=Path)
-    montreal = commands.add_parser('import-montreal-network', help='Import the supplied Montréal topology and statements')
+    montreal = commands.add_parser('import-montreal-network', help=t('cli.help.import_montreal_network'))
     montreal.add_argument('connections', type=Path)
     montreal.add_argument('statements', type=Path)
-    montreal.add_argument('--identities', type=Path, help='Reviewed source ID to stable actor ID bindings (JSON)')
-    montreal.add_argument('--dry-run', action='store_true', help='Preview matches and counts without appending an event')
-    access = commands.add_parser('curator-access', help='Trusted local operator setup of simulated curator permissions')
+    montreal.add_argument('--identities', type=Path, help=t('cli.help.identities'))
+    montreal.add_argument('--dry-run', action='store_true', help=t('cli.help.dry_run'))
+    access = commands.add_parser('curator-access', help=t('cli.help.curator_access'))
     access.add_argument('decision', choices=('grant', 'revoke'))
-    access.add_argument('actor', help='Exact actor ID, full label or unique displayed name')
-    access.add_argument('--reference', required=True, help='Reason or source for this role assignment')
-    capture = commands.add_parser('capture-notion', help='Read allowlisted Notion sources using the existing sibling transport')
+    access.add_argument('actor', help=t('cli.help.actor_2'))
+    access.add_argument('--reference', required=True, help=t('cli.help.reference'))
+    capture = commands.add_parser('capture-notion', help=t('cli.help.capture_notion'))
     capture.add_argument('--source-mapping', type=Path, required=True)
     capture.add_argument('--protocol-project', type=Path, default=Path('../app_protocol_hack'))
     capture.add_argument('--output', type=Path, required=True)
-    trajectory = commands.add_parser('trajectory', help='Read-only native trajectory-package projection')
+    trajectory = commands.add_parser('trajectory', help=t('cli.help.trajectory'))
     trajectory.add_argument('--export', type=Path)
-    inspect = commands.add_parser('inspect-trajectory', help='Inspect exported package YAML without loading it into a live world')
+    inspect = commands.add_parser('inspect-trajectory', help=t('cli.help.inspect_trajectory'))
     inspect.add_argument('path', type=Path)
     inspect.add_argument('--branch')
-    demo = commands.add_parser('trajectory-demo', help='Synthetic, explicitly hot-seat end-to-end integration')
+    demo = commands.add_parser('trajectory-demo', help=t('cli.help.trajectory_demo'))
     demo.add_argument('scenario', choices=SCENARIOS, nargs='?', default='bilateral-logs')
     demo.add_argument('--export', type=Path)
-    submit = commands.add_parser('submit', help='Submit a JSON command from stdin')
+    submit = commands.add_parser('submit', help=t('cli.help.submit'))
     submit.add_argument('--expected-version', type=int)
     show = commands.add_parser('show')
     show.add_argument('view', choices=['now', 'world', 'network', 'agreements', 'commitments', 'reservations', 'objectives', 'log'], nargs='?', default='now')
     show.add_argument('--at', type=int)
     commands.add_parser('replay')
-    serve = commands.add_parser('serve', help='Legacy browser scaffold; not required for terminal development')
+    serve = commands.add_parser('serve', help=t('cli.help.serve'))
     serve.add_argument('--port', type=int, default=8765)
     serve.add_argument('--data-dir', default='.commons-worlds')
+    validate = commands.add_parser('validate-text', help=t('cli.help.validate_text'))
+    validate.add_argument('--root', type=Path)
     supplied = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(supplied)
     if args.operation is None:
         args = parser.parse_args([*supplied,'play'])
+    if args.operation == 'validate-text':
+        from .validate_text import main as validate_text
+        return validate_text(['--root', str(args.root)] if args.root else [])
     data_dir = Path(os.getenv('SADDLE_DATA_DIR',str(Path.home()/'.local/share/saddle-pathways'))).expanduser()
     explicit_db = args.db is not None
     args.db = str(Path(args.db).expanduser()) if args.db else str(data_dir/'commons.sqlite')
     try:
         store = SQLiteStore(args.db, CommonsGame)
         if args.operation == 'capture-notion':
-            from .ecosystem_import import sibling_client, capture_snapshot
+            from .ecosystem_import import capture_snapshot, sibling_client
             secrets_path = args.protocol_project / '.streamlit/secrets.toml'
             configured = tomllib.loads(secrets_path.read_text()).get('notion', {}) if secrets_path.exists() else {}
             token = (os.getenv('PROTOHACK_NOTION_TOKEN') or configured.get('protohack_token')
                      or configured.get('api_key') or configured.get('token') or os.getenv('NOTION_TOKEN'))
             if not token:
-                raise ValueError('Configure PROTOHACK_NOTION_TOKEN or NOTION_TOKEN; credentials are never stored in snapshots')
+                raise ValueError(t('cli.configure_protohack_notion_token_or'))
             mapping = json.loads(args.source_mapping.read_text())
             snapshot = capture_snapshot(sibling_client(args.protocol_project, token), mapping['sources'])
             # Do not overwrite an earlier reproducible observation.
             with args.output.open('x') as target:
                 json.dump(snapshot, target, ensure_ascii=False, indent=2)
             args.output.chmod(0o600)
-            print('Captured read-only ecosystem snapshot:', args.output)
+            print(t('cli.captured_read_only_ecosystem_snapshot'), args.output)
         elif args.operation == 'import-ecosystem':
             from .ecosystem_import import import_snapshot
             snapshot = json.loads(args.snapshot.read_text())
@@ -110,7 +121,7 @@ def main(argv=None):
                 game, args.actor, enabled=args.decision == 'grant', reference=args.reference))
             print(json.dumps(result, indent=2))
         elif args.operation == 'play':
-            from .tui import Terminal, run_play, Cancelled
+            from .tui import Cancelled, Terminal, run_play
             primary = not (args.developer_ui or args.actor or args.mock_identities or args.hot_seat)
             if args.ui_trace_output and not primary:
                 raise ValueError('ui_trace_output_requires_the_primary_reconstruction_interface')
@@ -126,8 +137,8 @@ def main(argv=None):
                 chooser.splash();splash_done=True
                 choices = ['montreal-commons',*(name for name in SCENARIOS if name!='montreal-commons')]
                 try:
-                    selected = chooser.choose('WORLD / COMMONS IS THE DEFAULT',choices,
-                        lambda name: 'Commons · Montréal ecosystem' if name=='montreal-commons' else load_scenario(name).get_world()['configuration']['world']['title']+' · synthetic fixture')
+                    selected = chooser.choose(t('cli.play.world_commons_is_the_default'),choices,
+                        lambda name: t('cli.play.commons_montreal_ecosystem') if name=='montreal-commons' else load_scenario(name).get_world()['configuration']['world']['title']+t('cli.play.synthetic_fixture'))
                 except (EOFError,Cancelled):
                     return 0
                 args.scenario = selected
@@ -145,7 +156,7 @@ def main(argv=None):
                     from .tui import Cancelled
                     chooser = Terminal(load_scenario())
                     try:
-                        selected = chooser.choose('SADDLE PATHWAYS / Select a world:', list(SCENARIOS))
+                        selected = chooser.choose(t('cli.play.saddle_pathways_select_a_world'), list(SCENARIOS))
                     except (Cancelled, EOFError):
                         return 0
                 game = load_scenario(selected)
@@ -164,24 +175,25 @@ def main(argv=None):
                 if args.mock_player:
                     identity = provider.sign_in(args.mock_player)
             if primary:
-                from .fullscreen import supported, run_fullscreen
+                from .fullscreen import run_fullscreen, supported
                 trace=None
                 if args.ui_trace_output:
                     if args.ui_trace_output.resolve()==store.path.resolve():
                         raise ValueError('ui_trace_and_world_paths_must_differ')
-                    from game_gamer.transitions import TraceSession,jsonl_sink
+                    from game_gamer.transitions import TraceSession, jsonl_sink
                     trace=TraceSession(sink=jsonl_sink(args.ui_trace_output))
                 if not args.line_mode and supported(sys.stdin, sys.stdout):
                     run_fullscreen(game,store=store,plain=args.plain,explore=args.explore,transition_trace=trace)
                     if trace is not None and trace.sink_errors:
-                        raise ValueError('ui_trace_output_failed; accepted engine commits remain saved')
+                        raise ValueError(t('errors.ui_trace_output_failed'))
                     return 0
                 if trace is not None:
-                    from .fullscreen import FullScreenTerminal
                     from game_gamer.tui.viewport import LineViewport
+
+                    from .fullscreen import FullScreenTerminal
                     FullScreenTerminal(game,store=store,plain=True,explore=args.explore,
                         viewport=LineViewport(sys.stdin,sys.stdout),transition_trace=trace).run()
-                    if trace.sink_errors:raise ValueError('ui_trace_output_failed; accepted engine commits remain saved')
+                    if trace.sink_errors:raise ValueError(t('errors.ui_trace_output_failed'))
                     return 0
                 from .play import PlayableTerminal
                 terminal=PlayableTerminal(game,store=store,plain=args.plain,explore=args.explore)
@@ -191,8 +203,13 @@ def main(argv=None):
                 run_play(game, actor=args.actor, store=store, hot_seat=args.hot_seat,
                          provider=provider, identity=identity, plain=args.plain, explore=args.explore)
         elif args.operation in {'trajectory', 'inspect-trajectory', 'trajectory-demo'}:
-            from .trajectory import (project_trajectory, reconstruct, simulate_branch,
-                                     trajectory_yaml, load_trajectory_yaml)
+            from .trajectory import (
+                load_trajectory_yaml,
+                project_trajectory,
+                reconstruct,
+                simulate_branch,
+                trajectory_yaml,
+            )
             from .tui import render_trajectory
             if args.operation == 'inspect-trajectory':
                 document = load_trajectory_yaml(args.path.read_text())
@@ -205,7 +222,7 @@ def main(argv=None):
                 game = load_scenario(args.scenario)
                 script = demo_commands(args.scenario)
                 session = ActorSession(game, script[0]['actor'], hot_seat=True)
-                print('SADDLE PATHWAYS / EXPLICIT SYNTHETIC HOT-SEAT DEMONSTRATION')
+                print(t('cli.saddle_pathways_explicit_synthetic_hot'))
                 for command in script:
                     session.switch(command['actor'])
                     result = session.submit(command)
@@ -231,23 +248,23 @@ def main(argv=None):
                 render_trajectory(document, sys.stdout)
                 for branch in branches:
                     render_trajectory(document, sys.stdout, branch_id=branch['id'])
-                print('PACKAGE ROUNDTRIP LOSSLESS: True')
-                print('REPLAY CONSISTENT: True')
-                print('ALTERNATIVES LEFT AUTHORITATIVE WORLD UNCHANGED: True')
+                print(t('cli.package_roundtrip_lossless_true'))
+                print(t('cli.replay_consistent_true'))
+                print(t('cli.alternatives_left_authoritative_world_unchanged'))
             output_path = getattr(args, 'export', None)
             if output_path is not None:
                 with output_path.open('x') as target:
                     target.write(trajectory_yaml(document))
-                print('Exported read-only package document:', output_path)
+                print(t('cli.exported_read_only_package_document'), output_path)
         elif args.operation == 'start':
             if Path(args.db).exists():
                 raise ValueError('world_exists_choose_another_db')
             store.path.parent.mkdir(parents=True,exist_ok=True)
             store.initialise(load_scenario(args.scenario))
-            print(f'World started: {args.scenario} · {args.db}')
+            print(t('cli.world_started', scenario=args.scenario, db=args.db))
         elif args.operation == 'demo':
             game = load_scenario(args.scenario)
-            print(f'THE COMMONS GAME · {args.scenario} · synthetic demonstration')
+            print(t('cli.the_commons_game_synthetic_demonstration', scenario=args.scenario))
             for command in demo_commands(args.scenario):
                 result = game.submit(command)
                 if not result['ok']:
@@ -255,8 +272,8 @@ def main(argv=None):
                 agreement = game.project('agreements')
                 status = agreement[0]['status'] if agreement else 'gathering'
                 print(f"{result['commit_id']}  {command['actor']:<12} {command['kind']:<20} {status}")
-            print('REPLAY IDENTICAL:', game.replay().get_world() == game.get_world())
-            print('OUTCOME:', game.project('objectives')[0]['status'])
+            print(t('cli.replay_identical'), game.replay().get_world() == game.get_world())
+            print(t('cli.outcome'), game.project('objectives')[0]['status'])
         elif args.operation == 'submit':
             result = store.submit(json.load(sys.stdin), expected_version=args.expected_version)
             print(json.dumps(result, indent=2, ensure_ascii=False))
@@ -272,15 +289,15 @@ def main(argv=None):
             serve(args.port, args.data_dir)
         return 0
     except KeyboardInterrupt:
-        print('Interrupted. Accepted history is preserved.', file=sys.stderr)
+        print(t('cli.interrupted_accepted_history_is_preserved'), file=sys.stderr)
         return 130
     except ModuleNotFoundError as error:
         if error.name != 'notion_client':
             raise
-        print('Install the notion extra to use capture-notion; snapshot import remains available offline.', file=sys.stderr)
+        print(t('cli.install_the_notion_extra_to'), file=sys.stderr)
         return 1
     except (ValueError, OSError, RuntimeError, json.JSONDecodeError) as error:
-        print(str(error), file=sys.stderr)
+        print(error_message(error), file=sys.stderr)
         return 1
 
 

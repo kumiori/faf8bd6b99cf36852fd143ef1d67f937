@@ -1,0 +1,80 @@
+# Reviewed non-interface literals in the audited source.
+# Compatibility identifiers, typed aliases, synthetic command payloads,
+# HTML/CSP syntax and developer diagnostics are preserved as data.
+commons_game/__main__.py:
+  main:
+  - Hypothetical disagreement with the proposed conditions.
+commons_game/commands.py:
+  <module>:
+  - available actions
+  - change player
+  - contract history
+  - invite to connect
+  resolve:
+  - last contract
+  - latest contract
+commons_game/play.py:
+  cmd_respond:
+  - Awaiting my decision
+  collect_action:
+  - Agreed responsibilities independently reviewed against supplied evidence
+  - Simulation only. No real-world consent or institutional obligation.
+  select_reference:
+  - latest contract
+commons_game/player.py:
+  inbox_groups:
+  - Awaiting my acceptance
+  - Awaiting other parties
+  - My proposals
+  - Other actionable requests
+  - Proposals received
+  inbox_records:
+  - Accepted connections
+  - Agreements in progress
+  - Awaiting my decision
+  - Awaiting other parties
+  - Contract proposals
+  - Incoming invitations
+  - Outgoing invitations
+  - Verification requests
+commons_game/presentation.py:
+  display_label:
+  - (synthetic)
+commons_game/reconstruction_transitions.py:
+  handoff_return:
+  - Return through the shared interface to the reconstruction entry.
+commons_game/server.py:
+  end_headers:
+  - default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src
+    'self'; frame-ancestors 'none'
+  replace_slot:
+  - </em>
+  - <br><em>
+commons_game/tui.py:
+  collect_action:
+  - Agreed responsibilities independently reviewed against supplied evidence
+  - 'Proposed responsibility for '
+  - Simulated Montréal Commons collaboration
+  - Simulation only; no real-world consent or obligation.
+  mode:
+  - latest contract
+game-gamer/src/game_gamer/tui/network.py:
+  <module>:
+  - Accepted connections
+  - Accepted or active agreements
+  - Disputed recollection
+  - Inferred complementarities
+  - Montréal source topology
+  - Mutual recollection
+  - One-sided recollection
+  - Other documented relationships
+  - Pending invitations
+  - Prior relationship declaration
+  - Proposed agreements
+  - Recorded affiliations
+  - Verified outcomes
+  - Whiteboard evidence
+commons_game/web/app.js:
+  <browser>:
+  - 'Missing UI message:'
+  - 'Missing UI parameter:'

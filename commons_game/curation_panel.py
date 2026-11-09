@@ -1,11 +1,15 @@
 """A contextual side panel sharing the focused screen and bound action session."""
-from dataclasses import replace
-import json
 
-from game_gamer.runtime.curation_requests import records, find_object
+import json
+from dataclasses import replace
+
 from game_gamer.runtime.curation import canonical
+from game_gamer.runtime.curation_requests import find_object, records
+from game_gamer.tui.errors import error_list
 from game_gamer.tui.screen import Screen
+
 from . import curator
+from .i18n import t
 
 
 def candidates(app, screen):
@@ -75,7 +79,7 @@ def panel_screen(app):
     panel.selected = route.index
     panel.reveal = route.reveal
     return replace(base, panel=panel, panel_focused=route.extra.get('panel_focus', True),
-                   footer=base.footer+' · Tab Main/Panel · u Close panel')
+                   footer=base.footer+t('curation.panel.tab_main_panel_u_close'))
 
 
 def contents(app, choices):
@@ -89,31 +93,31 @@ def contents(app, choices):
                 if curator.allowed(app) or canonical(world, request['requester_id']) == app.playing_actor]
         entries = [(app.label(row['target_id'])+' · '+row['request_type'].replace('_', ' ')+' · '+row['status'],
                     ('review', row['id'])) for row in rows]
-        return Screen('CURATION / REVIEW QUEUE', ['All recorded requests' if curator.allowed(app) else 'Your requests'],
-                      entries, 'Enter Review · b Object', route.index, route.scroll, navigation=False, wrap_entries=True)
+        return Screen(t('curation.panel.curation_review_queue'), [t('curation.panel.all_recorded_requests') if curator.allowed(app) else t('curation.panel.your_requests')],
+                      entries, t('curation.panel.enter_review_b_object'), route.index, route.scroll, navigation=False, wrap_entries=True)
     if page == 'review':
         request = records(world).get(route.extra['request_id'])
         if request is None:
-            return Screen('CURATION REQUEST', ['Request unavailable.'], navigation=False)
+            return Screen(t('curation.panel.curation_request'), [t('curation.panel.request_unavailable')], navigation=False)
         entries = []
         if not historical and curator.allowed(app) and request['status'] == 'submitted':
-            entries = [('APPROVE REQUEST', ('decision', 'approve')), ('REJECT REQUEST', ('decision', 'reject')),
-                       ('REQUEST CLARIFICATION', ('decision', 'request_clarification'))]
+            entries = [(t('curation.panel.approve_request'), ('decision', 'approve')), (t('curation.panel.reject_request'), ('decision', 'reject')),
+                       (t('curation.panel.request_clarification'), ('decision', 'request_clarification'))]
         if not historical and request['status'] == 'needs_clarification' and canonical(world, request['requester_id']) == app.playing_actor:
-            entries.append(('ADD CLARIFICATION', ('clarify', request['id'])))
+            entries.append((t('curation.panel.add_clarification'), ('clarify', request['id'])))
         if not historical and curator.allowed(app) and request['status'] == 'approved':
-            entries.append(('OPEN TARGET / APPLY SEPARATELY', ('target', request['target_id'])))
-        lines = ['Target: '+app.label(request['target_id']), 'Stable ID: '+request['target_id'],
-                 'Type: '+request['request_type'].replace('_', ' ')+' request', 'Request ID: '+request['id'],
-                 'Requester: '+app.label(request['requester_id']), 'Status: '+request['status'],
-                 'Request: '+request['reason'],
-                 'Approval records a review. Apply changes through a separate confirmed action.']
+            entries.append((t('curation.panel.open_target_apply_separately'), ('target', request['target_id'])))
+        lines = [t('curation.target_prefix')+app.label(request['target_id']), t('common.stable_id_prefix')+request['target_id'],
+                 t('curation.request_type', type=request['request_type'].replace('_', ' ')), t('curation.panel.request_id')+request['id'],
+                 t('curation.panel.requester')+app.label(request['requester_id']), t('common.status_prefix')+request['status'],
+                 t('curation.panel.request')+request['reason'],
+                 t('curation.panel.approval_records_a_review_apply')]
         if request['related_id']:
-            lines += ['Related identity: '+app.label(request['related_id']), 'Related ID: '+request['related_id']]
+            lines += [t('curation.panel.related_identity')+app.label(request['related_id']), t('curation.panel.related_id')+request['related_id']]
         if request['proposed_changes']:
-            lines += ['Proposed correction: '+json.dumps(request['proposed_changes'], ensure_ascii=False, sort_keys=True)]
+            lines += [t('curation.panel.proposed_correction')+json.dumps(request['proposed_changes'], ensure_ascii=False, sort_keys=True)]
         lines += [item['kind']+' · '+app.label(item['actor_id'])+' · '+item['reason'] for item in request['history']]
-        return Screen('CURATION / REQUEST REVIEW', lines, entries, 'Enter Choose · b Queue',
+        return Screen(t('curation.panel.curation_request_review'), lines, entries, t('curation.panel.enter_choose_b_queue'),
                       route.index, route.scroll, navigation=False, wrap_entries=True)
     if page == 'provenance':
         record = find_object(world, route.target)
@@ -121,34 +125,34 @@ def contents(app, choices):
         if route.target in world['actors']:
             from game_gamer.runtime.curation import state
             lines += json.dumps({'curation': state(world).get('profiles', {}).get(route.target)}, ensure_ascii=False, indent=2).splitlines()
-        return Screen('OBJECT / PROVENANCE', lines, footer='PgUp/PgDn Scroll · b Object',
+        return Screen(t('curation.panel.object_provenance'), lines, footer=t('curation.panel.pgup_pgdn_scroll_b_object'),
                       scroll=route.scroll, navigation=False)
     if route.target is None:
-        return Screen('CONTEXT / SELECT OBJECT', ['Select an explicit object for curation.'],
+        return Screen(t('curation.panel.context_select_object'), [t('curation.panel.select_an_explicit_object_for')],
                       [(app.label(key)+' · '+key, ('focus', key)) for key in choices]+
-                      ([('Curator review queue' if curator.allowed(app) else 'My curation requests', ('panel', 'queue'))] if app.session else []),
-                      'Tab Main view · Enter Choose', route.index, route.scroll, navigation=False, wrap_entries=True)
+                      ([(t('curation.panel.curator_review_queue') if curator.allowed(app) else t('curation.panel.my_curation_requests'), ('panel', 'queue'))] if app.session else []),
+                      t('curation.panel.tab_main_view_enter_choose'), route.index, route.scroll, navigation=False, wrap_entries=True)
     obj = find_object(world, route.target)
     if obj is None:
-        return Screen('CONTEXT / OBJECT UNAVAILABLE', [route.target]+(
-            ['Not present in this historical state (read-only).'] if historical else []), navigation=False)
+        return Screen(t('curation.panel.context_object_unavailable'), [route.target]+(
+            [t('curation.panel.not_present_in_this_historical')] if historical else []), navigation=False)
     object_type = obj.get('kind') or next((name for name, table in world.items() if route.target in table), 'object')
-    entries = [('Inspect provenance', ('panel', 'provenance')), ('Object history', ('history', route.target))]
+    entries = [(t('curation.inspect_provenance'), ('panel', 'provenance')), (t('curation.panel.object_history'), ('history', route.target))]
     if app.session and not historical:
-        entries += [('Request correction', ('request', 'correction')),
-                    ('Request profile review', ('request', 'profile_review'))]
+        entries += [(t('curation.panel.request_correction'), ('request', 'correction')),
+                    (t('curation.panel.request_profile_review'), ('request', 'profile_review'))]
         if route.target in world['actors']:
-            entries.append(('Request duplicate merge', ('request', 'duplicate_merge')))
-        entries.append(('Curator review queue' if curator.allowed(app) else 'My curation requests', ('panel', 'queue')))
+            entries.append((t('curation.panel.request_duplicate_merge'), ('request', 'duplicate_merge')))
+        entries.append((t('curation.panel.curator_review_queue') if curator.allowed(app) else t('curation.panel.my_curation_requests'), ('panel', 'queue')))
     if not historical and curator.allowed(app) and route.target in world['actors']:
-        entries += [('Correct profile', 'correct'), ('Hide / archive / restore', 'visibility'),
-                    ('Preview verified identity merge', 'preview'), ('Reverse identity merge', 'reverse')]
-    lines = ['Target: '+app.label(route.target), 'Type: '+object_type, 'Stable ID: '+route.target]
+        entries += [(t('curation.correct_profile'), 'correct'), (t('curation.hide_archive_restore'), 'visibility'),
+                    (t('curation.preview_verified_identity_merge'), 'preview'), (t('curation.panel.reverse_identity_merge'), 'reverse')]
+    lines = [t('curation.target_prefix')+app.label(route.target), t('common.type_prefix')+object_type, t('common.stable_id_prefix')+route.target]
     if route.extra.get('pinned_target'):
-        lines.append('Target retained after curation. Navigate in Main to follow its focus again.')
+        lines.append(t('curation.panel.target_retained_after_curation_navigate'))
     if historical:
-        lines.append('Historical context is read-only. Return to the current world to submit changes.')
-    return Screen('CONTEXT / CURATION', lines, entries, 'Enter Choose · Tab Main · u Close',
+        lines.append(t('curation.panel.historical_context_is_read_only'))
+    return Screen(t('curation.panel.context_curation'), lines, entries, t('curation.panel.enter_choose_tab_main_u'),
                   route.index, route.scroll, navigation=False, wrap_entries=True)
 
 
@@ -166,7 +170,7 @@ def finish_frame(app, scroll):
 
 def record(app, command, version):
     result = curator.write(app, command, version)
-    app.notice = 'CURATION REQUEST RECORDED' if result['ok'] else 'REQUEST FAILED · '+', '.join(result['errors'])
+    app.notice = t('curation.panel.curation_request_recorded') if result['ok'] else t('curation.panel.request_failed')+error_list(result['errors'])
     return result
 
 
@@ -179,7 +183,7 @@ def handle(app, key, screen):
         return True
     if key in {'tab', 'backtab'}:
         if route.kind != 'curator':
-            app.notice = 'Return to the object panel before changing focus.'
+            app.notice = t('curation.panel.return_to_the_object_panel')
             return True
         route.extra['panel_focus'] = not route.extra.get('panel_focus', True)
         return True
@@ -237,18 +241,18 @@ def handle(app, key, screen):
         version = app._frame_revision
         command = {'kind': 'request_curation', 'target_id': route.target, 'request_type': value}
         if value == 'duplicate_merge':
-            command['related_id'] = curator.choose_actor(app, 'OTHER POSSIBLE IDENTITY', exclude=route.target)
-        command['reason'] = app.read('Reason for the curation request')
-        app.write('Target: '+app.label(route.target)+' · '+route.target)
-        if app.confirm('SUBMIT THIS CURATION REQUEST?'):
+            command['related_id'] = curator.choose_actor(app, t('curation.panel.other_possible_identity'), exclude=route.target)
+        command['reason'] = app.read(t('curation.panel.reason_for_the_curation_request'))
+        app.write(t('curation.target_prefix')+app.label(route.target)+' · '+route.target)
+        if app.confirm(t('curation.panel.submit_this_curation_request')):
             record(app, command, version)
     elif action in {'decision', 'clarify'}:
         ident = route.extra['request_id']
         version = app._frame_revision
-        reason = app.read('Review reason or clarification')
+        reason = app.read(t('curation.panel.review_reason_or_clarification'))
         request = records(app.world())[ident]
-        app.write('Request: '+ident+' · Target: '+app.label(request['target_id'])+' · '+request['target_id'])
-        if app.confirm('RECORD THIS CURATION REVIEW?'):
+        app.write(t('curation.panel.request')+ident+t('curation.panel.target')+app.label(request['target_id'])+' · '+request['target_id'])
+        if app.confirm(t('curation.panel.record_this_curation_review')):
             command = {'kind': 'review_curation_request' if action == 'decision' else 'clarify_curation_request',
                        'request_id': ident, 'reason': reason}
             if action == 'decision':

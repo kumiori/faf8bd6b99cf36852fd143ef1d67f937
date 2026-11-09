@@ -5,17 +5,6 @@ from datetime import datetime
 from ..model import require
 
 DETAIL_LEVELS = ('Overview', 'Detailed', 'Technical')
-VERBS = {
-    'recall_connection': 'recalled a connection', 'record_prior_relationship': 'declared a prior relationship',
-    'send_contact': 'sent a connection invitation', 'respond_contact': 'responded to an invitation',
-    'propose': 'proposed an agreement', 'accept': 'accepted agreement terms', 'amend': 'revised agreement terms',
-    'activate': 'activated an agreement', 'authorize': 'recorded institutional approval',
-    'initiate': 'reported execution', 'fulfill': 'reported fulfilment', 'verify': 'verified an outcome',
-    'request_curation': 'requested curation', 'review_curation_request': 'reviewed a curation request',
-    'clarify_curation_request': 'clarified a curation request', 'correct_profile': 'corrected a profile',
-    'set_profile_visibility': 'changed profile visibility', 'merge_profiles': 'merged identities',
-    'reverse_profile_merge': 'reversed an identity merge',
-}
 
 
 @dataclass(frozen=True)
@@ -34,7 +23,7 @@ def instant(value):
         require(parsed.tzinfo is not None, 'history_time_requires_timezone')
         return parsed
     except (TypeError, ValueError):
-        raise ValueError('Enter an ISO timestamp with a timezone') from None
+        raise ValueError('history_time_requires_timezone') from None
 
 
 def event_summary(event):
@@ -97,45 +86,10 @@ def history_rows(events, filters=HistoryFilters()):
 
 
 def overview(row, label):
-    action = row['action']
-    event = row['event']
-    if action == 'world.initialized':
-        return 'The collective world was initialized'
-    if action == 'ecosystem.imported':
-        return 'Ecosystem observations were imported'
-    if action == 'review_curation_request':
-        decision = event['command']['decision']
-        return label(row['actor_id'])+' '+{'approve': 'approved a curation request', 'reject': 'rejected a curation request',
-                                            'request_clarification': 'requested curation clarification'}[decision]
-    if action in {'respond_contact', 'respond_invitation'}:
-        return label(row['actor_id'])+' '+('accepted' if event['command']['response'] == 'accept' else 'declined')+' an invitation'
-    summary = label(row['actor_id'])+' '+VERBS.get(action, action.replace('.', ' ').replace('_', ' '))
-    command = event.get('command') or {}
-    target = next((command[key] for key in ('target_id', 'recipient_id', 'agreement_id', 'invitation_id', 'claim_id')
-                   if command.get(key)), None)
-    return summary+(' · '+label(target) if target else '')
+    from ..tui.history import overview as render
+    return render(row, label)
 
 
 def detail_lines(row, level, label):
-    import json
-    lines = [overview(row, label)]
-    if level >= 1:
-        lines += ['Actor: '+label(row['actor_id']), 'Action: '+row['action'],
-                  'Affected objects: '+', '.join(label(key) for key in row['affected_ids'])]
-        if row['request_status']:
-            lines.append('Request outcome: '+row['request_status'])
-        for change in row['changes']:
-            status = ''
-            if change['before_status'] != change['after_status']:
-                status = f" · {change['before_status'] or 'new'} → {change['after_status']}"
-            if change['outcome']:
-                status += ' · outcome '+change['outcome']
-            lines.append(label(change['id'])+' · '+', '.join(change['fields'])+status)
-            for field, values in change['values'].items():
-                def short(value):
-                    text = json.dumps(value, ensure_ascii=False, sort_keys=True)
-                    return text if len(text) <= 160 else text[:160]+'… (full value in Technical)'
-                lines.append('  '+field+': '+short(values['before'])+' → '+short(values['after']))
-    if level >= 2:
-        lines += json.dumps(row['event'], ensure_ascii=False, indent=2).splitlines()
-    return lines
+    from ..tui.history import detail_lines as render
+    return render(row, level, label)

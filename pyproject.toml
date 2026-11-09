@@ -24,7 +24,7 @@ subtle-pathways = "commons_game.__main__:main"
 include = ["commons_engine*", "commons_game*"]
 
 [tool.setuptools.package-data]
-commons_game = ["scenarios/*.json", "web/*", "trajectory-lock.json"]
+commons_game = ["scenarios/*.json", "web/*", "locales/*.yaml", "trajectory-lock.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

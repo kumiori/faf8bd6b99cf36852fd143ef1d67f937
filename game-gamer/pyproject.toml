@@ -14,7 +14,7 @@ dependencies = []
 game-gamer = "game_gamer.cli:main"
 
 [project.optional-dependencies]
-tui = ["wcwidth>=0.2.12,<1"]
+tui = ["wcwidth>=0.2.12,<1", "PyYAML>=6,<7"]
 test = ["pytest>=8"]
 
 [tool.setuptools.packages.find]
@@ -25,3 +25,4 @@ testpaths = ["tests"]
 
 [tool.setuptools.package-data]
 "game_gamer.exercises" = ["*.json"]
+"game_gamer.tui" = ["locales/*.yaml"]

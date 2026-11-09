@@ -1,20 +1,38 @@
 """Prepare and render a focused view of a read-only collective graph."""
+
+import math
+import unicodedata
 from collections import defaultdict
 from copy import deepcopy
 from dataclasses import dataclass
 from hashlib import sha256
-import math
-import unicodedata
 
+from .i18n import message_key, t
 from .objects import OBJECTS
-from .text import display_width, folded, label as node_label
-from .renderers.hack_terminal import raster, project
+from .renderers.hack_terminal import project, raster
+from .text import display_width, folded
+from .text import label as node_label
 
 OBJECT_TYPES = {
     'All types': None, 'People': 'person', 'Organisations': 'organisation',
     'Resources': 'resource', 'Relationships': 'relationships', 'Agreements': 'agreement',
     'Capacities': 'capacity', 'Needs': 'need', 'Evidence': 'evidence',
     'Objectives': 'objective', 'Policies': 'policy', 'Invitations': 'invitation',
+}
+
+OBJECT_TYPE_MESSAGES = {
+    None: message_key('network.object_types.all'),
+    'person': message_key('objects.person.plural'),
+    'organisation': message_key('objects.organisation.plural'),
+    'resource': message_key('objects.resource.plural'),
+    'relationships': message_key('network.object_types.relationships'),
+    'agreement': message_key('network.object_types.agreements'),
+    'capacity': message_key('objects.capacity.plural'),
+    'need': message_key('objects.need.plural'),
+    'evidence': message_key('objects.evidence.label'),
+    'objective': message_key('objects.objective.plural'),
+    'policy': message_key('network.object_types.policies'),
+    'invitation': message_key('objects.invitation.plural'),
 }
 
 PRIORITY = {'invitation':0,'agreement':0,'objective':1,'policy':2,'resource':3,'person':4,'organisation':5,
@@ -29,31 +47,63 @@ LAYERS = {'inferred':('#71889f','dotted'),'documented':('#a3bd95','solid'),
 LAYERS['montreal_2026_reconstructed'] = ('#a7b6ff', 'solid')
 
 RECONSTRUCTION_CATEGORIES = {
-    'montreal_2026_reconstructed': 'Montréal source topology',
-    'historical_whiteboard': 'Whiteboard evidence', 'recollection': 'One-sided recollection',
-    'corroborated': 'Mutual recollection', 'disputed_recollection': 'Disputed recollection',
-    'prior_relationship': 'Prior relationship declaration',
+    'montreal_2026_reconstructed': message_key('network.layers.montreal_topology'),
+    'historical_whiteboard': message_key('network.layers.whiteboard'), 'recollection': message_key('network.layers.one_sided'),
+    'corroborated': message_key('network.layers.mutual'), 'disputed_recollection': message_key('network.layers.disputed'),
+    'prior_relationship': message_key('network.layers.prior_relationship'),
 }
 
-CATEGORIES = ('Recorded affiliations','Other documented relationships','Inferred complementarities',
-              'Pending invitations','Accepted connections','Proposed agreements','Accepted or active agreements','Verified outcomes', *RECONSTRUCTION_CATEGORIES.values())
+# Historical category values are stable graph filter inputs.
+_CATEGORY_IDS = {
+    message_key('network.layers.affiliations'): 'Recorded affiliations',
+    message_key('network.layers.documented'): 'Other documented relationships',
+    message_key('network.layers.inferred'): 'Inferred complementarities',
+    message_key('network.layers.pending_invitations'): 'Pending invitations',
+    message_key('network.layers.accepted_connections'): 'Accepted connections',
+    message_key('network.layers.proposed_agreements'): 'Proposed agreements',
+    message_key('network.layers.accepted_agreements'): 'Accepted or active agreements',
+    message_key('network.layers.verified_outcomes'): 'Verified outcomes',
+    message_key('network.layers.montreal_topology'): 'Montréal source topology',
+    message_key('network.layers.whiteboard'): 'Whiteboard evidence',
+    message_key('network.layers.one_sided'): 'One-sided recollection',
+    message_key('network.layers.mutual'): 'Mutual recollection',
+    message_key('network.layers.disputed'): 'Disputed recollection',
+    message_key('network.layers.prior_relationship'): 'Prior relationship declaration',
+    message_key('history.title'): 'History',
+}
+_CATEGORY_KEYS = {category: key for key, category in _CATEGORY_IDS.items()}
+CATEGORIES = tuple(category for category in _CATEGORY_KEYS if category != 'History')
 
 
-def edge_category(edge,lookup):
+def _category_key(edge, lookup):
     if edge['layer'] in RECONSTRUCTION_CATEGORIES:
         return RECONSTRUCTION_CATEGORIES[edge['layer']]
     if edge['layer'] == 'reconstruction_invitation':
-        return 'Pending invitations'
+        return message_key('network.layers.pending_invitations')
     if edge['layer']=='invitation':
-        return 'Pending invitations' if edge.get('status')=='sent' else 'Accepted connections' if edge.get('status')=='accepted' else 'History'
-    if edge['layer']=='connection':return 'Accepted connections'
-    if edge['layer']=='inferred':return 'Inferred complementarities'
+        return message_key('network.layers.pending_invitations') if edge.get('status')=='sent' else message_key('network.layers.accepted_connections') if edge.get('status')=='accepted' else message_key('history.title')
+    if edge['layer']=='connection':return message_key('network.layers.accepted_connections')
+    if edge['layer']=='inferred':return message_key('network.layers.inferred')
     agreement=next((lookup.get(edge[key],{}) for key in ('source_id','target_id') if lookup.get(edge[key],{}).get('kind')=='agreement'),None)
     if agreement:
-        if agreement['outcome_status']=='verified':return 'Verified outcomes'
-        return 'Accepted or active agreements' if agreement['status'] in {'accepted','authorized','active','fulfilled'} else 'Proposed agreements'
-    if edge['kind']=='affiliated_with':return 'Recorded affiliations'
-    return 'Other documented relationships'
+        if agreement['outcome_status']=='verified':return message_key('network.layers.verified_outcomes')
+        return message_key('network.layers.accepted_agreements') if agreement['status'] in {'accepted','authorized','active','fulfilled'} else message_key('network.layers.proposed_agreements')
+    if edge['kind']=='affiliated_with':return message_key('network.layers.affiliations')
+    return message_key('network.layers.documented')
+
+
+
+def object_type_label(kind):
+    return t(OBJECT_TYPE_MESSAGES[kind])
+
+
+def edge_category(edge, lookup):
+    return _CATEGORY_IDS[_category_key(edge, lookup)]
+
+
+def category_label(category):
+    key = _CATEGORY_KEYS.get(category)
+    return t(key) if key else category
 
 
 
@@ -68,7 +118,7 @@ def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, sc
     actor_ids = sorted(key for key, node in lookup.items() if node['kind'] in {'person', 'organisation'})
     incident = {e[key] for e in graph['edges'] for key in ('source_id', 'target_id')}
     if categories is not None or scope=='connections':
-        edges=[e for e in graph['edges'] if (categories is None or edge_category(e,lookup) in categories)
+        edges=[e for e in graph['edges'] if (categories is None or edge_category(e, lookup) in categories)
                and (scope!='connections' or e['layer'] in {'invitation','connection'})]
         ids={e[k] for e in edges for k in ('source_id','target_id')}|{centre}
         graph={'nodes':[n for n in graph['nodes'] if n['id'] in ids],'edges':edges}
@@ -107,11 +157,11 @@ def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, sc
         if 'directed' not in records[0] and layer in {'agreement','institutional'}:
             directed = True
         colour,pattern = LAYERS.get(layer,('#aaaaaa','solid'))
-        epistemic_status=(records[0].get('status','unknown')+' contact invitation') if layer=='invitation' else 'acknowledged contact only' if layer=='connection' else layer
+        epistemic_status=(records[0].get('status','unknown')+t('network.contact_invitation')) if layer=='invitation' else t('network.acknowledged_contact_only') if layer=='connection' else layer
         if kind=='party_to':
             accepted=records[0].get('status') in {'accepted','authorized','active','fulfilled'}
             colour,pattern=('#a3bd95','solid') if accepted else ('#d88356','dotted')
-            epistemic_status='accepted agreement party' if accepted else 'proposed or inactive contract party'
+            epistemic_status=t('network.accepted_agreement_party') if accepted else t('network.proposed_or_inactive_contract_party')
         edges.append({'id':str(i),'source':source,'target':target,'visual_source':source,'visual_target':target,
             'kind':kind,'layer':layer,'directed':directed,'weight':len(records),
             'colour':colour,'pattern':pattern,'records':records,'epistemic_status':epistemic_status,
@@ -254,7 +304,8 @@ def layout_graph(visual, width, height, *, angle=0., zoom=1., yaw=0., pitch=0., 
 
 
 def draw_graph(visual, width, height, *, selected=None, plain=False, angle=0., zoom=1., labels=None,
-               yaw=0., pitch=0., margin=None, background='dim', labeler=node_label, edge_renderer='braille'):
+               yaw=0., pitch=0., margin=None, background='dim', labeler=node_label, edge_renderer='braille',
+               show_labels=True):
     if background not in {'hidden', 'dim', 'full'}:
         raise ValueError('unknown_graph_background')
     layout = layout_graph(visual, width, height, angle=angle, zoom=zoom, yaw=yaw, pitch=pitch, margin=margin)
@@ -263,7 +314,8 @@ def draw_graph(visual, width, height, *, selected=None, plain=False, angle=0., z
     image=raster(frame,width,height,layers=set(LAYERS),selected=selected,ascii_only=plain,
                  visual=visual,projected=points,edge_renderer=edge_renderer)
     lines=[list(line) for line in image.plain.splitlines()]
-    _place_labels(lines,visual['nodes'],points,labels,plain,labeler,numbered=zoom < .85,selected=selected)
+    if show_labels:
+        _place_labels(lines, visual['nodes'], points, labels, plain, labeler, numbered=zoom < .85, selected=selected)
     spans=[]
     for offset,length,style in image.spans:
         row,column=divmod(offset,width+1)

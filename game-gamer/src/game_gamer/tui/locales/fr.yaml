@@ -1,0 +1,34 @@
+common:
+  not_recorded: Non renseigné
+  unknown: Inconnu
+controls:
+  all: Tout
+  back: Retour
+  cancel_button: ANNULER
+  choose_back: Entrée Choisir · b Retour
+  "no": Non
+  "yes": Oui
+contact:
+  send_now: Envoyer maintenant
+  delivery_title: ENVOI DE L’INVITATION
+  message: Message d’invitation
+history:
+  title: Historique
+navigation:
+  ecosystem:
+    label: Écosystème
+  gathering:
+    label: Rassemblement
+  scenarios:
+    label: Scénarios
+  context_shortcut: ' | u Contexte'
+  terminal_bar: m Parcours | H Historique{context} | e Écosystème | g Rassemblement | s Scénarios | {contracts_key} Contrats | i Réception | p Joueur
+status:
+  authorized: AUTORISÉ
+  unverified: NON VÉRIFIÉ
+workshop:
+  opening:
+    begin_reconstruction: COMMENCER LA RECONSTRUCTION
+    enter_begin_b_back: Entrée Commencer · b Retour
+errors:
+  stale_version: Le monde partagé a changé. Consultez son état avant de réessayer.

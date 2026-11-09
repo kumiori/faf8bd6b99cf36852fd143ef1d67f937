@@ -1,17 +1,21 @@
 """Workshop navigation with isolated, explicitly role-bound practice sessions."""
-from game_gamer.exercises.tutorials import catalogue, TutorialSession
+
+from game_gamer.exercises.tutorials import TutorialSession, catalogue
+from game_gamer.tui.errors import error_list
 from game_gamer.tui.screen import Screen
+
+from .i18n import t
 from .reconstruction import exercise_available
 
 
 def exercise_menu(app):
-    entries = [(f'Tutorial {index:02} · {item["title"]} · isolated practice', ('tutorial', item['id']))
+    entries = [(t('workshop.menu.tutorial_isolated_practice', index=index, title=item['title']), ('tutorial', item['id']))
                for index, item in enumerate(catalogue(), 1)]
     if exercise_available(app.world()):
         from .reconstruction_transitions import REGISTRY, P
-        entries.append(('Montréal · Reconstruct the Network · shared collective', REGISTRY.choice(P+'enter')))
-    return Screen('EXERCISES / WORKSHOP', ['Practice in a fictional sandbox, or contribute to the collective exercise.'],
-                  entries, 'Enter Choose · b Back', app.route.index, app.route.scroll)
+        entries.append((t('workshop.menu.collective_entry', title=t('workshop.reconstruction.title')), REGISTRY.choice(P+'enter')))
+    return Screen(t('workshop.menu.exercises_workshop'), [t('workshop.menu.practice_in_a_fictional_sandbox')],
+                  entries, t('controls.choose_back'), app.route.index, app.route.scroll)
 
 
 def session(app):
@@ -28,25 +32,25 @@ def tutorial_screen(app):
     practice = session(app)
     snapshot = practice.collective.project()
     graph = snapshot['network']
-    lines = ['ISOLATED PRACTICE · Main collective is separate.',
+    lines = [t('workshop.tutorial.isolated_practice_main_collective_is'),
              practice.definition['title'],
-             f'Step {min(practice.index+1, len(practice.definition["steps"]))}/{len(practice.definition["steps"])}']
+             t('workshop.tutorial.step', value=min(practice.index + 1, len(practice.definition['steps'])), steps_count=len(practice.definition['steps']))]
     if practice.complete:
-        lines += ['TUTORIAL COMPLETE', 'Inspect the resulting relationships, commitments and history below.']
+        lines += [t('workshop.tutorial.tutorial_complete'), t('workshop.tutorial.inspect_the_resulting_relationships_commitments')]
     else:
         step = practice.definition['steps'][practice.index]
-        lines += [step['title'], 'Acting practice role: '+step['actor_id'].title()]
-    lines += [f'{len(graph["edges"])} graph edges · {len(snapshot["world"]["commitments"])} commitments']
+        lines += [step['title'], t('workshop.tutorial.acting_practice_role')+step['actor_id'].title()]
+    lines += [t('workshop.tutorial.graph_edges_commitments', edges_count=len(graph['edges']), commitments_count=len(snapshot['world']['commitments']))]
     lines += [a['label']+' · '+a['status']+' · outcome '+a['outcome_status']
               for a in snapshot['world']['agreements'].values()]
     lines += [r['kind'].replace('_', ' ')+' · '+r['status'] for r in snapshot['world']['relationships'].values()]
-    lines += ['Recent history']+[e['kind'] for e in practice.collective.project('log')[-5:]]
-    entries = ([] if practice.complete else [('PERFORM THIS STEP', 'perform')])
-    entries += [('INSPECT PRACTICE GRAPH', 'graph'), ('RESTART THIS TUTORIAL', 'reset'),
-                ('RETURN TO EXERCISES', 'back')]
-    return Screen('TUTORIAL / '+practice.definition['title'].upper(), lines, entries,
-                  'Enter Choose · b Exercises', app.route.index, app.route.scroll,
-                  navigation_text='ISOLATED PRACTICE | Main-world navigation remains available through m/e/g/s')
+    lines += [t('workshop.tutorial.recent_history')]+[e['kind'] for e in practice.collective.project('log')[-5:]]
+    entries = ([] if practice.complete else [(t('workshop.tutorial.perform_this_step'), 'perform')])
+    entries += [(t('workshop.tutorial.inspect_practice_graph'), 'graph'), (t('workshop.tutorial.restart_this_tutorial'), 'reset'),
+                (t('workshop.tutorial.return_to_exercises'), 'back')]
+    return Screen(t('workshop.tutorial.screen_title', title=practice.definition['title'].upper()), lines, entries,
+                  t('workshop.tutorial.enter_choose_b_exercises'), app.route.index, app.route.scroll,
+                  navigation_text=t('workshop.tutorial.isolated_practice_main_world_navigation'))
 
 
 def tutorial_key(app, key, screen):
@@ -59,7 +63,7 @@ def tutorial_key(app, key, screen):
         if action == 'back':
             app.back()
         elif action == 'reset':
-            if app.confirm('RESTART THIS PRACTICE?'):
+            if app.confirm(t('workshop.tutorial.restart_this_practice')):
                 app._tutorial_sessions.pop(app.route.target, None)
                 app.route.index = 0
         elif action == 'graph':
@@ -68,11 +72,11 @@ def tutorial_key(app, key, screen):
             index = practice.index
             step = practice.definition['steps'][index]
             app.write(step['title'])
-            if app.confirm('CONTINUE AS '+step['actor_id'].upper()+' IN PRACTICE?'):
+            if app.confirm(t('workshop.tutorial.confirm_step', actor=step['actor_id'].upper())):
                 result = practice.perform(index)
                 expected = step.get('expected_errors', [])
-                app.notice = ('STEP COMPLETE' if result['ok'] else 'EXPECTED REJECTION: '+', '.join(result['errors'])
-                              if result['errors'] == expected else 'STEP FAILED: '+', '.join(result['errors']))
+                app.notice = (t('workshop.tutorial.step_complete') if result['ok'] else t('workshop.tutorial.expected_rejection')+error_list(result['errors'])
+                              if result['errors'] == expected else t('workshop.tutorial.step_failed')+error_list(result['errors']))
                 app.route.index = 0
     else:
         return False
@@ -82,9 +86,9 @@ def tutorial_key(app, key, screen):
 def tutorial_graph(app):
     practice = session(app)
     graph = practice.collective.project('network')
-    from game_gamer.tui.network import focus_graph, draw_graph
+    from game_gamer.tui.network import draw_graph, focus_graph
     visual = focus_graph(graph, 'learner', scope='whole', limit=len(graph['nodes']))
     lines, styles = draw_graph(visual, max(8, app.width-2), max(3, app.height-10), selected='learner', plain=app.plain)
-    return Screen('PRACTICE GRAPH', ['Fictional tutorial world', *lines], footer='b Tutorial',
+    return Screen(t('workshop.tutorial.practice_graph'), [t('workshop.tutorial.fictional_tutorial_world'), *lines], footer=t('workshop.tutorial.b_tutorial'),
                   styles=[(y+1,x,length,fg,bg,bold) for y,x,length,fg,bg,bold in styles], raster_start=1,
                   show_entries=False)

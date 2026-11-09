@@ -367,6 +367,39 @@ State is reconstructed from ordered atomic before/after mutations. Commons commi
 records also include state hashes and authorisation decisions. Hashes provide
 internal consistency checks, not cryptographic identity or independent notarisation.
 
+## Interface text and languages
+
+Run the terminal in English by default or set `SADDLE_LANGUAGE=fr` to try the
+partial French catalogue. For the local browser client, open `/?lang=fr`.
+Regional tags such as `fr-CA` fall back to `fr`, then to English for each
+missing message.
+
+Edit [the Commons English catalogue](commons_game/locales/en.yaml) for Commons
+screens and [the shared English catalogue](game-gamer/src/game_gamer/tui/locales/en.yaml)
+for reusable Game-Gamer widgets. Add translations under the same keys in the
+adjacent `fr.yaml`. Use `t('feature.message', actor=name)` with named placeholders
+such as `{actor}`. A new process picks up catalogue edits. Reuse a key when the
+meaning and context match, and keep keyboard shortcuts, route IDs, action
+codes and source schema fields stable across languages.
+
+World and tutorial definitions contain authored material, including fictional
+scenario descriptions, tutorial steps and practice payloads. Participant
+contributions, source transcriptions and saved events are read as recorded.
+Historical terminal transcripts and asciinema recordings under
+`tests/transcripts/` and `docs/validation/playability/` remain fixtures.
+
+Run the audit from a source checkout:
+
+```sh
+python -m commons_game validate-text
+```
+
+The command checks missing and unused keys, interpolation fields and
+hard-coded prose in the audited terminal and browser source. It reports
+translation coverage without failing for incomplete French. The scoped
+[literal exceptions](commons_game/locales/literal_exceptions.yml) document
+compatibility identifiers, synthetic command data and technical diagnostics.
+
 ## Tests and installation
 
 ```sh

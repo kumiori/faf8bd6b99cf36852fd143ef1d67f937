@@ -1,0 +1,357 @@
+# Shared terminal widgets and presentation vocabulary.
+common:
+  none: None
+  not_recorded: Not recorded
+  unknown: Unknown
+  unknown_or_not_recorded: Unknown / not recorded
+contact:
+  delivery_title: INVITATION DELIVERY
+  message: Invitation message
+  save_shared_draft: Save shared draft
+  send_now: Send now
+contracts:
+  record_action: Record a concrete action
+  title: CONTRACTS
+controls:
+  all: All
+  back: Back
+  cancel_button: CANCEL
+  choice_count: '{count} choices'
+  choose_back: Enter Choose · b Back
+  inspect_regions: Tab Regions · Enter Open
+  'no': 'No'
+  search_instructions: / changes search; Enter confirms the current choice.
+  search_prefix: 'Search: '
+  selected_prefix: 'Selected: '
+  'yes': 'Yes'
+errors:
+  actor_mismatch: The request must use your selected simulated actor.
+  agreement_version_conflict: These terms have changed. Review the latest version.
+  already_accepted: This actor has already accepted this version.
+  already_recalled_connection: Your recollection is already recorded.
+  ambiguous_or_unknown_filter_choose_a_unique_name: Choose a unique name for this filter.
+  gathering_attendance_required: The gathering needs three consenting participants.
+  history_time_range_reversed: Choose an end time on or after the start time.
+  history_time_requires_timezone: Enter an ISO timestamp with a timezone
+  independent_verifier_required: A party cannot independently verify its own outcome.
+  invalid_body: The request did not contain an object.
+  invalid_command: The request did not contain a valid command.
+  invalid_transition: This action is not available at the current lifecycle stage.
+  invitation_delivery_failed: The invitation delivery choice could not be recorded.
+  missing_authorization: Institutional or collective authorisation is still missing.
+  object_not_present_at_this_state: This object is outside the selected history prefix.
+  request_not_found: This curation request is unavailable.
+  resource_overcommitment: That resource is already reserved. No state was changed.
+  same_origin_required: Submit actions from the game in this browser tab.
+  session_required: Choose your actor again to renew this local session.
+  stale_version: The shared world changed. Review it and try again.
+  unauthorized_approval: This actor is not an eligible authoriser.
+  unauthorized_verifier: Choose the designated independent reviewer.
+  unknown_actor: Choose an active simulated actor in this world.
+  unknown_contract_filter: Choose a supported contract filter.
+  unknown_scenario: Choose one of the available simulation worlds.
+  verified_simulation_binding_required: A verified simulation role is required for this action.
+  with_code: '{message} ({code})'
+  world_scenario_mismatch_choose_another_db: This save belongs to a different scenario. Choose another save.
+feedback:
+  form_cancelled: Cancelled. No incomplete form was submitted.
+  unavailable_prefix: 'Unavailable: '
+forms:
+  a_collective_agreement: A collective agreement
+  additional_condition: Additional condition
+  additional_required_party: ADDITIONAL REQUIRED PARTY
+  agreed_work_completed: Agreed work completed
+  agreement_title: Agreement title
+  carry_out_the_agreed_work: Carry out the agreed work
+  confirm_the_report_addresses: 'Confirm the report addresses '
+  contribution_by: 'Contribution by '
+  discuss_a_possible_collaboration: Discuss a possible collaboration?
+  evidence_reference: Evidence reference
+  expiry_iso_8601: Expiry (ISO 8601)
+  governance_policy: GOVERNANCE POLICY
+  independent_verifier: INDEPENDENT VERIFIER
+  link_objective: LINK OBJECTIVE
+  no_eligible_choices_for: 'No eligible choices for '
+  optional_condition: Optional condition
+  optional_response_message: Optional response message
+  quantity_in: 'Quantity in '
+  reason: Reason
+  reserve_a_resource_on_activation: Reserve a resource on activation?
+  revised_purpose: Revised purpose
+  shared_purpose: Shared purpose
+  verification_criterion: Verification criterion
+history:
+  detail:
+    action: 'Action: {action}'
+    actor: 'Actor: {actor}'
+    affected: 'Affected objects: {objects}'
+    detailed: Detailed
+    new: new
+    outcome: ' · outcome {outcome}'
+    overview: Overview
+    request_outcome: 'Request outcome: {status}'
+    status_change: ' · {before} → {after}'
+    technical: Technical
+    truncated: '{value}… (full value in Technical)'
+  summary:
+    accept: '{actor} accepted agreement terms'
+    activate: '{actor} activated an agreement'
+    amend: '{actor} revised agreement terms'
+    authorize: '{actor} recorded institutional approval'
+    clarify_curation_request: '{actor} clarified a curation request'
+    correct_profile: '{actor} corrected a profile'
+    curation_approved: '{actor} approved a curation request'
+    curation_clarification: '{actor} requested curation clarification'
+    curation_rejected: '{actor} rejected a curation request'
+    ecosystem_imported: Ecosystem observations were imported
+    fulfill: '{actor} reported fulfilment'
+    initiate: '{actor} reported execution'
+    invitation_accepted: '{actor} accepted an invitation'
+    invitation_declined: '{actor} declined an invitation'
+    merge_profiles: '{actor} merged identities'
+    other_action: '{actor} {action}'
+    propose: '{actor} proposed an agreement'
+    recall_connection: '{actor} recalled a connection'
+    record_prior_relationship: '{actor} declared a prior relationship'
+    request_curation: '{actor} requested curation'
+    reverse_profile_merge: '{actor} reversed an identity merge'
+    send_contact: '{actor} sent a connection invitation'
+    set_profile_visibility: '{actor} changed profile visibility'
+    verify: '{actor} verified an outcome'
+    with_target: '{summary} · {target}'
+    world_initialized: The collective world was initialized
+  title: History
+inbox:
+  title: INBOX
+matrix:
+  arrows_cell_enter_inspect_detail: Arrows Cell · Enter Inspect · +/- Detail · Home Origin · f Fit · x Actors ·
+    w Network
+  detail_width: '{detail} ({columns} columns)'
+  ecosystem_complementarity_matrix: ECOSYSTEM / COMPLEMENTARITY MATRIX
+  inferred_match_records_no_inferred: '{value} inferred match records · ? no inferred match · - self · + overflow'
+  no_actors_in_this_world: No actors in this world.
+navigation:
+  context_shortcut: ' | u Context'
+  ecosystem:
+    label: Ecosystem
+  gathering:
+    label: Gathering
+  matrix:
+    label: Matrix
+  network:
+    label: Network
+  scenarios:
+    label: Scenarios
+  terminal_bar: m Paths | H History{context} | e Ecosystem | g Gathering | s Scenarios | {contracts_key} Contracts
+    | i Inbox | p Player
+network:
+  accepted_agreement_party: accepted agreement party
+  acknowledged_contact_only: acknowledged contact only
+  background:
+    title: NETWORK BACKGROUND
+  contact_invitation: ' contact invitation'
+  ecosystem_network: ECOSYSTEM / NETWORK
+  enter_inspect_tab_view_s: Enter Inspect · Tab View · S Scope · L Layers · B Background · [] Page · f Centre ·
+    +/- Zoom
+  experimental_3d: EXPERIMENTAL 3D
+  layers:
+    accepted_agreements: Accepted or active agreements
+    accepted_connections: Accepted connections
+    affiliations: Recorded affiliations
+    disputed: Disputed recollection
+    documented: Other documented relationships
+    inferred: Inferred complementarities
+    montreal_topology: Montréal source topology
+    mutual: Mutual recollection
+    one_sided: One-sided recollection
+    pending_invitations: Pending invitations
+    prior_relationship: Prior relationship declaration
+    proposed_agreements: Proposed agreements
+    verified_outcomes: Verified outcomes
+    whiteboard: Whiteboard evidence
+  no_matching_graph_nodes: No matching graph nodes.
+  object_types:
+    agreements: Agreements
+    all: All types
+    policies: Policies
+    relationships: Relationships
+    title: MULTIPLEX / OBJECT TYPES
+  planar: Planar
+  proposed_or_inactive_contract_party: proposed or inactive contract party
+  scope:
+    title: NETWORK SCOPE
+  selected_centre: Selected {value} · Centre {value_2}
+  view:
+    collective: Collective
+    neighbourhood: Neighbourhood
+  visible_nodes_background: '{entries_count}/{full_node_count} visible nodes · {value} background'
+objects:
+  agreement:
+    plural: Contracts
+    singular: Contract
+  capacity:
+    plural: Capacities
+    singular: Capacity
+  evidence:
+    label: Evidence
+  inspect: INSPECT
+  inspect_title: INSPECT / {kind}
+  invitation:
+    plural: Invitations
+    singular: Invitation
+  need:
+    plural: Needs
+    singular: Need
+  objective:
+    plural: Objectives
+    singular: Objective
+  offers: Offers
+  organisation:
+    plural: Organisations
+    singular: Organisation
+  person:
+    plural: People
+    singular: Person
+  policy:
+    plural: Governance policies
+    singular: Governance policy
+  resource:
+    plural: Resources
+    singular: Resource
+    title: RESOURCE
+status:
+  authorized: AUTHORISED
+  unverified: UNVERIFIED
+terminal:
+  standalone:
+    acceptance_pending: Acceptance pending
+    accepted: Accepted
+    approval_by: Approval by {value}
+    attendance: Attendance · {value} · {status}
+    choose_a_player: Choose a player
+    choose_counterparty: CHOOSE COUNTERPARTY
+    choose_your_path: CHOOSE YOUR PATH
+    complementarity_inspect: COMPLEMENTARITY / INSPECT
+    decision_unavailable_tab_to_details: Decision unavailable. Tab to Details to inspect the rule.
+    ecosystem_actors: ECOSYSTEM / ACTORS
+    enter_inspect_b_esc_back: Enter Inspect · b/Esc Back · ? Help · q Quit · x Actors · h History
+    enter_inspect_h_history: Enter Inspect · h History
+    expiry: Expiry {valid_until}
+    forms_capture_input_until_confirmed: Forms capture input until confirmed. Esc (or /cancel in line mode) asks
+      before discard.
+    gathering_objective: GATHERING OBJECTIVE
+    help_keyboard: HELP / KEYBOARD
+    historical_view_decisions_available_in: Historical view · decisions available in the current world.
+    history: HISTORY
+    inferred_match_records: '{matches_count} inferred match records'
+    inspect_an_objective_k_starts: Inspect an objective. k starts a proposal.
+    invite_actor: INVITE ACTOR
+    j_contact_or_negotiate_k: j Contact or negotiate · k Propose · y Accept · R Reject/decline · X Withdraw.
+    j_invite_k_propose_w: j Invite · k Propose · w Network
+    j_invite_to_a_gathering: j Invite to a gathering
+    k_propose_an_agreement: k Propose an agreement.
+    m_paths_e_ecosystem_g: m Paths · e Ecosystem · g Gathering · s Scenarios · c Contracts · i Inbox · p Player
+    match: Match
+    matrix_arrows_enter_detail_home: 'Matrix: arrows, Enter, +/- detail, Home origin, f fit, z numbers, w network.'
+    network: Network
+    network_arrows_tab_list_canvas: 'Network: arrows, Tab list/canvas, S scope, L layer, B background, [] page,
+      f centre.'
+    network_camera_zoom_r_rotate: 'Network camera: +/- zoom, r rotate, 3 perspective, {{ }} pitch.'
+    network_layers: NETWORK LAYERS
+    object_is_outside_this_history: Object is outside this history prefix.
+    offers_requests: '{value} offers → {value_2} requests'
+    pending_decisions_and_obligations_for: Pending decisions and obligations for the acting player.
+    playing_as_simulation_v: '{title} · Playing as: {actor} · Simulation · v{version}'
+    policy: Policy {value}
+    return_to_the_current_world: Return to the current world to submit a decision.
+    saved: 'Saved · '
+    select_an_opportunity_involving_the: Select an opportunity involving the current player.
+    submit_simulated_action: 'SUBMIT SIMULATED ACTION / '
+    tab_switches_decisions_explore_and: Tab switches Decisions, Explore and Details. In line mode enter a1 for decision
+      1.
+    terms_v_outcome: Terms v{number} · Outcome {outcome_status}
+    this_host_supplies_a_fixed: This host supplies a fixed simulation binding.
+    verified_agreements_required: '{verified_agreements} verified agreements required'
+    who_will_you_play_simulation: WHO WILL YOU PLAY? / SIMULATION ONLY
+viewport:
+  confirm: CONFIRM
+  context_panel: CONTEXT PANEL
+  decisions: DECISIONS
+  details: DETAILS
+  discard_unsubmitted_input: DISCARD UNSUBMITTED INPUT?
+  discard_unsubmitted_input_y_discard: 'DISCARD UNSUBMITTED INPUT? y Discard · Enter Keep editing
+
+    '
+  enter_choose_y_confirm_n: Enter Choose · y Confirm · n/Esc Cancel
+  enter_confirm_esc_cancel: Enter Confirm · Esc Cancel
+  enter_confirm_tab_regions_search: 'Enter Confirm · Tab Regions · / Search · '
+  enter_continue: Enter Continue
+  esc_b_back: Esc/b Back
+  esc_b_back_help: '? Help  b Back | '
+  esc_b_goes_back: Esc/b goes back.
+  esc_return_to_form: Esc Return to form
+  explore: EXPLORE
+  no_decision_available_for_this: No decision available for this actor and state.
+  pgup_pgdn_scroll_enter_or: PgUp/PgDn Scroll · Enter or b Return
+  profile_preview: PROFILE PREVIEW
+  scroll_pgup_pgdn: Scroll {scroll}/{value} · PgUp/PgDn
+  search_by_name_or_organisation: Search by name or organisation
+  tab_context_panel: Tab Context panel
+  tab_main_context: ' · Tab Main/Context'
+  tab_main_view: Tab Main view
+  up_down_selects_an_option: Up/Down selects an option in the list. Tab returns to choices.
+  v_preview: 'v Preview · '
+  y_discard_n_keep_editing: y Discard · n Keep editing
+workshop:
+  directory:
+    connections_network: CONNECTIONS / NETWORK
+    contributors_yours_pending_invites: '{contributors} contributors · {own} yours · {invitations} pending invites'
+    corroborated_unilateral_disputed_your_claims: '{corroborated} corroborated · {unilateral} unilateral · {disputed}
+      disputed · Your claims {own}'
+    dashed_invite_ring_no_recall: 'Dashed: invite · ring: no recall'
+    dotted_recall_solid_mutual: 'Dotted: recall · solid: mutual'
+    footer: Up/Down Select  Enter Inspect  c Connect  n Network  / Search  f Filter  o Sort  v View  G Graph  d
+      Provenance  Tab Regions
+    layers:
+      agreement: Contract party
+      connection: Accepted new connection
+      declared: Declared relationship
+      documented: Documented relationship
+      inferred: Inferred complementarity
+      invitation: Pending new invitation
+    matches_search_f_filter: '{profiles_count} matches · / Search · f Filter'
+    motivation: 'Motivation: '
+    mutual_unilateral_disputed: '{corroborated} mutual · {unilateral} unilateral · {disputed} disputed'
+    needs: 'Needs: '
+    no_matching_participant: No matching participant.
+    no_observations_in_this_view: No observations in this view.
+    no_whiteboard_connections_have_been: No whiteboard connections have been imported.
+    none_declared: None declared
+    not_yet_recorded: Not yet recorded
+    observations_l_layers_v_view: '{incident_count} observations · L Layers · v View · [ ] Page'
+    offers: 'Offers: '
+    organisation: 'Organisation: '
+    partial_record: ' (partial record)'
+    pending_invitations_accepted_new_connections: '{invitations} pending invitations · {accepted_connections} accepted
+      new connections'
+    people_recalled_pairs_directed_claims: '{participants} people · {pairs} recalled pairs · {claims} directed claims
+      · {contributors} contributors'
+    person_selected: PERSON SELECTED
+    recalled_pairs_claims: '{pairs} recalled pairs · {claims} claims'
+    reconstruction: Reconstruction
+    role: 'Role: '
+    select_a_participant_to_focus: Select a participant to focus the graph.
+    unknown_partial_record: Unknown (partial record)
+    who_directory: WHO / DIRECTORY
+    why_profile: WHY / PROFILE
+  opening:
+    animated_title: R E C O N S T R U C T
+    any_key_skip_enter_begin: Any key Skip · Enter Begin after opening
+    any_key_skips_the_opening: Any key skips the opening.
+    begin_reconstruction: BEGIN RECONSTRUCTION
+    enter_begin_b_back: Enter Begin · b Back
+    network_title: THE NETWORK
+    workshop_collective_reconstruction: Workshop / Collective reconstruction
+  portrait:
+    recorded_offers_recorded_needs_recorded: '{value} · {offers} recorded offers · {needs} recorded needs · {domains}
+      recorded domains'

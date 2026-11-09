@@ -1,22 +1,47 @@
 """Loopback-only local play; simulated actor sessions, never production identity."""
-from functools import partial
-from http import HTTPStatus
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
 import json
-from pathlib import Path
+import re
 import secrets
 import threading
-from urllib.parse import urlsplit, parse_qs
+from functools import partial
+from html import escape
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
+
+from game_gamer.tui.i18n import current_language, using_language
 
 from commons_engine.store import SQLiteStore
+
 from .engine import CommonsGame
-from .scenario import SCENARIOS, load_scenario, definition
+from .i18n import browser_messages, t
+from .scenario import SCENARIOS, definition, load_scenario
 
 # Empirical play is terminal-only until the browser supports its onboarding and
 # free proposals. Preserve the three existing browser fixtures and their flows.
 BROWSER_SCENARIOS = tuple(name for name in SCENARIOS if definition(name)['proposal'] is not None)
 
 WEB_ROOT = Path(__file__).parent / 'web'
+PAGE_SLOT = re.compile(r'\{\{([a-z][a-z0-9_.-]*)\}\}')
+
+
+def render_page(language):
+    with using_language(language):
+        def replace_slot(match):
+            key = match[1]
+            if key == 'lang':
+                value = current_language()
+            elif key.startswith('scenario.'):
+                value = definition(key.removeprefix('scenario.'))['title']
+            elif key == 'branding.title':
+                first, separator, rest = t('branding.title').partition(' ')
+                return escape(first) + ('<br><em>' + escape(rest) + '</em>' if separator else '')
+            else:
+                value = t(key)
+            return escape(value)
+
+        return PAGE_SLOT.sub(replace_slot, (WEB_ROOT / 'index.html').read_text(encoding='utf-8'))
 
 
 class CommonsServer(ThreadingHTTPServer):
@@ -62,7 +87,17 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlsplit(self.path)
-        if parsed.path == '/api/state':
+        if parsed.path in {'/', '/index.html', '/api/i18n'}:
+            language = parse_qs(parsed.query).get('lang', [current_language()])[0]
+            if parsed.path == '/api/i18n':
+                return self.reply(browser_messages(language))
+            payload = render_page(language).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+        elif parsed.path == '/api/state':
             try:
                 scenario = parse_qs(parsed.query).get('scenario', ['bilateral-logs'])[0]
                 game = self.selected_store(scenario).load()
@@ -120,8 +155,8 @@ class Handler(SimpleHTTPRequestHandler):
 
 def serve(port=8765, data_dir='.commons-worlds'):
     with CommonsServer(('127.0.0.1', port), data_dir) as server:
-        print(f'The Commons Game: http://127.0.0.1:{server.server_port}', flush=True)
-        print('Local fictional hot-seat play. Ctrl+C stops the server.', flush=True)
+        print(t('web.server.url', port=server.server_port), flush=True)
+        print(t('web.server.local_only'), flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:

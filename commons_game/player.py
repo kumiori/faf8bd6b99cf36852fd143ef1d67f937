@@ -3,6 +3,9 @@ from copy import deepcopy
 from uuid import uuid4
 
 from game_gamer.projections.inbox import available_actions
+from game_gamer.tui.i18n import using_language
+
+from .i18n import t
 
 
 class ActorSession:
@@ -68,8 +71,12 @@ class ActorSession:
             result.insert(0, {'kind': 'propose'})
         return len(game.project('log')), result
 
-    def inbox(self):
+    def inbox(self, *, localized=False):
         """Attention is derived from state and the engine's current permissions."""
+        def inbox_text(key, **params):
+            with using_language(None if localized else 'en'):
+                return t(key, **params)
+
         game = self.current()
         # Compute against one consistent history prefix, including action checks.
         snapshot = ActorSession(game, self.actor, identity=self.identity, binding=self.binding, provider=self.provider)
@@ -79,15 +86,15 @@ class ActorSession:
             actions = [c for c in candidates if c.get('agreement_id') == agreement['id']]
             kinds = {c['kind'] for c in actions}; reasons = []
             if 'accept' in kinds:
-                reasons.append('Amendment awaiting your response' if agreement['current_version'] > 1 else
-                               'Your proposal awaiting your acceptance' if agreement['created_by'] == self.actor else
-                               'Proposal awaiting your response')
+                reasons.append(inbox_text('inbox.badges.amendment_waiting') if agreement['current_version'] > 1 else
+                               inbox_text('inbox.badges.own_acceptance_waiting') if agreement['created_by'] == self.actor else
+                               inbox_text('inbox.badges.proposal_waiting'))
             if 'authorize' in kinds:
-                reasons.append('Awaiting your authorisation')
+                reasons.append(inbox_text('inbox.badges.authorization_waiting'))
             if kinds & {'initiate', 'fulfill'}:
-                reasons.append('Outstanding obligations')
+                reasons.append(inbox_text('inbox.badges.obligations_pending'))
             if 'verify' in kinds:
-                reasons.append('Independent verification requested')
+                reasons.append(inbox_text('inbox.badges.verification_requested'))
             if reasons:
                 items.append({'contract_id': agreement['id'], 'label': agreement['label'],
                               'reasons': reasons, 'actions': actions})
@@ -117,12 +124,16 @@ class ActorSession:
                 groups['Other actionable requests'].append(item)
         return groups
 
-    def inbox_records(self, category=None):
+    def inbox_records(self, category=None, *, localized=False):
         """One canonical row per object; overlapping filters become badges.
 
         Read and permission checks use one immutable event prefix. Existing
         contract-only attention APIs remain available to older clients.
         """
+        def inbox_text(key, **params):
+            with using_language(None if localized else 'en'):
+                return t(key, **params)
+
         game = self.current()
         snapshot = ActorSession(game, self.actor, identity=self.identity, binding=self.binding, provider=self.provider)
         _, actions = snapshot.available_actions()
@@ -135,18 +146,18 @@ class ActorSession:
             version = agreement['versions'][agreement['current_version'] - 1]
             kinds = {a['kind'] for a in own_actions}
             if agreement['created_by'] == self.actor:
-                badges.append('Proposed by you')
+                badges.append(inbox_text('inbox.badges.proposed_by_you'))
             else:
-                badges.append('Proposal received')
+                badges.append(inbox_text('inbox.badges.proposal_received'))
             if agreement['status'] in {'draft', 'proposed', 'negotiating'}:
                 tags.append('Contract proposals')
             if 'accept' in kinds:
-                tags.append('Awaiting my decision'); badges.append('Your acceptance pending')
+                tags.append('Awaiting my decision'); badges.append(inbox_text('inbox.badges.acceptance_pending'))
             pending = [p for p in agreement['parties'] if p != self.actor and p not in version['acceptances']]
             if pending and agreement['status'] in {'proposed', 'negotiating', 'accepted', 'authorized'}:
                 tags.append('Awaiting other parties')
                 from .presentation import actor_label
-                badges.extend(actor_label(world,p)+"'s acceptance pending" for p in pending)
+                badges.extend(inbox_text('inbox.badges.counterparty_acceptance', actor=actor_label(world, p)) for p in pending)
             if agreement['status'] in {'accepted', 'authorized', 'active', 'fulfilled', 'suspended', 'disputed'}:
                 tags.append('Agreements in progress')
             if 'verify' in kinds:
@@ -154,11 +165,14 @@ class ActorSession:
             elif kinds & {'authorize', 'activate', 'publish_proposal'}:
                 tags.append('Awaiting my decision')
             from .presentation import status
-            badges += [status(agreement['status']).lower(), 'Outcome '+status(agreement['outcome_status']).lower()]
+            with using_language(None if localized else 'en'):
+                badges += [status(agreement['status']).lower(),
+                           t('inbox.badges.outcome', status=status(agreement['outcome_status']).lower())]
             output.append({'id': agreement['id'], 'kind': 'agreement', 'label': agreement['label'],
                            'status': agreement['status'], 'outcome_status': agreement['outcome_status'],
                            'badges': badges, 'categories': list(dict.fromkeys(tags)), 'actions': own_actions})
         from .invitations import records
+        from .presentation import status
         for invitation in records(world):
             sender = invitation['source_id'] == self.actor
             if not sender and (invitation['target_id'] != self.actor or invitation['status'] == 'draft'):
@@ -172,6 +186,6 @@ class ActorSession:
             other = world['actors'][invitation['target_id'] if sender else invitation['source_id']]
             output.append({'id': invitation['id'], 'kind': 'invitation',
                 'status': invitation['status'],
-                'label': ('To ' if sender else 'From ')+actor_label(world,other['id']),
-                'badges': [invitation['status'], 'Simulation contact only'], 'categories': tags, 'actions': own_actions})
+                'label': inbox_text('inbox.badges.outgoing' if sender else 'inbox.badges.incoming', actor=actor_label(world, other['id'])),
+                'badges': [(status(invitation['status']).lower() if localized else invitation['status']), inbox_text('inbox.badges.simulation_contact')], 'categories': tags, 'actions': own_actions})
         return [item for item in output if category is None or category in item['categories']]

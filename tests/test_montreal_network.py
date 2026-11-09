@@ -3,13 +3,13 @@ from copy import deepcopy
 
 from commons_engine.store import SQLiteStore
 from commons_game import CommonsGame
-from commons_game.montreal_network import projection
+from commons_game.montreal_network import projection, scoped_graph
 from commons_game.montreal_sources import LAYER, import_montreal_network, read_sources
 
 from test_matrix_navigation import app, world
 
 
-def source_files(tmp_path):
+def source_files(tmp_path, *, include_isolate=False):
     topology = tmp_path/'connexions.csv'
     statements = tmp_path/'description_strings.txt'
     with topology.open('w', newline='') as stream:
@@ -25,6 +25,7 @@ def source_files(tmp_path):
             ('Alex Example', 'Researcher', 'Fictional Lab', 'Share data. [illegible]', 'Uncertain ending'),
             ('Casey Example', 'Archivist', 'Fictional Archive', 'Compare sources.', ''),
             ('Zoë Source', '', '', 'Map connections.', 'Source identity only'),
+            *([('Morgan Example', '', '', 'Observe the forum.', '')] if include_isolate else []),
         ])
     return read_sources(topology, statements)
 
@@ -110,3 +111,55 @@ def test_direct_workshop_explorer_keeps_layers_and_connection_inspection_separat
     ui.handle('/', ui.build_screen())
     assert [name for name, _ in ui.build_screen().entries] == ['Zoë Source']
     assert game.project('log') == before
+
+
+def test_scope_keys_expand_membership_and_focus_without_world_writes(tmp_path):
+    game = world()
+    assert import_montreal_network(game, source_files(tmp_path, include_isolate=True))['ok']
+    ui, _ = app(game, choices=[4, 1, 0, lambda item: item == ui.playing_actor])
+    before = game.project('log')
+    ui.choose_mode()
+    ui.width, ui.height = 132, 30
+    _, graph, _, _ = projection(ui)
+
+    def names():
+        return {node['display_name'] for node in scoped_graph(graph, ui.route).nodes.values()}
+
+    screen = ui.build_screen()
+    assert names() == {'Alex Example', 'Casey Example'}
+    text = '\n'.join(screen.lines)
+    assert 'MOTIVATION' in text and 'Share data.' in text
+    assert 'Data stewardship' not in text
+    ui.handle('D', screen)
+    assert 'Data stewardship' in '\n'.join(ui.build_screen().lines)
+    ui.handle('S', ui.build_screen())
+    assert names() == {'Alex Example', 'Casey Example', 'Zoë Source'}
+    ui.handle('S', ui.build_screen())
+    assert names() == {'Alex Example', 'Casey Example', 'Zoë Source', 'Morgan Example'}
+    ui.handle('T', ui.build_screen())  # Organisation filter in a person-only layer.
+    assert not names()
+    ui.handle('T', ui.build_screen())
+    assert len(names()) == 4
+    ui.width, ui.height = 52, 18
+    narrow = ui.build_screen()
+    assert '[GLOBAL]' in narrow.lines[0]
+    assert any('NETWORK' in line for line in narrow.lines)
+    assert not any('DIRECTORY' in line for line in narrow.lines)
+    assert len(narrow.lines) <= ui.height - 7
+    ui.handle('F', narrow)
+    assert names() == {'Alex Example', 'Casey Example'}
+    assert game.project('log') == before
+
+
+def test_connection_source_is_opt_in(tmp_path):
+    game = world()
+    assert import_montreal_network(game, source_files(tmp_path))['ok']
+    ui, _ = app(game, choices=[4])
+    ui.choose_mode()
+    ui.handle('n', ui.build_screen())
+    ui.handle('enter', ui.build_screen())
+    text = '\n'.join(ui.build_screen().lines)
+    assert 'Arrow partly obscured' in text
+    assert '"provenance"' not in text
+    ui.handle('d', ui.build_screen())
+    assert '"provenance"' in '\n'.join(ui.build_screen().lines)

@@ -1,19 +1,20 @@
 """A deterministic, timed opening rendered by the regular input loop."""
-import os
+
 from time import monotonic
 
+from .i18n import t
 from .screen import Screen
+from .visual import motion_enabled
 
 FRAMES = (
     ('             *',),
     ('      .      *', ' .                .', '          .'),
     ('      .------*', '     /       |', ' .--.        .', '     \\      /', '       .---.'),
-    ('R E C O N S T R U C T', '', 'THE NETWORK'),
 )
 
 
 def opening_screen(exercise, route, viewport,*,begin_choice=None):
-    animated = callable(getattr(viewport, 'poll_key', None)) and os.getenv('COMMONS_REDUCED_MOTION', '').lower() not in {'1', 'true', 'yes'}
+    animated = motion_enabled(viewport)
     duration = exercise.opening_seconds
     started = route.extra.setdefault('opening_started', monotonic())
     elapsed = monotonic()-started
@@ -21,10 +22,11 @@ def opening_screen(exercise, route, viewport,*,begin_choice=None):
     if finished:
         route.extra['opening_finished'] = True
         return Screen(exercise.title, [exercise.subtitle, '', *exercise.introduction],
-                      [('BEGIN RECONSTRUCTION', 'begin' if begin_choice is None else begin_choice)], 'Enter Begin · b Back',
-                      navigation_text='Workshop / Collective reconstruction', scroll=route.scroll)
+                      [(t('workshop.opening.begin_reconstruction'), 'begin' if begin_choice is None else begin_choice)], t('workshop.opening.enter_begin_b_back'),
+                      navigation_text=t('workshop.opening.workshop_collective_reconstruction'), scroll=route.scroll)
     frame = min(3, int(elapsed/duration*4))
-    return Screen(exercise.title, [exercise.subtitle, '', *FRAMES[frame], '', 'Any key skips the opening.',
-                                  '> [ BEGIN RECONSTRUCTION ]'],
-                  footer='Any key Skip · Enter Begin after opening',
+    art = FRAMES[frame] if frame < len(FRAMES) else (t('workshop.opening.animated_title'), '', t('workshop.opening.network_title'))
+    return Screen(exercise.title, [exercise.subtitle, '', *art, '', t('workshop.opening.any_key_skips_the_opening'),
+                                  '> [ '+t('workshop.opening.begin_reconstruction')+' ]'],
+                  footer=t('workshop.opening.any_key_skip_enter_begin'),
                   navigation=False, refresh_interval_ms=80)

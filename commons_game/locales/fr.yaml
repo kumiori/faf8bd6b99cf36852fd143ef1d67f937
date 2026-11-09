@@ -1,0 +1,78 @@
+navigation:
+  montreal_network:
+    title: RÉSEAU MONTRÉALAIS
+    description: Explorez les liens que nous avons tissés ensemble.
+workshop:
+  reconstruction:
+    title: Reconstruire le réseau
+    question: Avec qui avez-vous tissé des liens à Montréal ?
+    layer: Reconstruction de Montréal
+    connect_with: ENTRER EN CONTACT AVEC {actor}
+    we_connected_in_montreal: Nous avons fait connaissance à Montréal
+    we_already_knew_each_other: Nous nous connaissions déjà avant Montréal
+    i_would_like_to_connect: Je souhaite prendre contact maintenant
+  menu:
+    exercises_workshop: EXERCICES / ATELIER
+    practice_in_a_fictional_sandbox: Entraînez-vous dans une simulation fictive ou contribuez à l’exercice collectif.
+contact:
+  invite: Inviter à prendre contact
+  save_draft: Enregistrer le brouillon
+curation:
+  indicator: ◆ CURATION
+  correct_profile: Corriger le profil
+  permission_required: Le rôle de curation est requis.
+terminal:
+  context: 'Vous jouez : {actor}{focus} · Simulation · {world} · v{revision}{historical}'
+  choose_a_person: Choisir une personne
+  historical_view: ' · Vue historique'
+web:
+  accessibility:
+    skip: Aller au jeu
+  opening:
+    enter_quiet: Entrer sans son
+    enter_sound: Entrer avec le son
+  connection:
+    connecting: CONNEXION AU MOTEUR
+    shared_world_commit: MONDE PARTAGÉ / TRANSACTION {value}
+montreal_ui:
+  profile: PROFIL
+  network: RÉSEAU
+  scopes:
+    local: LOCAL
+    community: COMMUNAUTÉ
+    global: GLOBAL
+  motivation: MOTIVATION
+  partial: Données partielles
+  filtered: filtré
+  directory_stats: '{count} résultats · {sort}'
+  shape: 'Groupes reliés {components} · Acteurs isolés {isolates}'
+  stats_compact: 'Acteurs {profiles_count} · Liens {edges_count} · {views}'
+  local_links: 'Liens directs {count}'
+  local_page: 'Voisins {first}–{last} / {total}'
+  empty_scope: Aucun acteur dans cette vue.
+  actor_types: FILTRER LE GRAPHE PAR TYPE D’ACTEUR
+  focus_title: CENTRER SUR UN PARTICIPANT
+  sort_title: TRIER LE RÉPERTOIRE
+  keys:
+    directory: '↑↓ Choisir  Entrée Profil  / Recherche  f Filtrer  o Trier  Tab Panneaux'
+    directory_compact: 'Tab Panneaux  Entrée Profil  / Recherche'
+    profile: 'D Développer  ↑↓ Défiler  Tab Panneaux'
+    profile_less: 'D Réduire  ↑↓ Défiler  Tab Panneaux'
+    panels: Tab Panneaux
+    network: 'S Portée  Entrée Lien  F Centrer  L Couches  T Types'
+    network_empty: 'S Portée  F Centrer  L Couches  T Types'
+    network_no_actors: 'S Portée  T Types  L Couches'
+    network_compact: 'S Portée  F Centrer'
+    connection: 'Entrée Centrer sur l’autre acteur  d Source  Page ↑↓ Défiler'
+    help: 'Page ↑↓ Défiler'
+  help:
+    scopes: 'Réseau montréalais — S passe de LOCAL (voisins directs) à COMMUNAUTÉ (groupe relié) puis à GLOBAL (tous les acteurs des couches sélectionnées).'
+    overview: 'Vue d’ensemble — ◆ ou + regroupe des acteurs, ∘ ou o indique un acteur isolé, @ indique la sélection. F ouvre le réseau local d’un acteur de la vue.'
+    directory: 'Répertoire — / recherche par nom, f filtre, o trie. Tab et Maj+Tab changent de panneau. Entrée ouvre le profil et D développe ou réduit son contenu.'
+    network: 'Graphe — n sélectionne le réseau, G l’ouvre en pleine largeur, v bascule entre local et global, L choisit les couches et T filtre les types. [ ] change de page en local, +/− zoome et r fait pivoter le graphe.'
+    source: 'Sources — ↑↓ sélectionne un lien, Entrée l’inspecte ou centre sur l’autre acteur. d ouvre les sources. U permet aux curateurs de vérifier les identités.'
+terminal_polish:
+  context: '{world}  ·  {actor}  ·  {mode} / Simulation{historical}'
+  scenario_source: d ouvre les sources du scénario.
+  world: MONDE
+  activity: ACTIVITÉ

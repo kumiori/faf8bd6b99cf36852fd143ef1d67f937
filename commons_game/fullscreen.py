@@ -3,42 +3,64 @@
 All mutations pass through ActorSession and the existing command forms. The
 viewport owns keyboard/display concerns only; line-mode play remains available.
 """
+
 from copy import deepcopy
 from io import StringIO
 
 from game_gamer.projections.inbox import action_options
+from game_gamer.tui.errors import error_list
+from game_gamer.tui.i18n import message_key
 from game_gamer.tui.matrix import AxisLabel, MatrixView, render_matrix
-from game_gamer.tui.navigation import MODE_KEYS, NavigationState, Route as Route
-from game_gamer.tui.screen import Screen as Screen, inspector, run_screens
-from game_gamer.tui.viewport import CursesViewport as CursesViewport, action_form, run_curses, supported as supported
+from game_gamer.tui.navigation import MODE_KEYS, NavigationState, navigation_label
+from game_gamer.tui.navigation import Route as Route
+from game_gamer.tui.screen import Screen as Screen
+from game_gamer.tui.screen import inspector, record_receipt, run_screens
+from game_gamer.tui.viewport import CursesViewport as CursesViewport
+from game_gamer.tui.viewport import action_form, run_curses
+from game_gamer.tui.viewport import supported as supported
 
+from . import curation_panel, curator, montreal_network
 from .catalogue import affiliations, people
 from .commands import resolve
+from .exercises import exercise_menu, tutorial_graph, tutorial_key, tutorial_screen
 from .expertise import cell, matrix
+from .global_history import history_key, history_screen
 from .heatmap import BANDS
-from .network_view import CATEGORIES, OBJECT_TYPES, focus_graph, draw_graph
-from .scenario_catalogue import catalogue, objectives_for, scenarios_for
-from . import curator, curation_panel
-from . import montreal_network
+from .i18n import t
 from .montreal_sources import profile_statements
-from .global_history import history_screen, history_key
-from .exercises import exercise_menu, tutorial_screen, tutorial_key, tutorial_graph
-from .reconstruction import build_exercise, exercise_available, handle_exercise
+from .network_view import (
+    CATEGORIES,
+    OBJECT_TYPES,
+    category_label,
+    draw_graph,
+    focus_graph,
+    object_type_label,
+)
 from .play import ACTION_EFFECTS, PlayableTerminal
-from .presentation import OBJECTS, clean, display_label, folded, status
-from .tui import ACTION_NAMES, EVENT_NAMES, Cancelled
+from .presentation import (
+    INBOX_CATEGORIES,
+    OBJECTS,
+    clean,
+    display_label,
+    folded,
+    inbox_category,
+    status,
+)
+from .reconstruction import build_exercise, exercise_available, handle_exercise
+from .scenario_catalogue import catalogue, objectives_for, scenarios_for
+from .tui import Cancelled, action_name, event_name
 
-MODES = {'ecosystem': 'Explore offers, needs and potential complementarities.',
-         'gathering': 'Inspect gathering conditions and registered invitation actions.',
-         'scenarios': 'Inspect source scenarios, linked objectives and recorded trajectories.'}
-DECISION_KEYS = {'accept': ('y', 'Accept'), 'amend': ('j', 'Negotiate'),
-                 'reject': ('R', 'Reject'), 'withdraw': ('X', 'Withdraw')}
+MODES = {'ecosystem': (message_key('navigation.ecosystem.label'), message_key('navigation.ecosystem.description')),
+         'gathering': (message_key('navigation.gathering.label'), message_key('navigation.gathering.description')),
+         'scenarios': (message_key('navigation.scenarios.label'), message_key('navigation.scenarios.description'))}
+DECISION_KEYS = {'accept': ('y', message_key('contracts.shortcuts.accept')), 'amend': ('j', message_key('contracts.shortcuts.amend')),
+                 'reject': ('R', message_key('contracts.shortcuts.reject')), 'withdraw': ('X', message_key('contracts.shortcuts.withdraw'))}
 
 
 def score_text(detail):
     if detail['value'] is not None: return str(detail['value'])
-    if detail.get('upper') is None: return 'Unknown'
-    return f"Unknown ({detail['lower']}–{detail['upper']}; lower bound {detail['lower']})"
+    if detail.get('upper') is None: return t('common.unknown')
+    return t('matrix.score.unknown_lower_bound', lower=detail['lower'], upper=detail['upper'])
 
 
 class FullScreenTerminal(PlayableTerminal):
@@ -88,54 +110,67 @@ class FullScreenTerminal(PlayableTerminal):
     def breadcrumbs(self):
         parts=[]
         for route in self.stack:
-            if route.kind=='matrix':parts.append('Ecosystem')
+            if route.kind=='matrix':parts.append(t('navigation.ecosystem.label'))
             elif route.kind=='cell' and route.extra.get('relation'):
                 parts.append(' → '.join(self.label(p) for p in route.extra['relation']))
-            elif route.kind=='scenario':parts.append('Scenario')
-            elif route.target:parts.append(self.label(route.target) if route.kind!='network' else 'Network: '+self.label(route.target))
-            else:parts.append(route.kind.capitalize())
+            elif route.kind=='scenario':parts.append(t('navigation.scenario.label'))
+            elif route.target:parts.append(self.label(route.target) if route.kind!='network' else t('terminal.network')+self.label(route.target))
+            else:parts.append(navigation_label(route.kind))
         return ' > '.join(parts)
 
     def reset_buffer(self):
         self.output.seek(0); self.output.truncate()
 
     def context(self, *, at=None):
+        if getattr(self, '_capturing', False):
+            return ''
         if self.route.kind in {'tutorial', 'tutorial_graph'}:
             practice = getattr(self, '_tutorial_sessions', {}).get(self.route.target)
             if practice:
                 step = practice.definition['steps'][min(practice.index, len(practice.definition['steps'])-1)]
-                return f"Practice sandbox · {practice.definition['title']} · Role: {step['actor_id']} · v{practice.collective.project()['version']}"
-        actor = self.label(self.session.actor) if self.session else 'Choose a person'
-        if self.route.kind.startswith('curator') or self.route.kind in {'reconstruction', 'reconstruction_graph'} | montreal_network.ROUTES:
-            target = self.route.target
-        elif self.route.kind == 'network' and getattr(self, '_network', {}).get('nodes'):
-            target = self._network['nodes'][self.route.index]['id']
-        else:
-            target = self.focused_actor
-        focus = ' · Inspecting: '+self.label(target) if target else ''
-        if self.route.kind == 'curator' and self.route.extra.get('panel_page') == 'queue':
-            focus = ' · Inspecting: Curation requests'
-        elif self.route.kind == 'curator' and self.route.extra.get('panel_page') == 'review':
-            from game_gamer.runtime.curation_requests import records
-            request = records(self.world()).get(self.route.extra.get('request_id'))
-            if request:
-                focus = ' · Inspecting: Request for '+self.label(request['target_id'])
-        return f'Playing as: {actor}'+focus+' · Simulation · '+self.world()['configuration']['world']['title']+f' · v{self._frame_revision}' + (' · Historical view' if at is not None else '')
+                return t('terminal.practice_sandbox_role_v', title=practice.definition['title'], actor_id=step['actor_id'], version=practice.collective.project()['version'])
+        actor = self.label(self.session.actor) if self.session else t('terminal.choose_a_person')
+        route = self.route
+        world = self.world()['configuration']['world']['title']
+        historical = t('terminal.historical_view') if at is not None else ''
+        if route.kind.startswith('curator'):
+            focus = t('terminal.inspecting')+self.label(route.target) if route.target else ''
+            if route.kind == 'curator' and route.extra.get('panel_page') == 'queue':
+                focus = t('terminal.inspecting_curation_requests')
+            elif route.kind == 'curator' and route.extra.get('panel_page') == 'review':
+                from game_gamer.runtime.curation_requests import records
+                request = records(self.world()).get(route.extra.get('request_id'))
+                if request:
+                    focus = t('terminal.inspecting_request_for')+self.label(request['target_id'])
+            return t('terminal.context', actor=actor, focus=focus, world=world,
+                     revision=self._frame_revision, historical=historical)
+        mode = t(MODES[self.navigation.mode][0])
+        if any(item.kind in {'exercises', 'reconstruction_intro'} | montreal_network.MAIN_ROUTES
+               for item in self.stack):
+            mode = t('navigation.workshop').title()
+        elif route.kind in {'history', 'history_event', 'history_object', 'trajectory'}:
+            mode = t('terminal_polish.activity').title()
+        return t('terminal_polish.context', world=world, actor=actor, mode=mode, historical=historical)
 
     def decorate_screen(self, screen):
-        from game_gamer.tui.navigation import NAVIGATION
-        screen.navigation_text = (screen.navigation_text or NAVIGATION).replace('H History', 'H History | u Context')
+        screen.masthead = t('branding.title')
+        screen.breadcrumb = ''
+        screen.navigation_text = ''
         if self.route.kind not in {'tutorial', 'tutorial_graph'} and curator.allowed(self):
-            screen.header_indicator = '◆ CURATOR'
-            screen.header_colour = '#f0c75e'
+            screen.header_indicator = t('curation.indicator')
 
     def panel_drawn(self, screen, scroll):
         curation_panel.finish_frame(self, scroll)
 
     def capture(self, operation):
-        self.reset_buffer(); operation()
+        self.reset_buffer()
+        self._capturing = True
+        try:
+            operation()
+        finally:
+            self._capturing = False
         return [line for line in self.output.getvalue().strip().splitlines()
-                if not line.startswith(('Playing as: ', 'Playing: ')) and not (line.strip() and set(line.strip()) <= {'=','-','─'})]
+                if not (line.strip() and set(line.strip()) <= {'=','-','─'})]
 
     def read(self, prompt='>'):
         result = self.viewport.prompt(prompt, self.output.getvalue().splitlines(), self.context())
@@ -152,17 +187,19 @@ class FullScreenTerminal(PlayableTerminal):
             return result
         return super().confirm(prompt)
 
-    def picker(self, title, items, *, render=None, preview=None, section=None):
+    def picker(self, title, items, *, render=None, preview=None, section=None, menu=None):
         if not items:
-            self.notice = 'No matching choices are available.'
+            self.notice = t('terminal.no_matching_choices_are_available')
             raise Cancelled
         def label(item):
             if render:
                 return render(item)
             return display_label(item)
-        options = {'preview': preview}
+        options = {'preview': preview, 'masthead': t('branding.title')}
+        if menu is not None:
+            options['menu'] = menu
         if curator.allowed(self) and self.route.kind not in {'tutorial', 'tutorial_graph'}:
-            options['header_indicator'] = '◆ CURATOR'
+            options['header_indicator'] = t('curation.indicator')
         if section is not None:
             options['section'] = section
         return self.viewport.choose(title, items, label, self.context(), **options)
@@ -175,37 +212,45 @@ class FullScreenTerminal(PlayableTerminal):
         roster = people(self.world())
         # Deliberate development-only roles remain reachable without polluting
         # the imported people catalogue or implying source authentication.
-        choices = [*roster, {'id': '__development__', 'kind': 'role', 'label': 'Development simulation roles…'}]
+        choices = [*roster, {'id': '__development__', 'kind': 'role', 'label': t('terminal.development_simulation_roles')}]
         def label(actor):
             orgs = affiliations(self.world(), actor['id'])
-            return display_label(actor) + (' · '+', '.join(orgs) if orgs else '') + (' · CURATOR' if 'curator' in actor.get('roles', []) else '')
-        actor = self.picker('WHO WILL YOU PLAY? / search by first name', choices, render=label,
+            return display_label(actor) + (' · '+', '.join(orgs) if orgs else '') + (t('curation.role_suffix') if 'curator' in actor.get('roles', []) else '')
+        actor = self.picker(t('terminal.who_will_you_play_search'), choices, render=label,
             preview=lambda a: self.capture(lambda: self.inspect_node(a['id'])) if a['id'] != '__development__' else
-                ['Explicit development roles grant simulation authority only. They do not authenticate a real person.'])
+                [t('terminal.explicit_development_roles_grant_simulation')])
         if actor['id'] == '__development__':
-            actor = self.picker('DEVELOPMENT ROLES / simulation authority only', people(self.world(), development=True))
+            actor = self.picker(t('terminal.development_roles_simulation_authority_only'), people(self.world(), development=True))
         self.assume_actor(actor)
         if not self.mode_routes['ecosystem'].extra.get('positioned'):
             ids = [a['id'] for a in matrix(self.world())['actors']]
             if actor['id'] in ids:
                 self.mode_routes['ecosystem'].row = self.mode_routes['ecosystem'].column = ids.index(actor['id'])
             self.mode_routes['ecosystem'].extra['positioned'] = True
-        self.notice = 'Now simulating '+display_label(actor)+'. The shared world is unchanged.'
+        self.notice = t('session.role_changed', actor=display_label(actor))
 
     def choose_mode(self):
         options = [*MODES, 'exercises']
         if exercise_available(self.world()):
             options.append('montreal_network')
         options.append('history')
-        workshop = {'exercises': 'EXERCISES · Learn the moves that transform a collective.',
-                    'montreal_network': 'MONTRÉAL NETWORK · Explore the connections we created together.'}
-        paths = {**{name: name.upper()+' · '+description for name, description in MODES.items()},
-                 **workshop, 'history': 'HISTORY · Inspect the collective event history.'}
-        mode = self.picker('COMMONS GAME / CHOOSE YOUR PATH', options, render=paths.__getitem__,
-                           section=lambda name: 'EXPLORE THE WORLD' if name in MODES else
-                           'WORKSHOP' if name in workshop else 'YOUR ACTIVITY')
+        menu = {name: (t(label).upper(), t(description)) for name, (label, description) in MODES.items()}
+        menu.update(
+            exercises=(t('navigation.exercises.title'), t('navigation.exercises.description')),
+            montreal_network=(t('navigation.montreal_network.title'), t('navigation.montreal_network.description')),
+            history=(t('history.title').upper(), t('navigation.history.description')),
+        )
+        def section(name):
+            if name in MODES:
+                return t('terminal_polish.world')
+            return t('terminal_polish.activity') if name == 'history' else t('navigation.workshop')
+        def label(name):
+            title, description = menu[name]
+            return t('navigation.path_entry', title=title, description=description)
+        mode = self.picker(t('navigation.commons_game_choose_your_path'), options, render=label,
+                           section=section, menu=menu)
         if mode == 'montreal_network':
-            self.push(mode)
+            self.push(mode, self.playing_actor)
             self.route.region = 'directory'
         elif mode in {'exercises', 'history'}:
             self.push(mode)
@@ -237,7 +282,7 @@ class FullScreenTerminal(PlayableTerminal):
         if self.route.kind == 'montreal_network_graph' and len(self.stack) > 1:
             parent = self.stack[-2]
             parent.target = self.route.target
-            for key in ('graph_groups', 'zoom', 'angle', 'filter'):
+            for key in ('graph_groups', 'zoom', 'angle', 'filter', 'actor_type', 'sort'):
                 if key in self.route.extra:
                     parent.extra[key] = self.route.extra[key]
             parent.extra.update(network_detail=0, network_page=0)
@@ -248,8 +293,8 @@ class FullScreenTerminal(PlayableTerminal):
 
     def run(self):
         try:
-            self.viewport.message(Screen('SADDLE PATHWAYS', ['', 'I hereby declare the right of the commons.', '',
-                'Simulation', '', 'Enter Begin · q Quit'], footer='Enter Begin · q Quit', navigation=False))
+            self.viewport.message(Screen(t('branding.title'), ['', t('branding.declaration'), '',
+                t('terminal.simulation_2'), '', t('controls.begin_or_quit')], footer=t('controls.begin_or_quit'), navigation=False))
             if self.viewport.key() == 'q':
                 return self.current()
             if not self.explore and not self.session:
@@ -289,22 +334,22 @@ class FullScreenTerminal(PlayableTerminal):
         if route.kind == 'expertise':
             actor = self.world()['actors'][route.target]; projection = matrix(self.world())
             i = next(i for i,a in enumerate(projection['actors']) if a['id']==actor['id'])
-            lines = [self.label(actor['id']),'Complete declared expertise · unknown values remain ?']
+            lines = [self.label(actor['id']),t('matrix.expertise.complete_declared_expertise_unknown_values')]
             for side,kind in (('offer','O'),('need','N')):
                 observation = projection['observations'][actor['id']][side]
                 lines += [side.upper()+': '+observation['state']]
-                lines += [projection['vocabulary'][code]+': '+('?' if value is None else 'Selected' if value else 'Not selected')
+                lines += [projection['vocabulary'][code]+': '+('?' if value is None else t('matrix.expertise.selected') if value else t('matrix.expertise.not_selected'))
                           for code,value in zip(projection['domains'],projection[kind][i])]
-            return Screen('OFFERS AND NEEDS',lines,scroll=route.scroll,footer='PgUp/PgDn Scroll  b Profile')
+            return Screen(t('matrix.expertise.offers_and_needs'),lines,scroll=route.scroll,footer=t('matrix.expertise.pgup_pgdn_scroll_b_profile'))
         if route.kind == 'incidence':
             projection=matrix(self.world()); i=next(i for i,a in enumerate(projection['actors']) if a['id']==route.target)
             k=projection['domains'].index(route.extra['domain']);kind=route.extra['matrix_kind'];value=projection[kind][i][k]
             observation=projection['observations'][route.target]['offer' if kind=='O' else 'need']
-            return Screen('DECLARED '+('OFFER' if kind=='O' else 'NEED'),[
+            return Screen(t('terminal.declared_topic', topic=t('matrix.expertise.offer') if kind=='O' else t('matrix.expertise.need')),[
                 self.label(route.target),projection['vocabulary'][route.extra['domain']],
-                'Value: '+('Unknown' if value is None else str(value)), 'Answer state: '+observation['state'],
-                'World state '+str(len(self.current().project('log')))+' · Source details remain optional.'],
-                [('Explore '+self.label(route.target),route.target)],'Enter Profile  d Source details  b Matrix')
+                t('matrix.expertise.value')+(t('common.unknown') if value is None else str(value)),
+                t('matrix.expertise.answer_state')+observation['state']],
+                [(t('matrix.expertise.explore')+self.label(route.target),route.target)],t('matrix.expertise.enter_profile_d_source_details'))
         if route.kind == 'inspect':
             return self.inspector_screen()
         if route.kind == 'contracts':
@@ -313,25 +358,25 @@ class FullScreenTerminal(PlayableTerminal):
                 from .projections import contract_registry
                 matches = {a['id'] for a in contract_registry(self.world(),**route.extra['filters'])}
                 nodes = [n for n in nodes if n['id'] in matches]
-            result=self.list_screen('CONTRACT REGISTRY / transversal layer', nodes)
+            result=self.list_screen(t('contracts.registry.contract_registry_transversal_layer'), nodes)
             if self.playing_actor:
-                result.entries += [('Propose a contract / choose a person',('choose_interaction','propose'))]
+                result.entries += [(t('contracts.registry.propose_a_contract_choose_a'),('choose_interaction','propose'))]
                 if self.world()['actors'][self.playing_actor]['kind']=='person':
-                    result.entries += [('Invite to connect / choose a person',('choose_interaction','invite'))]
+                    result.entries += [(t('contracts.registry.invite_to_connect_choose_a'),('choose_interaction','invite'))]
             return result
         if route.kind == 'inbox':
             if not self.session:
-                return Screen('INBOX', ['p Choose a simulated player first.'])
+                return Screen(t('inbox.title'), [t('inbox.p_choose_a_simulated_player')])
             category = route.extra.get('category')
-            items = self.session.inbox_records(category)
-            entries = [(self.aliases().get(item['id'], 'Invitation')+' · '+item['label']+' · '+' / '.join(item['badges']), item['id'])
+            items = self.session.inbox_records(category, localized=True)
+            entries = [(self.aliases().get(item['id'], t('objects.invitation.singular'))+' · '+item['label']+' · '+' / '.join(item['badges']), item['id'])
                        for item in items if folded(route.query) in folded(item['label'])]
             route.index = min(route.index, max(0, len(entries)-1))
-            lines = ['Filter: '+(category or 'All my records')+' · One entry per object',
-                     'Badges describe pending decisions; filters do not create extra records.']
-            if not entries: lines.append('No items in this view. F changes the filter; c opens all contracts.')
-            return Screen('INBOX / INVITATIONS AND CONTRACTS', lines, entries,
-                          'Enter Review  a Actions  F Filter', route.index, route.scroll, wrap_entries=True)
+            lines = [t('inbox.filter')+inbox_category(category)+t('inbox.one_entry_per_object'),
+                     t('inbox.badges_describe_pending_decisions_filters')]
+            if not entries: lines.append(t('inbox.no_items_in_this_view'))
+            return Screen(t('inbox.all_title'), lines, entries,
+                          t('inbox.enter_review_a_actions_f'), route.index, route.scroll, wrap_entries=True)
         if route.kind in {'history', 'history_event', 'history_object'}:
             return history_screen(self)
         if route.kind == 'trajectory':
@@ -339,96 +384,110 @@ class FullScreenTerminal(PlayableTerminal):
             try:
                 document = project_trajectory(self.current())
                 records = frames(document)
-                lines = ['RECORDED SIMULATION HISTORY / no invented real-world trajectory']
+                lines = [t('trajectory.recorded_simulation_history_no_invented')]
                 for record in records:
-                    lines.append(EVENT_NAMES.get(record['event_kind'],EVENT_NAMES.get(record['kind'], record['kind'].replace('_', ' '))))
-                    lines += ['  '+self.aliases().get(item['id'],'Invitation')+' · '+status(item['status'])+' · contact only'
+                    lines.append(event_name(record['event_kind'], event_name(record['kind'], record['kind'].replace('_', ' '))))
+                    lines += ['  '+self.aliases().get(item['id'],t('objects.invitation.singular'))+' · '+status(item['status'])+t('trajectory.contact_only')
                               for item in record['invitations']]
                     for agreement in record['agreements']:
-                        lines.append('  '+self.contract_title(agreement['id'])+' · '+status(agreement['status'])+' · Outcome: '+status(agreement['outcome_status']))
+                        lines.append('  '+self.contract_title(agreement['id'])+' · '+status(agreement['status'])+t('contracts.inline_outcome_prefix')+status(agreement['outcome_status']))
             except (ImportError, ValueError) as error:
-                lines = ['Trajectory package unavailable. Install the pinned trajectory extra.', clean(error),
-                         'h History and replay remain available without it.']
-            return Screen('RECORDED TRAJECTORY', lines, footer='v Verify replay  PgUp/PgDn Scroll', scroll=route.scroll)
+                lines = [t('trajectory.trajectory_package_unavailable_install_the'), clean(error),
+                         t('trajectory.h_history_and_replay_remain')]
+            return Screen(t('trajectory.recorded_trajectory'), lines, footer=t('trajectory.v_verify_replay_pgup_pgdn'), scroll=route.scroll)
         if route.kind == 'gathering':
             from .gathering import conditions
             objectives = [n for n in self.graph_projection()['nodes'] if n['kind'] == 'objective' and n.get('mode') == 'gathering']
             if not objectives:
-                return Screen('GATHERING / CONDITIONS', [
-                    'No gathering objective is registered in this world.',
-                    'Invitation and attendance actions are unavailable here.',
-                    'This mode remains an inspectable view of this same saved world.',
-                    'Contracts are available with c. No collective event planner is implemented.'])
+                return Screen(t('gathering.gathering_conditions'), [
+                    t('gathering.no_gathering_objective_is_registered'),
+                    t('gathering.invitation_and_attendance_actions_are'),
+                    t('gathering.this_mode_remains_an_inspectable'),
+                    t('gathering.contracts_are_available_with_c')])
             pending = [r for r in self.world()['relationships'].values() if r['kind'] == 'invited']
-            lines = ['Registered gathering objectives and recorded invitations.']
+            lines = [t('gathering.registered_gathering_objectives_and_recorded')]
             for objective in objectives:lines += conditions(self.world(),objective)
             lines += [self.label(r['source_id'])+' → '+self.label(r['target_id'])+' · '+status(r['status']) for r in pending]
-            lines += ['Conditions and outcomes come from the existing engine, not inferred attendance.']
-            return self.list_screen('GATHERING / CONDITIONS', objectives, lines, 'j Invite  r Respond')
+            lines += [t('gathering.conditions_and_outcomes_come_from')]
+            return self.list_screen(t('gathering.gathering_conditions'), objectives, lines, t('gathering.j_invite_r_respond'))
         if route.kind == 'scenarios':
             records=[r for r in catalogue(self.world()) if folded(route.query) in folded(r['title'])]
-            return Screen('SCENARIOS / CATALOGUE',[
-                'Scenario = situation and possible transformation; objective = desired condition; contract = proposed or accepted agreement.',
-                'Workshop source material is inspectable. Strategy and coalition gameplay are not implemented.',
-                'Synthetic fixtures are labelled separately; selecting one never changes this world.'],
+            return Screen(t('scenarios.scenarios_catalogue'),[
+                t('scenarios.scenario_situation_and_possible_transformation'),
+                t('scenarios.workshop_source_material_is_inspectable'),
+                t('scenarios.synthetic_fixtures_are_labelled_separately')],
                 [(r['title']+' · '+r['status'],('scenario',r['id'])) for r in records],
-                'Enter Inspect scenario  t Trajectory',route.index,route.scroll)
+                t('scenarios.enter_inspect_scenario_t_trajectory'),route.index,route.scroll)
         if route.kind == 'scenario':
             record=next(r for r in catalogue(self.world()) if r['id']==route.target)
             lines=[record['title'],record['status'],record['description'],record['context'],
-                   'PROVENANCE: '+record['provenance']['kind'].replace('_',' ')+' · '+record['provenance']['source_path']]
-            if record.get('source_review'):lines.append(record['source_review'])
-            lines += ['POSSIBLE DESIRED CONDITIONS (source prompts, not achieved objectives)']
+                   t('terminal_polish.scenario_source')]
+            if curator.allowed(self):
+                lines += self.scenario_source(record)
+            lines += [t('scenarios.possible_desired_conditions_source_prompts')]
             lines += ['  '+o['title'] for o in record.get('possible_objectives',[])]
-            lines += ['CONDITIONS / STEPS']+record.get('conditions',[])
+            lines += [t('scenarios.conditions_steps')]+record.get('conditions',[])
             bound=objectives_for(record,self.world())
-            lines += ['LINKED OBJECTIVES IN THIS WORLD']+[meaning for _,meaning in bound]
-            if not bound:lines.append('No objective is registered for this scenario in the current world.')
-            return Screen('SCENARIO / INSPECT',lines,[(self.node_label({**o,'kind':'objective'}),o['id']) for o,_ in bound],
-                          'Enter Objective  t Recorded trajectory',route.index,route.scroll)
+            lines += [t('scenarios.linked_objectives_in_this_world')]+[meaning for _,meaning in bound]
+            if not bound:lines.append(t('scenarios.no_objective_is_registered_for'))
+            return Screen(t('scenarios.scenario_inspect'),lines,[(self.node_label({**o,'kind':'objective'}),o['id']) for o,_ in bound],
+                          t('scenarios.enter_objective_t_recorded_trajectory'),route.index,route.scroll)
         if route.kind == 'network':
             return self.network_screen()
         if route.kind == 'help':
-            return Screen('HELP / YOUR PATH THROUGH THE COMMONS', [
-                'Arrows move the heatmap cell or list selection. Enter opens the highlighted item.',
-                'A matrix row offers expertise; a column requests it. W = O N^T.',
-                '* marks your row and column. [] marks the selected cell. ? means unknown; 0 means a known zero.',
-                'z switches heatmap/numbers. Fixed count bands: 0, 1, 2–3, 4–6, 7–10, 11+. No normalisation.',
-                'Uppercase O / N / W switch offers, needs and matches. / finds a person or expertise domain.',
-                'A partially observed cell shows bounds. A complete empty vector can establish zero even with unknown inputs.',
-                'w opens Hack Network. Tab/Up/Down select nodes; Enter inspects; f centres a node; [ ] page neighbours; r rotates; + - zoom.',
-                'Network: S scope; L layer filter; 3 toggles experimental 3D; r yaw and { / } pitch in 3D. Coordinates carry no social meaning.',
-                'Playing is your simulated agency. Focus and selected relationship never change your player.',
-                'Diagonal self-pairings are excluded from actions. Nothing in the matrix implies consent.',
-                'm chooses a path; e/g/s resume paths with their previous navigation context.',
-                'b or Esc returns to the preceding screen with its selection and scroll position.',
-                'Up/Down select or scroll; Enter opens or confirms the selection. Tab changes regions.',
-                'Contract: Explore → Decisions → Details. Network: canvas ↔ object list.',
-                'PgUp/PgDn scroll long content. / searches lists and matrix participants.',
-                'a shows permitted actions for an inspected object. c contracts; i inbox; h object history.',
-                'H opens collective History; +/- changes detail; f filters. u opens the focused object context panel.',
-                'Context panel: Tab switches Main/Panel. Only permitted curator operations are shown.',
-                'In a relationship: j invites to connect; k proposes directly. Neither pathway requires the other.',
-                'In a contract: y accepts, j negotiates, R rejects and X withdraws, only where the engine permits.',
-                'Inbox: F chooses a filter. Each canonical object appears once; badges show overlapping categories.',
-                'p changes simulated perspective. It grants no real-world representation or consent.',
-                'First names only. (1), (2), … distinguish different people with the same first name; these are stable creation-order labels.',
-                ': opens typed commands, including open K-001, contract history and available actions.',
-                'd opens optional source and technical details. t trajectory. v verifies replay.',
-                'Network, People, Organisations and Resources: x alternative ecosystem views.',
-                'Reconstruct: c Connect, C Contracts, n Network, / Search, f Filter, o Sort, L Layers, Tab Regions.',
-                'Network: S changes scope, L filters layers, B selects background, [ ] pages, +/− zooms, r rotates.',
-                'Matrix: +/− changes detail, Home returns to origin, f fits the viewport. A + in a numeric cell means inspect the exact value.',
-                'Dark points are off-scope actors; rings are isolated in the full projection. 3D is experimental.',
-                'q quits; completed actions are already saved.'], scroll=route.scroll)
+            montreal_help = [
+                t('montreal_ui.help.scopes'), t('montreal_ui.help.overview'), t('montreal_ui.help.directory'),
+                t('montreal_ui.help.network'), t('montreal_ui.help.source'),
+            ]
+            general_help = [
+                t('help.arrows_move_the_heatmap_cell'),
+                t('help.a_matrix_row_offers_expertise'),
+                t('help.marks_your_row_and_column'),
+                t('help.z_switches_heatmap_numbers_fixed'),
+                t('help.uppercase_o_n_w_switch'),
+                t('help.a_partially_observed_cell_shows'),
+                t('help.w_opens_hack_network_tab'),
+                t('help.network_s_scope_l_layer'),
+                t('help.playing_is_your_simulated_agency'),
+                t('help.diagonal_self_pairings_are_excluded'),
+                t('help.m_chooses_a_path_e'),
+                t('help.b_or_esc_returns_to'),
+                t('help.up_down_select_or_scroll'),
+                t('help.contract_explore_decisions_details_network'),
+                t('help.pgup_pgdn_scroll_long_content'),
+                t('help.a_shows_permitted_actions_for'),
+                t('help.h_opens_collective_history_changes'),
+                t('help.context_panel_tab_switches_main'),
+                t('help.in_a_relationship_j_invites'),
+                t('help.in_a_contract_y_accepts'),
+                t('help.inbox_f_chooses_a_filter'),
+                t('help.p_changes_simulated_perspective_it'),
+                t('help.first_names_only_1_2'),
+                t('help.opens_typed_commands_including_open'),
+                t('help.d_opens_optional_source_and'),
+                t('help.network_people_organisations_and_resources'),
+                t('help.reconstruct_c_connect_c_contracts'),
+                t('help.network_s_changes_scope_l'),
+                t('help.matrix_changes_detail_home_returns'),
+                t('help.dark_points_are_off_scope'),
+                t('help.q_quits_completed_actions_are'),
+            ]
+            context = len(self.stack) > 1 and self.stack[-2].kind in montreal_network.ROUTES
+            lines = [*montreal_help, '', *general_help] if context else [*general_help, '', *montreal_help]
+            return Screen(t('help.help_your_path_through_the'), lines,
+                          footer=t('montreal_ui.keys.help'), scroll=route.scroll)
         if route.kind == 'details':
             lines = [self.world()['configuration']['world']['title'],
-                     'Current saved state version: '+str(len(self.current().project('log')))]
+                     t('technical.current_saved_state_version')+str(len(self.current().project('log')))]
             if route.target:
                 lines += self.capture(lambda: self.cmd_metadata(route.target))
-            return Screen('OPTIONAL SOURCE / TECHNICAL DETAILS', lines, scroll=route.scroll)
+                for row in profile_statements(self.world(), route.target):
+                    origin = row['provenance']
+                    lines.append(t('profiles.motivation_source', question=row['raw']['Pourquoi suis-je ici ?'],
+                                   source=origin['file'], field=origin['line']))
+            return Screen(t('technical.optional_source_technical_details'), lines, scroll=route.scroll)
         if route.kind == 'notice':
-            return Screen(route.extra.get('title', 'NOTICE'), route.extra.get('lines', []), scroll=route.scroll)
+            return Screen(route.extra.get('title', t('technical.notice')), route.extra.get('lines', []), scroll=route.scroll)
         # Alternative ecosystem views remain projections over the same world.
         kinds = {'people': 'person', 'organisations': 'organisation', 'resources': 'resource'}
         nodes = self.graph_projection()['nodes']
@@ -436,13 +495,20 @@ class FullScreenTerminal(PlayableTerminal):
             nodes = [n for n in nodes if n['kind'] == kinds[route.kind]]
         else:
             nodes = [n for n in nodes if n['kind'] not in {'capacity', 'need', 'evidence'}]
-        return self.list_screen('ECOSYSTEM / '+route.kind.upper(), nodes)
+        return self.list_screen(t('terminal.ecosystem')+route.kind.upper(), nodes)
+
+    def scenario_source(self, record):
+        provenance = record['provenance']
+        lines = [t('terminal.source_provenance_prefix')+provenance['kind'].replace('_', ' ')+' · '+provenance['source_path']]
+        if record.get('source_review'):
+            lines.append(record['source_review'])
+        return lines
 
     def node_label(self, node):
         style = OBJECTS.get(node['kind'], OBJECTS['evidence'])
         symbol = style.plain if self.plain else style.symbol
         return symbol+' '+(self.aliases().get(node['id'], '')+' ' if node['kind'] in {'agreement','invitation'} else '')+display_label(node)+(
-            ' · '+status(node['status'])+' / Outcome: '+status(node['outcome_status']) if node['kind'] == 'agreement' else '')
+            ' · '+status(node['status'])+t('terminal.outcome')+status(node['outcome_status']) if node['kind'] == 'agreement' else '')
 
     def object_actions(self, target):
         if not self.session or self.route.extra.get('at') is not None:
@@ -456,48 +522,48 @@ class FullScreenTerminal(PlayableTerminal):
         node = self.node(route.target, at=at)
         historical = at is not None
         if historical:
-            return Screen('HISTORICAL / '+self.label(route.target, world),
-                self.capture(lambda:self.inspect_node(route.target,at=at)), footer='Read-only · b Current context', scroll=route.scroll)
+            return Screen(t('terminal.historical_title', title=self.label(route.target, world)),
+                self.capture(lambda:self.inspect_node(route.target,at=at)), footer=t('profiles.read_only_b_current_context'), scroll=route.scroll)
         if node is None:
             from game_gamer.runtime.curation import canonical
             resolved = canonical(world, route.target)
-            links = [('Inspect canonical profile', resolved)] if resolved != route.target and self.node(resolved) else []
-            return Screen('PROFILE / DISCOVERY UPDATED',
-                          ['This profile has a recorded identity or visibility correction.',
-                           'Historical references remain available through h History.'],
-                          links, 'Enter Inspect · h History · b Back', route.index, route.scroll)
+            links = [(t('profiles.inspect_canonical_profile'), resolved)] if resolved != route.target and self.node(resolved) else []
+            return Screen(t('profiles.profile_discovery_updated'),
+                          [t('profiles.this_profile_has_a_recorded'),
+                           t('profiles.historical_references_remain_available_through')],
+                          links, t('profiles.enter_inspect_h_history_b'), route.index, route.scroll)
         actions = self.object_actions(route.target)
         decision_entries = []
         for action in actions:
-            title = ACTION_NAMES[action['kind']]
-            if action['kind'] == 'respond_contact': title = 'Accept invitation' if action['response']=='accept' else 'Decline invitation'
+            title = action_name(action['kind'])
+            if action['kind'] == 'respond_contact': title = t('contracts.inspector.accept_invitation') if action['response']=='accept' else t('contracts.inspector.decline_invitation')
             decision_entries.append((title, ('decision', action)))
         if node['kind'] == 'agreement':
             version = node['versions'][node['current_version']-1]
             def acceptance(party):
-                role = 'Proposer' if party == node['created_by'] else 'Counterparty'
-                receipt = 'accepted' if party in version['acceptances'] else 'no acceptance recorded'
+                role = t('terminal.proposer') if party == node['created_by'] else t('terminal.counterparty')
+                receipt = 'accepted' if party in version['acceptances'] else t('line.inspect_node.no_acceptance_recorded')
                 return f'{role}: {self.label(party)} · {receipt}'
-            lines = [self.contract_title(node['id']), 'Purpose: '+version['terms']['purpose'],
-                     'Proposed by: '+self.label(node['created_by']),
-                     'Status: '+status(node['status'])+' · Outcome: '+status(node['outcome_status']),
-                     'Terms version: '+str(version['number'])+' · Amendments require renewed acceptance.',
+            lines = [self.contract_title(node['id']), t('contracts.purpose_prefix')+version['terms']['purpose'],
+                     t('contracts.proposer_prefix')+self.label(node['created_by']),
+                     t('common.status_prefix')+status(node['status'])+t('contracts.inline_outcome_prefix')+status(node['outcome_status']),
+                     t('line.inspect_node.terms_version')+str(version['number'])+t('contracts.inspector.amendments_require_renewed_acceptance'),
                      *(acceptance(p) for p in node['parties']),
-                     'Proposing does not accept the terms. Each party decides independently.',
-                     'Governing policy: '+self.label(version['policy_id'])]
+                     t('contracts.proposal_requires_party_acceptance'),
+                     t('contracts.inspector.governing_policy')+self.label(version['policy_id'])]
             kinds = {a['kind'] for a in actions}
             details = [self.label(r['actor_id'])+': '+r['description'] for r in version['terms']['responsibilities']]
-            details += ['Condition: '+c for c in version['terms']['conditions']]
-            details += ['Resource: '+self.label(r['resource_id'])+f" × {r['quantity']}" for r in version['resources']]
-            details += ['Valid until: '+version['valid_until'],
-                        'Party acceptance and institutional authorisation are separate.',
-                        'Reject declines a proposal; Withdraw closes it before activation under the current party rule.',
-                        'Evidence: '+str(len(node['evidence_ids']))+' record(s) · d Source details / h History']
+            details += [t('contracts.inspector.condition')+c for c in version['terms']['conditions']]
+            details += [t('contracts.inspector.resource')+self.label(r['resource_id'])+f" × {r['quantity']}" for r in version['resources']]
+            details += [t('laboratory.inspect_contract.valid_until')+version['valid_until'],
+                        t('contracts.inspector.party_acceptance_and_institutional_authorisation'),
+                        t('contracts.inspector.reject_declines_a_proposal_withdraw'),
+                        t('contracts.inspector.evidence')+str(len(node['evidence_ids']))+t('contracts.inspector.record_s_d_source_details')]
             # One readable link per participant, despite proposer/party relations.
             linked = [*node['parties'],node['objective_id'],version['policy_id'],
                       *(r['resource_id'] for r in version['resources']),*node['evidence_ids']]
             entries = [(self.node_label(self.node(key)),key) for key in dict.fromkeys(linked)]
-            entries += [('Relevant scenario · '+r['title'],('scenario',r['id'])) for r in scenarios_for(node['objective_id'],world)]
+            entries += [(t('contracts.inspector.relevant_scenario')+r['title'],('scenario',r['id'])) for r in scenarios_for(node['objective_id'],world)]
             decision_entries = [
                 (f'[{DECISION_KEYS[a["kind"]][0]}] {label}' if a['kind'] in DECISION_KEYS else label, ('decision', a))
                 for label, (_, a) in decision_entries]
@@ -505,86 +571,87 @@ class FullScreenTerminal(PlayableTerminal):
             route.decision_index = min(route.decision_index, max(0, len(decision_entries)-1))
             if route.region == 'decisions' and not decision_entries:
                 route.region = 'explore'
-            footer = '  '.join(' '.join(key) for kind, key in DECISION_KEYS.items() if kind in kinds)
+            footer = '  '.join(f'{shortcut} {t(label)}' for kind, (shortcut, label) in DECISION_KEYS.items() if kind in kinds)
             if self.session:
                 for option in action_options(self.current(), self.session.actor, include_attendance=False):
                     action = option['action']
                     if action.get('agreement_id') == route.target and option['errors']:
-                        details.append(ACTION_NAMES[action['kind']] + ' · ' +
+                        details.append(action_name(action['kind']) + ' · ' +
                                        ', '.join(error.replace('_', ' ') for error in option['errors']))
-            return inspector('CONTRACT INSPECTOR', lines, links=entries, decisions=decision_entries,
-                             details=details, route=route, footer=footer+'  Tab Regions  a Actions  h History',
+            return inspector(t('contracts.inspector.contract_inspector'), lines, links=entries, decisions=decision_entries,
+                             details=details, route=route, footer=footer+t('contracts.inspector.tab_regions_a_actions_h'),
                              wrap_entries=False)
         if node['kind'] == 'invitation':
-            lines = [self.aliases().get(node['id'],'Invitation')+' · Invitation to connect · '+status(node['status']),
-                     'From '+self.label(node['source_id'])+' to '+self.label(node['target_id']),
-                     node['message'], 'Purpose: '+(node['purpose'] or 'Explore a possible collaboration'),
-                     'Simulation contact only. No contractual obligations or real-world contact are implied.']
-            if node.get('response'): lines.append('Response: '+node['response']['decision']+' · '+node['response']['message'])
-            if node['status']=='accepted': lines.append('Connection acknowledged. A contract remains an independent decision.')
-            elif not actions: lines.append('No decision is available to your role in this invitation state.')
+            lines = [self.aliases().get(node['id'],t('objects.invitation.singular'))+t('contact.inspector.invitation_to_connect')+status(node['status']),
+                     t('contact.inspector.direction', sender=self.label(node['source_id']), recipient=self.label(node['target_id'])),
+                     node['message'], t('contracts.purpose_prefix')+(node['purpose'] or t('contact.inspector.explore_a_possible_collaboration')),
+                     t('contact.inspector.simulation_contact_only_no_contractual')]
+            if node.get('response'): lines.append(t('contact.inspector.response')+node['response']['decision']+' · '+node['response']['message'])
+            if node['status']=='accepted': lines.append(t('contact.inspector.connection_acknowledged_a_contract_remains'))
+            elif not actions: lines.append(t('contact.inspector.no_decision_is_available_to'))
             entries = [(self.node_label(self.node(p)),p) for p in (node['source_id'],node['target_id'])]
             if self.playing_actor in (node['source_id'],node['target_id']):
                 other = node['target_id'] if node['source_id']==self.playing_actor else node['source_id']
-                entries += [('Propose a contract directly',('propose_to',other))]
-                entries += [('Invite to connect again',('invite_to',other))]
+                entries += [(t('contracts.propose_directly'),('propose_to',other))]
+                entries += [(t('contact.inspector.invite_to_connect_again'),('invite_to',other))]
             entries = decision_entries+entries
-            return Screen('INVITATION / CONNECT',lines,entries,'Enter Choose  a Actions  h History  w Network  d Provenance',route.index,route.scroll)
+            return Screen(t('contact.inspector.invitation_connect'),lines,entries,t('contact.inspector.enter_choose_a_actions_h'),route.index,route.scroll)
         if node['id'] in world['actors']:
-            lines = [display_label(node),'Affiliation: '+(', '.join(affiliations(world,node['id'])) or 'Unknown / not recorded')]
+            lines = [display_label(node),t('profiles.affiliation')+(', '.join(affiliations(world,node['id'])) or t('common.unknown_or_not_recorded'))]
             statements = profile_statements(world, node['id'])
             if statements:
                 if 'motivation' in node:
-                    lines.append('Motivation · '+(node['motivation'] or 'Not recorded'))
+                    lines.append(t('profiles.motivation')+(node['motivation'] or t('common.not_recorded')))
                 else:
-                    for row in statements:
-                        origin = row['provenance']
-                        lines.append(f"Motivation · {row['raw']['Pourquoi suis-je ici ?']} ({origin['file']}:{origin['line']})")
-            for table, label in (('capacities','Offers'),('needs','Needs')):
+                    motivations = dict.fromkeys(row['raw']['Pourquoi suis-je ici ?'].strip() for row in statements)
+                    lines.append(t('profiles.motivation') + (' / '.join(text for text in motivations if text)
+                                                            or t('common.not_recorded')))
+            for table, label in (('capacities',t('objects.offers')),('needs',t('objects.need.plural'))):
                 records = [r for r in world[table].values() if r['actor_id']==node['id']]
-                lines.append(label+f' ({len(records)}): '+(', '.join(r['domain'] for r in records[:3]) or 'Not recorded')+(' …' if len(records)>3 else ''))
+                lines.append(label+f' ({len(records)}): '+(', '.join(r['domain'] for r in records[:3]) or t('common.not_recorded'))+(' …' if len(records)>3 else ''))
             connections = [r for r in world['relationships'].values() if r['kind']=='acknowledged_connection' and node['id'] in (r['source_id'],r['target_id'])]
-            lines += [f'Acknowledged connections: {len(connections)}', 'Potential complementarities are declared possibilities. They imply no consent.']
+            lines += [t('profiles.acknowledged_connections', connections_count=len(connections)), t('profiles.potential_complementarities_are_declared_possibilities')]
             entries = []
             if self.playing_actor and self.playing_actor!=node['id'] and node['kind']=='person':
                 if world['actors'][self.playing_actor]['kind']=='person':
-                    entries += [('Invite to connect',('invite_to',node['id']))]
+                    entries += [(t('contact.invite'),('invite_to',node['id']))]
                 if self.proposal_permitted(node['id']):
-                    entries += [('Propose a contract directly',('propose_to',node['id']))]
-                else:lines.append('Contract proposal unavailable for this role/counterparty and the registered scenario constraints.')
-            entries += [('Complete offers and needs',('expertise',node['id']))]
+                    entries += [(t('contracts.propose_directly'),('propose_to',node['id']))]
+                else:lines.append(t('profiles.contract_proposal_unavailable_for_this'))
+            entries += [(t('profiles.complete_offers_and_needs'),('expertise',node['id']))]
             contracts = [a for a in world['agreements'].values() if node['id'] in a['parties']]
-            entries += [('Contract · '+self.contract_title(a['id']),a['id']) for a in contracts]
+            entries += [(t('profiles.contract')+self.contract_title(a['id']),a['id']) for a in contracts]
             for r in connections:
                 other = r['target_id'] if r['source_id']==node['id'] else r['source_id']
-                entries.append(('Acknowledged connection · '+self.label(other), r['invitation_id']))
+                entries.append((t('profiles.acknowledged_connection')+self.label(other), r['invitation_id']))
             potentials = self.current().derive_possibilities(world)
             relevant = []
             for p in potentials:
                 if node['id'] in (p['source_id'],p['target_id']):
                     other=p['target_id'] if p['source_id']==node['id'] else p['source_id']
                     if other not in relevant: relevant.append(other)
-            entries += [('Potential · '+self.label(p),('relation_to',(node['id'],p))) for p in relevant[:4]]
-            lines += [f'{len(relevant)} potential counterparties · w opens the paged network.']
-            return Screen('INSPECT / '+node['kind'].upper(),lines,entries,'Enter Choose  a Actions  w Network  d Source details',route.index,route.scroll)
+            entries += [(t('profiles.potential')+self.label(p),('relation_to',(node['id'],p))) for p in relevant[:4]]
+            lines += [t('profiles.potential_counterparties_w_opens_the', relevant_count=len(relevant))]
+            return Screen(t('objects.inspect_title', kind=node['kind'].upper()),lines,entries,t('profiles.enter_choose_a_actions_w'),route.index,route.scroll)
         lines = self.capture(lambda:self.inspect_node(route.target))
         entries = [(self.node_label(n),n['id']) for n in self.neighbours(route.target)]
-        if node['kind']=='objective': entries = [('Scenario · '+r['title'],('scenario',r['id'])) for r in scenarios_for(route.target,world)]+entries
-        return Screen('INSPECT / '+node['kind'].upper(),lines,entries,'Enter Follow link  h History  d Details',route.index,route.scroll)
+        if node['kind']=='objective': entries = [(t('objects.inspector.scenario')+r['title'],('scenario',r['id'])) for r in scenarios_for(route.target,world)]+entries
+        return Screen(t('objects.inspect_title', kind=node['kind'].upper()),lines,entries,t('objects.inspector.enter_follow_link_h_history'),route.index,route.scroll)
 
     def contract_title(self, target):
-        return self.aliases().get(target, 'Contract')+' · '+self.label(target)
+        return self.aliases().get(target, t('objects.agreement.singular'))+' · '+self.label(target)
 
-    def list_screen(self, title, nodes, lines=None, footer='Enter Inspect  / Search'):
+    def list_screen(self, title, nodes, lines=None, footer=None):
+        footer = t('terminal.enter_inspect_search') if footer is None else footer
         nodes = [n for n in nodes if folded(self.route.query) in folded(display_label(n))]
         nodes.sort(key=lambda n: (folded(display_label(n)), n['id']))
         self.route.index = min(self.route.index, max(0, len(nodes)-1))
         entries = [(self.node_label(n), n['id']) for n in nodes]
         context = list(lines or [])
         if self.route.query:
-            context.append('Search: '+self.route.query)
+            context.append(t('controls.search_prefix')+self.route.query)
         if not nodes:
-            context.append('No matching objects. / changes the search; b returns.')
+            context.append(t('terminal.no_matching_objects_changes_the'))
         return Screen(title, context, entries, footer, self.route.index, self.route.scroll)
 
     def matrix_screen(self):
@@ -593,18 +660,18 @@ class FullScreenTerminal(PlayableTerminal):
         kind = route.extra.get('matrix_kind', 'W'); numeric = route.extra.get('numeric', False)
         domains = projection['domains']; axis = roster if kind=='W' else [{'id':code,'label':projection['vocabulary'][code]} for code in domains]
         if not count or not axis:
-            return Screen('ECOSYSTEM / MATRIX EXPLORER', ['No eligible matrix observations in this world.', 'x opens alternative ecosystem views.'])
+            return Screen(t('matrix.ecosystem_matrix_explorer'), [t('matrix.no_eligible_matrix_observations_in'), t('matrix.x_opens_alternative_ecosystem_views')])
         route.row = min(route.row,count-1); route.column = min(route.column,len(axis)-1)
         value = projection[kind][route.row][route.column]
-        meaning = 'W = O N^T · Rows OFFER → columns REQUEST' if kind=='W' else ('O / OFFERS' if kind=='O' else 'N / NEEDS')+' · People × expertise domains'
-        exact = score_text(cell(projection,route.row,route.column)) if kind=='W' else ('Unknown' if value is None else str(value))
+        meaning = t('matrix.w_o_n_t_rows') if kind=='W' else (t('matrix.o_offers') if kind=='O' else t('matrix.n_needs'))+t('matrix.people_expertise_domains')
+        exact = score_text(cell(projection,route.row,route.column)) if kind=='W' else (t('common.unknown') if value is None else str(value))
         lines = [meaning,
-            'Selected: '+display_label(roster[route.row])+' → '+display_label(axis[route.column])+' · Exact matches: '+exact,
-            '* Your row/column  > Selection  ? Unknown  0 Known zero  - Self (excluded)' if kind=='W' else '* Current player  > Selection  1 Selected  0 Not selected  ? Unknown',
-            'Scale: '+' '.join((b.ascii if self.plain else b.glyph)+'='+b.label for b in BANDS)+' · z Heatmap/numbers' if kind=='W' else 'Fixed categories: 1 Selected / 0 Not selected / ? Unknown · z Numbers']
+            t('controls.selected_prefix')+display_label(roster[route.row])+' → '+display_label(axis[route.column])+t('matrix.exact_matches')+exact,
+            t('matrix.your_row_column_selection_unknown') if kind=='W' else t('matrix.current_player_selection_1_selected'),
+            t('matrix.scale')+' '.join((b.ascii if self.plain else b.glyph)+'='+b.label for b in BANDS)+t('matrix.z_heatmap_numbers') if kind=='W' else t('matrix.fixed_categories_1_selected_0')]
         styles=[]; highlights=set()
         if kind=='W' and not numeric:
-            column=len('Scale: ')
+            column=len(t('matrix.scale'))
             for item in BANDS:
                 label=(item.ascii if self.plain else item.glyph)+'='+item.label
                 styles.append((3,column,len(label),'#111111' if item.maximum is None or item.maximum>=10 else '#eee8d5',item.colour,False));column+=len(label)+1
@@ -619,15 +686,15 @@ class FullScreenTerminal(PlayableTerminal):
         lines.extend(grid.lines)
         styles.extend((r+start, c, n, fg, bg, bold) for r,c,n,fg,bg,bold in grid.styles)
         highlights.update(r+start for r in grid.highlights)
-        lines.append(f'Rows {grid.rows.start+1}–{grid.rows.stop}/{count} · Columns {grid.columns.start+1}–{grid.columns.stop}/{len(axis)}')
-        lines.append(f'Matrix detail: {route.matrix.detail.name.title()} ({grid.cell_width} columns) · + overflow: inspect exact value')
+        lines.append(t('matrix.rows_columns', value=grid.rows.start + 1, stop=grid.rows.stop, count=count, value_2=grid.columns.start + 1, stop_2=grid.columns.stop, axis_count=len(axis)))
+        lines.append(t('matrix.matrix_detail_columns_overflow_inspect', value=route.matrix.detail.name.title(), cell_width=grid.cell_width))
         if kind=='W':
             detail=cell(projection,route.row,route.column)
-            lines.append('Matching domains: '+(', '.join(detail['matching_domains']) or ('Unknown' if detail['value'] is None else 'None in the observed vocabulary')))
-        else: lines.append('Domain: '+projection['vocabulary'][domains[route.column]])
-        lines.append('World state '+str(len(self.current().project('log')))+' · Shared vocabulary and snapshot across O / N / W')
-        return Screen('ECOSYSTEM / '+('COMPLEMENTARITY MATRIX' if kind=='W' else 'OFFERS O' if kind=='O' else 'NEEDS N')+' / '+('NUMERIC' if numeric else 'HEATMAP'),lines,
-            footer='O/N/W  Arrows Cell  Enter Inspect  +/- Detail  Home Origin  f Fit  z Numbers  w Network',
+            lines.append(t('matrix.matching_domains')+(', '.join(detail['matching_domains']) or (t('common.unknown') if detail['value'] is None else t('matrix.none_in_the_observed_vocabulary'))))
+        else: lines.append(t('matrix.domain')+projection['vocabulary'][domains[route.column]])
+        lines.append(t('matrix.expertise.world_state')+str(len(self.current().project('log')))+t('matrix.shared_vocabulary_and_snapshot_across'))
+        return Screen(t('terminal.ecosystem')+(t('matrix.complementarity_matrix') if kind=='W' else t('matrix.offers_o') if kind=='O' else t('matrix.needs_n'))+' / '+(t('matrix.numeric') if numeric else t('matrix.heatmap')),lines,
+            footer=t('matrix.o_n_w_arrows_cell'),
             highlights=highlights, styles=styles, fixed_rows=set(range(start,start+len(grid.lines))))
 
     def cell_screen(self):
@@ -639,39 +706,39 @@ class FullScreenTerminal(PlayableTerminal):
         reverse=cell(projection,self.route.column,self.route.row)
         self._cell = detail
         self.route.extra['relation']=(detail['provider']['id'],detail['requester']['id'])
-        lines = ['Offers → Needs: '+display_label(detail['provider'])+' → '+display_label(detail['requester']),
-                 score_text(detail)+' matching declared expertise domain(s)',
-                 'Matching expertise: '+(', '.join(detail['matching_domains']) or 'None confirmed'),
-                 'Reverse: '+display_label(reverse['provider'])+' → '+display_label(reverse['requester'])+
-                 ' · '+score_text(reverse)+' matching domain(s)',
-                 'Reverse expertise: '+(', '.join(reverse['matching_domains']) or 'None confirmed'),
-                 'Scores describe potential, not acknowledged contact or accepted obligations.']
-        lines += ['Answer coverage: offers '+detail['offer']['state']+' / needs '+detail['need']['state'],
-                  'World state '+str(len(self.current().project('log')))+' · d Source details']
+        lines = [t('matrix.pair.offers_needs')+display_label(detail['provider'])+' → '+display_label(detail['requester']),
+                 score_text(detail)+t('matrix.pair.matching_declared_expertise_domain_s'),
+                 t('matrix.pair.matching_expertise')+(', '.join(detail['matching_domains']) or t('matrix.pair.none_confirmed')),
+                 t('matrix.pair.reverse')+display_label(reverse['provider'])+' → '+display_label(reverse['requester'])+
+                 ' · '+score_text(reverse)+t('matrix.pair.matching_domain_s'),
+                 t('matrix.pair.reverse_expertise')+(', '.join(reverse['matching_domains']) or t('matrix.pair.none_confirmed')),
+                 t('matrix.pair.scores_describe_potential_not_acknowledged')]
+        lines.append(t('matrix.pair.answer_coverage_offers')+detail['offer']['state']+' / needs '+detail['need']['state'])
         pair={detail['provider']['id'],detail['requester']['id']}
-        if detail['self_pairing']:lines.append('Self-pairing excluded from gameplay. Choose a different row or column.')
-        elif self.playing_actor not in pair:lines.append('OBSERVATION ONLY: you are not a party to this relationship. Following a profile does not change who you play.')
-        else:lines.append('You may propose new terms as '+self.label(self.playing_actor)+'. They require a separate decision by the other party.')
-        if detail['value'] is None:lines.append('Incomplete coverage. Confirmed matches form a lower bound; remaining domains are unknown.')
-        elif detail['value']==0:lines.append('No shared selections in this vocabulary; this does not exclude other collaboration.')
-        entries = [('Inspect offers · '+display_label(detail['provider']), detail['provider']['id']),
-                   ('Inspect needs · '+display_label(detail['requester']), detail['requester']['id'])]
-        entries += [('Contract · '+self.contract_title(a['id']),a['id']) for a in self.world()['agreements'].values() if pair <= set(a['parties'])]
+        if detail['self_pairing']:lines.append(t('matrix.pair.self_pairing_excluded_from_gameplay'))
+        elif self.playing_actor not in pair:lines.append(t('matrix.pair.observation_only_you_are_not'))
+        else:lines.append(t('matrix.pair.you_may_propose_new_terms')+self.label(self.playing_actor)+t('matrix.pair.they_require_a_separate_decision'))
+        if detail['value'] is None:lines.append(t('matrix.pair.incomplete_coverage_confirmed_matches_form'))
+        elif detail['value']==0:lines.append(t('matrix.pair.no_shared_selections_in_this'))
+        entries = [(t('matrix.pair.inspect_offers')+display_label(detail['provider']), detail['provider']['id']),
+                   (t('matrix.pair.inspect_needs')+display_label(detail['requester']), detail['requester']['id'])]
+        entries += [(t('profiles.contract')+self.contract_title(a['id']),a['id']) for a in self.world()['agreements'].values() if pair <= set(a['parties'])]
         if self.playing_actor in pair and not detail['self_pairing']:
             other = next(p for p in pair if p!=self.playing_actor)
-            entries += [('Invite to connect',('invite_to',other))]
-            if self.proposal_permitted(other):entries += [('Propose a contract directly',('propose_to',other))]
-        entries += [('View in network',('network_of',detail['provider']['id']))]
+            entries += [(t('contact.invite'),('invite_to',other))]
+            if self.proposal_permitted(other):entries += [(t('contracts.propose_directly'),('propose_to',other))]
+        entries += [(t('matrix.pair.view_in_network'),('network_of',detail['provider']['id']))]
         if self.route.extra.get('new_contract'):
             self.route.index=next((i for i,(_,key) in enumerate(entries) if key==self.route.extra['new_contract']),self.route.index)
             self.route.extra.pop('new_contract')
         self.route.index=min(self.route.index,len(entries)-1)
-        lines.insert(0,'Selected link: '+entries[self.route.index][0])
+        lines.insert(0,t('matrix.pair.selected_link')+entries[self.route.index][0])
         contracts=[a for a in self.world()['agreements'].values() if pair<=set(a['parties'])]
         if contracts:
-            lines.insert(1,'Contracts here: '+'; '.join(self.contract_title(a['id'])+' · '+status(a['status']) for a in contracts))
-        return Screen('A POTENTIAL CONNECTION / POTENTIAL COMPLEMENTARITY', lines, entries,
-                      'Enter Choose  j Invite  k Propose contract  a Actions  w Network  d Source details', self.route.index, self.route.scroll)
+            lines.insert(1,t('matrix.pair.contracts_here')+'; '.join(self.contract_title(a['id'])+' · '+status(a['status']) for a in contracts))
+        return Screen(t('matrix.pair.a_potential_connection_potential_complementarity'), lines, entries,
+                      t('matrix.pair.enter_choose_j_invite_k')+t('matrix.pair.d_source_details'),
+                      self.route.index, self.route.scroll)
 
     def open_network(self):
         centre=self.focused_actor if self.route.kind=='inspect' else self.playing_actor
@@ -689,28 +756,28 @@ class FullScreenTerminal(PlayableTerminal):
                            offset=route.extra.get('offset',0),limit=limit,
                            scope=route.extra.get('scope','neighbourhood'),categories=route.extra.get('categories'),
                            three_d=route.extra.get('three_d',False), object_type=route.extra.get('object_type'))
-        if not visual['nodes']:return Screen('NETWORK / HACK TERMINAL',['No matching graph nodes. / Search or b Back.'])
+        if not visual['nodes']:return Screen(t('network.network_hack_terminal'),[t('network.no_matching_graph_nodes_search')])
         route.index=min(route.index,len(visual['nodes'])-1);selected=visual['nodes'][route.index]
         route.extra['offset'] = visual['offset']
         canvas_width = self.width-2
         zoom = route.extra.get('zoom', 1.)
         rotation = route.extra.get('yaw' if route.extra.get('three_d') else 'angle', 0.)
-        lines=['Selected: '+self.node_label(selected)+' · Centre: '+self.label(route.target),
-               'Scope: '+route.extra.get('scope_label','Player-centred neighbourhood' if route.target==self.playing_actor else 'Selected-actor neighbourhood')+
-               (' · EXPERIMENTAL 3D' if route.extra.get('three_d') else ' · Planar'),
-               f"Showing {len(visual['nodes'])}/{visual['full_node_count']} nodes · {visual['rendered_relationship_count']}/{visual['full_relationship_count']} edges ({len(visual['edges'])} bundles)",
-               'Types: '+next((name for name, kind in OBJECT_TYPES.items() if kind == route.extra.get('object_type')), 'All types')+' · Layers: '+(', '.join(route.extra['categories']) if route.extra.get('categories') else 'All')+
-               f' · Zoom {zoom:.2f}x · Rotation {rotation:.1f} rad',
-               f"Context: {len(visual['context_actor_ids'])} off-scope actors · {route.extra.get('background','dim').title()} background · {'o' if self.plain else '∘'} isolated",
-               f"Neighbours {visual['offset']+1 if visual['total'] else 0}–{min(visual['total'],visual['offset']+limit)}/{visual['total']} · [ ] Page"]
+        lines=[t('controls.selected_prefix')+self.node_label(selected)+t('network.centre')+self.label(route.target),
+               t('network.scope')+route.extra.get('scope_label',t('network.player_centred_neighbourhood') if route.target==self.playing_actor else t('network.selected_actor_neighbourhood'))+
+               (t('network.camera.experimental_3d') if route.extra.get('three_d') else t('network.camera.planar')),
+               t('network.showing_nodes_edges_bundles', nodes_count=len(visual['nodes']), full_node_count=visual['full_node_count'], rendered_relationship_count=visual['rendered_relationship_count'], full_relationship_count=visual['full_relationship_count'], edges_count=len(visual['edges'])),
+               t('network.types')+object_type_label(route.extra.get('object_type'))+t('network.layers')+(', '.join(category_label(category) for category in route.extra['categories']) if route.extra.get('categories') else t('controls.all'))+
+               t('network.zoom_x_rotation_rad', zoom=zoom, rotation=rotation),
+               t('network.context_off_scope_actors_background', context_actor_ids_count=len(visual['context_actor_ids']), value=route.extra.get('background', 'dim').title(), value_2='o' if self.plain else '∘'),
+               t('network.neighbours_page', value=visual['offset'] + 1 if visual['total'] else 0, value_2=min(visual['total'], visual['offset'] + limit), total=visual['total'])]
         # Four header and three footer rows are reserved by CursesViewport.
         canvas_height = self.height-7-len(lines)
         lines = [line if len(line) <= canvas_width else line[:max(0,canvas_width-3)]+'...' for line in lines]
         self._network=visual
         entries = [(self.node_label(n),n['id']) for n in visual['nodes']]
-        footer = 'Enter Inspect  Tab View  T Types  S Scope  L Layers  B Background  [ ] Page  f Centre  + - Zoom  r Rotate'
+        footer = t('network.enter_inspect_tab_view_t')
         if route.region == 'explore' or canvas_height < 3 or canvas_width < 12:
-            return Screen('ECOSYSTEM / NETWORK / OBJECT LIST', lines, entries, footer,
+            return Screen(t('network.ecosystem_network_object_list'), lines, entries, footer,
                           route.index, route.scroll)
         canvas, spans = draw_graph(visual,canvas_width,canvas_height,selected=selected['id'],plain=self.plain,
             angle=route.extra.get('angle',0.),zoom=zoom,
@@ -718,7 +785,7 @@ class FullScreenTerminal(PlayableTerminal):
             labels={n['id']:self.aliases()[n['id']]+' '+display_label(n) for n in visual['nodes'] if n['kind']=='agreement'})
         start = len(lines)
         styles=[(row+start,column,length,fg,bg,bold) for row,column,length,fg,bg,bold in spans]
-        return Screen('ECOSYSTEM / NETWORK / HACK RENDERER',lines+canvas,entries,footer,route.index,0,
+        return Screen(t('network.ecosystem_network_hack_renderer'),lines+canvas,entries,footer,route.index,0,
                       styles=styles,show_entries=False,raster_start=start)
 
     def handle(self, key, screen):
@@ -769,23 +836,19 @@ class FullScreenTerminal(PlayableTerminal):
             route.column = route.extra.get(key+'_column',0)
             return
         if route.kind=='inbox' and key=='F':
-            categories = ['All my records','Incoming invitations','Outgoing invitations','Accepted connections',
-                          'Contract proposals','Awaiting my decision','Awaiting other parties',
-                          'Agreements in progress','Verification requests','History']
-            chosen = self.choose('INBOX FILTER',categories,str)
-            route.extra['category'] = None if chosen==categories[0] else chosen
+            route.extra['category'] = self.choose(t('terminal.inbox_filter'), list(INBOX_CATEGORIES), inbox_category)
             route.index=route.scroll=0; return
         if route.kind=='inspect' and key in {'y','j','R','X'}:
             kinds = {'y':('accept','respond_contact'),'j':('amend',),'R':('reject','respond_contact'),'X':('withdraw','withdraw_contact')}
             candidate = next((c for c in self.object_actions(route.target) if c['kind'] in kinds[key]
                               and (c['kind']!='respond_contact' or c['response']==('accept' if key=='y' else 'decline'))),None)
             if candidate: self.execute_action(candidate)
-            else: self.notice = 'That decision is unavailable for your role and this lifecycle state. a shows valid actions.'
+            else: self.notice = t('terminal.that_decision_is_unavailable_for')
             return
         if route.kind=='cell' and key in {'j','k'}:
             pair=self.focused_relation
             if not pair or self.playing_actor not in pair or pair[0]==pair[1]:
-                self.notice='You are observing this pair. Choose your own row or column to act.'; return
+                self.notice=t('terminal.you_are_observing_this_pair'); return
             other = next(p for p in pair if p!=self.playing_actor)
             self.contact_to(other) if key=='j' else self.propose_to(other)
             return
@@ -793,7 +856,7 @@ class FullScreenTerminal(PlayableTerminal):
             self.push({'c': 'contracts', 'i': 'inbox', '?': 'help', 't': 'trajectory'}[key]); return
         if key == 'v':
             game = self.current()
-            self.notice = 'Replay consistent: '+str(game.replay().get_world() == game.get_world()); return
+            self.notice = t('terminal.replay_consistent')+str(game.replay().get_world() == game.get_world()); return
         if key == 'w':
             self.open_network();return
         if key == 'z' and route.kind=='matrix':
@@ -813,33 +876,33 @@ class FullScreenTerminal(PlayableTerminal):
         if route.kind=='network':
             if key == 'T':
                 selected = screen.entries[route.index][1] if screen.entries else route.target
-                name = self.choose('MULTIPLEX / OBJECT TYPES', list(OBJECT_TYPES), str)
-                route.extra.update(object_type=OBJECT_TYPES[name], offset=0)
+                kind = self.choose(t('network.object_types.title'), list(OBJECT_TYPES), lambda name: object_type_label(OBJECT_TYPES[name]))
+                route.extra.update(object_type=OBJECT_TYPES[kind], offset=0)
                 route.index = 0
                 refreshed = self.network_screen()
                 route.index = next((i for i, (_, ident) in enumerate(refreshed.entries) if ident == selected), 0)
                 route.reveal = True
                 return
             if key == 'B':
-                route.extra['background'] = self.choose('NETWORK BACKGROUND', ['dim', 'hidden', 'full'], str.title)
+                route.extra['background'] = self.choose(t('network.background.title'), ['dim', 'hidden', 'full'], str.title)
                 return
             if key=='S':
-                labels=['Whole graph','Player-centred neighbourhood','Selected-actor neighbourhood','Contract neighbourhood','Invitation and connection network']
-                choice=self.choose('NETWORK SCOPE',labels,str)
+                labels=[t('terminal.whole_graph'),t('network.player_centred_neighbourhood'),t('network.selected_actor_neighbourhood'),t('terminal.contract_neighbourhood'),t('terminal.invitation_and_connection_network')]
+                choice=self.choose(t('network.scope.title'),labels,str)
                 if choice==labels[1]:route.target=self.playing_actor or route.target
-                elif choice==labels[2]:route.target=self.picker('CENTRE ON PERSON',people(self.world()))['id']
+                elif choice==labels[2]:route.target=self.picker(t('terminal.centre_on_person'),people(self.world()))['id']
                 elif choice==labels[3]:
-                    route.target=self.picker('CENTRE ON CONTRACT',[n for n in self.graph_projection()['nodes'] if n['kind']=='agreement'])['id']
+                    route.target=self.picker(t('terminal.centre_on_contract'),[n for n in self.graph_projection()['nodes'] if n['kind']=='agreement'])['id']
                 route.extra.update(scope='whole' if choice==labels[0] else 'connections' if choice==labels[4] else 'neighbourhood',scope_label=choice,offset=0)
                 route.index=0;return
             if key=='L':
-                selected=self.choose('NETWORK LAYER',['All layers',*CATEGORIES],str)
-                route.extra['categories']=None if selected=='All layers' else [selected]
+                selected=self.choose(t('terminal.network_layer'),[None, *CATEGORIES], lambda category: category_label(category) if category else t('terminal.all_layers'))
+                route.extra['categories']=None if selected is None else [selected]
                 route.extra['offset']=route.index=0;return
             if key=='3':route.extra['three_d']=not route.extra.get('three_d',False);return
             if key in {'{','}'}:
                 if route.extra.get('three_d'):route.extra['pitch']=route.extra.get('pitch',0.)+(-.2 if key=='{' else .2)
-                else:self.notice='3 enables the experimental yaw/pitch camera.'
+                else:self.notice=t('terminal.shortcut_3_enables_the_experimental_yaw')
                 return
             if key in {'up','down'}:
                 route.index=(route.index+(-1 if key=='up' else 1))%max(1,len(screen.entries))
@@ -850,14 +913,14 @@ class FullScreenTerminal(PlayableTerminal):
                 route.extra['offset']=max(0,route.extra.get('offset',0)+(-limit if key=='[' else limit));route.index=0;return
             if key=='f' and screen.entries:
                 route.target=screen.entries[route.index][1];route.index=0
-                route.extra.update(offset=0,scope='neighbourhood',scope_label='Selected-object neighbourhood');return
+                route.extra.update(offset=0,scope='neighbourhood',scope_label=t('terminal.selected_object_neighbourhood'));return
             if key=='r':
                 axis='yaw' if route.extra.get('three_d') else 'angle'
                 route.extra[axis]=route.extra.get(axis,0.)+.3;return
             if key in {'+','-'}:
                 route.extra['zoom']=max(.4,min(2.,route.extra.get('zoom',1.)*(1.2 if key=='+' else 1/1.2)));return
         if key == 'x':
-            view = self.choose('ECOSYSTEM VIEWS', ['matrix', 'network', 'people', 'organisations', 'resources'], str.capitalize)
+            view = self.choose(t('terminal.ecosystem_views'), ['matrix', 'network', 'people', 'organisations', 'resources'], str.capitalize)
             if view == 'matrix':
                 self.switch_mode('ecosystem')
             elif view=='network':self.open_network()
@@ -865,13 +928,13 @@ class FullScreenTerminal(PlayableTerminal):
                 self.push(view)
             return
         if key == '/':
-            query = self.read('Search by first name or expertise domain (blank clears)')
+            query = self.read(t('terminal.search_by_first_name_or'))
             if route.kind == 'matrix':
                 projection=matrix(self.world());roster=projection['actors'];kind=route.extra.get('matrix_kind','W')
                 matches = [{**a,'axis':'actor'} for a in roster if folded(query) in folded(display_label(a))]
                 matches += [{'id':code,'label':label,'axis':'domain'} for code,label in projection['vocabulary'].items()
                             if folded(query) in folded(label)]
-                item = self.picker('FIND MATRIX PARTICIPANT / DOMAIN',matches)
+                item = self.picker(t('terminal.find_matrix_participant_domain'),matches)
                 if item['axis']=='domain':
                     if kind=='W': route.extra['matrix_kind']='O'
                     route.column=projection['domains'].index(item['id'])
@@ -883,10 +946,14 @@ class FullScreenTerminal(PlayableTerminal):
                 route.query = query; route.index = route.scroll = 0
             return
         if key == ':':
-            self.typed_command(self.read('Command (? for help)')); return
+            self.typed_command(self.read(t('terminal.command_for_help'))); return
         if key == 'd':
-            if route.kind in {'cell','incidence'}:
-                lines = []
+            if route.kind == 'scenario':
+                record = next(item for item in catalogue(self.world()) if item['id'] == route.target)
+                self.push('notice', title=t('terminal.optional_exact_source_references'),
+                          lines=self.scenario_source(record))
+            elif route.kind in {'cell','incidence'}:
+                lines = [t('matrix.expertise.world_state')+str(self._frame_revision)]
                 projection=matrix(self.world())
                 if route.kind=='incidence':
                     observation=projection['observations'][route.target]['offer' if route.extra['matrix_kind']=='O' else 'need']
@@ -897,7 +964,7 @@ class FullScreenTerminal(PlayableTerminal):
                     for side in ('offer','need'):
                         observation=detail[side]
                         lines += [side.upper()]+[k.replace('_',' ')+': '+str(v) for k,v in observation['source'].items()]
-                self.push('notice', title='OPTIONAL EXACT SOURCE REFERENCES', lines=lines)
+                self.push('notice', title=t('terminal.optional_exact_source_references'), lines=lines)
             else:
                 self.push('details', route.target)
             return
@@ -928,7 +995,7 @@ class FullScreenTerminal(PlayableTerminal):
                     if key == 'o': route.row = own
                     elif kind=='W': route.column = own
                 else:
-                    self.notice = 'This development role is outside the imported people matrix.'
+                    self.notice = t('terminal.this_development_role_is_outside')
             elif key in {'up', 'down'}:
                 route.row = max(0, min(len(roster)-1, route.row+(-1 if key == 'up' else 1)))
             elif key in {'left', 'right'}:
@@ -954,7 +1021,7 @@ class FullScreenTerminal(PlayableTerminal):
         elif key == 'enter' and route.region == 'decisions' and screen.decisions:
             self.execute_action(screen.decisions[route.decision_index][1][1])
         elif key == 'enter' and route.region == 'details':
-            self.notice = 'Reading details. Tab returns to selectable regions.'
+            self.notice = t('terminal.reading_details_tab_returns_to')
         elif key == 'enter' and screen.entries:
             target = screen.entries[min(route.index, len(screen.entries)-1)][1]
             from game_gamer.transitions import Choice
@@ -971,7 +1038,7 @@ class FullScreenTerminal(PlayableTerminal):
                 elif kind=='network_of': self.push('network',value)
                 elif kind=='relation_to': self.push('cell',relation=value)
                 elif kind=='choose_interaction':
-                    target=self.picker('CHOOSE A PERSON',[a for a in people(self.world()) if a['id']!=self.playing_actor])['id']
+                    target=self.picker(t('terminal.choose_a_person_2'),[a for a in people(self.world()) if a['id']!=self.playing_actor])['id']
                     self.propose_to(target) if value=='propose' else self.contact_to(target)
                 else: self.push(*target)
             else:
@@ -982,7 +1049,7 @@ class FullScreenTerminal(PlayableTerminal):
                 route.region = 'explore'
             self.handle('enter',screen)
         elif key not in {'enter', ''}:
-            self.notice = 'Press ? for contextual help. Arrows select; Enter inspects.'
+            self.notice = t('terminal.press_for_contextual_help_arrows')
 
     def selected_target(self, screen):
         if self.route.kind == 'inspect':
@@ -998,23 +1065,23 @@ class FullScreenTerminal(PlayableTerminal):
         # Frozen scenarios supply constraints and defaults, not silent consent
         # or a reason to bypass the player's contribution form.
         payload = {'kind':'propose',**deepcopy(template)}
-        self.write('Proposing actor: '+self.label(self.session.actor))
-        self.write('Counterparties: '+', '.join(self.label(p) for p in payload['parties'] if p != self.session.actor))
-        payload['label'] = self.ask('Contract title?',default=payload['label'])
-        payload['terms']['purpose'] = self.ask('Purpose of this agreement?',default=payload['terms']['purpose'])
+        self.write(t('line.collect_action.proposing_actor')+self.label(self.session.actor))
+        self.write(t('terminal.counterparties')+', '.join(self.label(p) for p in payload['parties'] if p != self.session.actor))
+        payload['label'] = self.ask(t('laboratory.collect_action.contract_title'),default=payload['label'])
+        payload['terms']['purpose'] = self.ask(t('line.collect_action.purpose_of_this_agreement'),default=payload['terms']['purpose'])
         for obligation in payload['terms']['responsibilities']:
-            prompt = 'Your offered contribution?' if obligation['actor_id'] == self.session.actor else 'Contribution requested from '+self.label(obligation['actor_id'])+'?'
+            prompt = t('line.collect_action.your_offered_contribution') if obligation['actor_id'] == self.session.actor else t('line.collect_action.contribution_requested_from')+self.label(obligation['actor_id'])+'?'
             obligation['description'] = self.ask(prompt,default=obligation['description'])
-        condition = self.ask('Optional conditions (blank for none)?',default='; '.join(payload['terms']['conditions']),parse=lambda value:value.strip())
+        condition = self.ask(t('line.collect_action.optional_conditions_blank_for_none'),default='; '.join(payload['terms']['conditions']),parse=lambda value:value.strip())
         payload['terms']['conditions'] = [condition] if condition else []
-        self.write('Governing policy: '+self.label(payload['policy_id']))
+        self.write(t('contracts.inspector.governing_policy')+self.label(payload['policy_id']))
         for resource in payload['resources']:
-            self.write('Scenario resource: '+self.label(resource['resource_id'])+f" × {resource['quantity']}")
+            self.write(t('terminal.scenario_resource')+self.label(resource['resource_id'])+f" × {resource['quantity']}")
         payload=self.refine_proposal(payload,game.get_world())
-        self.write('Who is affected: '+', '.join(self.label(p) for p in payload['parties']))
-        self.write('What will change: '+ACTION_EFFECTS['propose'])
-        self.write('These are suggested terms. Other parties have not accepted them. Simulation only.')
-        if not self.confirm('Continue?'):
+        self.write(t('line.collect_action.who_is_affected')+', '.join(self.label(p) for p in payload['parties']))
+        self.write(t('line.collect_action.what_will_change')+t(ACTION_EFFECTS['propose']))
+        self.write(t('terminal.these_are_suggested_terms_other'))
+        if not self.confirm(t('controls.confirm_continue')):
             raise Cancelled
         return payload
 
@@ -1024,27 +1091,27 @@ class FullScreenTerminal(PlayableTerminal):
                          and world['relationships'][r.target]['kind']=='contact_invitation'),None)
         if context or invitation:payload['interaction_context']={'relationship':context,'invitation_id':invitation}
         while True:
-            choices=['Keep these settings', 'Change validity', 'Choose governance policy', 'Choose linked objective']
-            selected=self.choose('AGREEMENT SETTINGS / Valid until '+payload['valid_until']+' / Policy: '+self.label(payload['policy_id'])+
-                ' / Objective: '+self.label(payload['objective_id']),choices,str)
+            choices=[t('contracts.settings.keep_these_settings'), t('contracts.settings.change_validity'), t('contracts.settings.choose_governance_policy'), t('contracts.settings.choose_linked_objective')]
+            selected=self.choose(t('contracts.settings.agreement_settings_valid_until')+payload['valid_until']+t('contracts.settings.policy')+self.label(payload['policy_id'])+
+                t('contracts.settings.objective')+self.label(payload['objective_id']),choices,str)
             if selected==choices[0]:return payload
-            if selected==choices[1]:payload['valid_until']=self.ask('Valid until (ISO date and time with timezone)?',default=payload['valid_until'])
-            elif selected==choices[2]:payload['policy_id']=self.picker('GOVERNANCE POLICY',list(world['governance'].values()))['id']
-            else:payload['objective_id']=self.picker('LINKED OBJECTIVE',list(world['objectives'].values()))['id']
+            if selected==choices[1]:payload['valid_until']=self.ask(t('contracts.settings.valid_until_iso_date_and'),default=payload['valid_until'])
+            elif selected==choices[2]:payload['policy_id']=self.picker(t('forms.governance_policy'),list(world['governance'].values()))['id']
+            else:payload['objective_id']=self.picker(t('contracts.settings.linked_objective'),list(world['objectives'].values()))['id']
 
     def act(self, screen):
         if not self.session:
-            self.notice = 'p Choose a simulated player before acting.'; return
+            self.notice = t('terminal.p_choose_a_simulated_player'); return
         if self.route.extra.get('at'):
-            self.notice = 'Historical views are read-only. b returns to current state.'; return
+            self.notice = t('terminal.historical_views_are_read_only'); return
         target = self.selected_target(screen)
         if self.route.kind == 'cell':
             detail = self._cell
             if detail['self_pairing']:
-                self.notice = 'Self-pairing is excluded from gameplay.'; return
+                self.notice = t('terminal.self_pairing_is_excluded_from'); return
             pair = [detail['provider']['id'], detail['requester']['id']]
             if self.session.actor not in pair:
-                self.notice = 'Choose your own row or column to propose from this opportunity.'; return
+                self.notice = t('terminal.choose_your_own_row_or'); return
             target = next(p for p in pair if p != self.session.actor)
         self.selected = target
         world = self.world()
@@ -1062,8 +1129,8 @@ class FullScreenTerminal(PlayableTerminal):
         else:
             candidates = []
         if not candidates:
-            self.notice = 'No action is permitted for this object, role and current lifecycle state.'; return
-        action = self.choose('WHAT CAN I DO?', candidates, lambda c: ACTION_NAMES[c['kind']]+(' · '+c['response'] if c.get('response') else ''))
+            self.notice = t('terminal.no_action_is_permitted_for'); return
+        action = self.choose(t('contracts.actions_title'), candidates, lambda c: action_name(c['kind'])+(' · '+c['response'] if c.get('response') else ''))
         self.execute_action(action,version=version)
 
     def contact_context(self):
@@ -1077,28 +1144,28 @@ class FullScreenTerminal(PlayableTerminal):
 
     def contact_to(self, target):
         if not self.playing_actor or self.playing_actor==target:
-            self.notice='Choose another person and a simulated player first.';return
+            self.notice=t('terminal.choose_another_person_and_a');return
         if self.route.extra.get('at') is not None:
-            self.notice='Historical views are read-only.';return
+            self.notice=t('terminal.historical_views_are_read_only_2');return
         if self.world()['actors'].get(target,{}).get('kind')!='person' or self.world()['actors'][self.playing_actor]['kind']!='person':
-            self.notice='Contact invitations currently require two simulated people.';return
+            self.notice=t('terminal.contact_invitations_currently_require_two');return
         context=self.contact_context()
         if context:
             projection=matrix(self.world())
-            self.write('Relevant declared domains: '+(', '.join(projection['vocabulary'][code] for code in context['matching_codes']) or 'None recorded'))
+            self.write(t('terminal.relevant_declared_domains')+(', '.join(projection['vocabulary'][code] for code in context['matching_codes']) or t('terminal.none_recorded')))
         self._proposal_target=target
         self.execute_action({'kind':'send_contact','recipient_id':target,'context':context})
 
     def propose_to(self, target):
         if not self.playing_actor or self.playing_actor==target:
-            self.notice='Choose another person and a simulated player first.';return
+            self.notice=t('terminal.choose_another_person_and_a');return
         self._direct_proposal(target)
 
     def _direct_proposal(self,target):
         if self.route.extra.get('at') is not None:
-            self.notice='Historical views are read-only.';return
+            self.notice=t('terminal.historical_views_are_read_only_2');return
         if not self.proposal_permitted(target):
-            self.notice='A new proposal is unavailable for this role/counterparty and the registered scenario constraints.';return
+            self.notice=t('terminal.a_new_proposal_is_unavailable');return
         self._proposal_target=target
         self.execute_action({'kind':'propose'})
 
@@ -1109,15 +1176,21 @@ class FullScreenTerminal(PlayableTerminal):
             return template['id'] not in self.world()['agreements'] and {target,self.playing_actor}<=set(template['parties'])
         return target!='simulation-verifier' and self.playing_actor!='simulation-verifier'
 
+    def submit(self, payload, version):
+        previous_revision = self._frame_revision
+        result = super().submit(payload, version)
+        record_receipt(self, result, previous_revision)
+        return result
+
     def execute_action(self, action, *, version=None):
         if not self.session or self.route.extra.get('at') is not None:
-            self.notice='Actions require a simulated player in the current world.';return
+            self.notice=t('terminal.actions_require_a_simulated_player');return
         if version is None:version=len(self.current().project('log'))
         self.reset_buffer()
         if action['kind']=='send_contact' and action.get('context'):
             vocabulary=matrix(self.world())['vocabulary']
-            self.write('Observed context: '+self.label(action['context']['provider_id'])+' → '+self.label(action['context']['requester_id']))
-            self.write('Relevant declared domains: '+', '.join(vocabulary[c] for c in action['context']['matching_codes']))
+            self.write(t('terminal.observed_context')+self.label(action['context']['provider_id'])+' → '+self.label(action['context']['requester_id']))
+            self.write(t('terminal.relevant_declared_domains')+', '.join(vocabulary[c] for c in action['context']['matching_codes']))
         with action_form(self.viewport):
             payload = self.collect_action(action, self.current())
         self.reset_buffer(); result = self.submit(payload, version)
@@ -1141,17 +1214,17 @@ class FullScreenTerminal(PlayableTerminal):
                 invitation=payload.get('invitation_id') or payload.get('id')
                 if self.route.kind!='inspect' or self.route.target!=invitation:self.push('inspect',invitation)
                 self.route.index=self.route.scroll=0
-                self.notice='INVITATION SENT · In-game delivery only.' if payload['kind']=='send_contact' else 'Invitation saved · Contact and contractual consent remain separate.'
-            else:self.notice = 'Contract created · PROPOSED · acceptance is still required.' if payload['kind'] == 'propose' else 'Saved. Current-version acceptance and outcome verification remain separate.'
+                self.notice=t('terminal.invitation_sent_in_game_delivery') if payload['kind']=='send_contact' else t('terminal.invitation_saved_contact_and_contractual')
+            else:self.notice = t('terminal.contract_created_proposed_acceptance_is') if payload['kind'] == 'propose' else t('terminal.saved_current_version_acceptance_and')
         else:
-            self.notice = 'No state changed: '+', '.join(result['errors'])
+            self.notice = t('feedback.no_state_changed')+error_list(result['errors'])
         return result
 
     def typed_command(self, raw):
         from .commands import parse
         command, arg = parse(raw)
         if not command:
-            self.notice = 'Unknown command. ? opens help.'; return
+            self.notice = t('terminal.unknown_command_opens_help'); return
         name = command.name
         if name in MODES:
             self.resume_mode(name)
@@ -1160,10 +1233,10 @@ class FullScreenTerminal(PlayableTerminal):
         elif name in {'open', 'history', 'metadata', 'actions'}:
             target = resolve(self.world(), arg, selected=self.route.target) if arg else self.route.target
             if target is None:
-                target = self.picker('CHOOSE AN OBJECT', self.graph_projection()['nodes'])['id']
+                target = self.picker(t('controls.choose_object'), self.graph_projection()['nodes'])['id']
             if name == 'actions':
                 self.push('inspect', target)
-                self.act(Screen('Action', entries=[('', target)]))
+                self.act(Screen(t('controls.action'), entries=[('', target)]))
             else:
                 self.push({'open': 'inspect', 'history': 'history', 'metadata': 'details'}[name], target)
         elif name == 'contracts' and arg:
@@ -1184,27 +1257,27 @@ class FullScreenTerminal(PlayableTerminal):
         elif name == 'connect':
             target=resolve(self.world(),arg) if arg else None
             if target not in self.world()['actors']:
-                target=self.picker('WHOM WOULD YOU LIKE TO CONNECT WITH?', [a for a in people(self.world()) if a['id']!=self.playing_actor])['id']
+                target=self.picker(t('contact.choose_recipient'), [a for a in people(self.world()) if a['id']!=self.playing_actor])['id']
             self.contact_to(target)
         elif name == 'back': self.back()
         elif name == 'quit': self.finished = True
         elif name == 'list': self.open_network()
-        elif name == 'replay': self.handle('v', Screen('Replay'))
+        elif name == 'replay': self.handle('v', Screen(t('terminal.replay')))
         elif name == 'search':
             if self.route.kind == 'matrix':
                 roster = matrix(self.world())['actors']
-                actor = self.picker('FIND MATRIX PARTICIPANT', [a for a in roster if folded(arg) in folded(display_label(a))])
+                actor = self.picker(t('terminal.find_matrix_participant'), [a for a in roster if folded(arg) in folded(display_label(a))])
                 self.route.row = self.route.column = next(i for i,a in enumerate(roster) if a['id'] == actor['id'])
             else:
                 self.route.query = arg; self.route.index = 0
         elif name == 'past':
             if not arg:
-                self.push('history', self.route.target or self.picker('CHOOSE AN OBJECT', self.graph_projection()['nodes'])['id'])
+                self.push('history', self.route.target or self.picker(t('controls.choose_object'), self.graph_projection()['nodes'])['id'])
             else:
                 sequence, _, reference = arg.partition(' ')
                 target = resolve(self.world(), reference, selected=self.route.target)
                 if target is None:
-                    target = self.picker('CHOOSE AN OBJECT', self.graph_projection()['nodes'])['id']
+                    target = self.picker(t('controls.choose_object'), self.graph_projection()['nodes'])['id']
                 self.push('inspect', target, at=int(sequence))
         elif name in {'invite', 'respond'}:
             reason = self.command_availability(name)

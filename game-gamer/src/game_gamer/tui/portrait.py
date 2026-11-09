@@ -1,7 +1,10 @@
 """Deterministic constellation portraits with a textual equivalent."""
+
 from dataclasses import dataclass
-from hashlib import sha256
 from functools import lru_cache
+from hashlib import sha256
+
+from .i18n import t
 
 PORTRAIT_VERSION = 'constellation/v1'
 SIZES = {'small': (4, 1), 'medium': (6, 2), 'large': (9, 3)}
@@ -39,7 +42,7 @@ def generate_portrait(participant_id, attributes, *, size='medium', plain=False)
     if not plain:
         tl, tr, bl, br = '╭', '╮', '╰', '╯'
     lines = (tl + bar*width + tr, *(side + ''.join(row) + side for row in canvas), bl + bar*width + br)
-    description = f'{attributes.actor_type.title()} · {offers} recorded offers · {needs} recorded needs · {domains} recorded domains'
+    description = t('workshop.portrait.recorded_offers_recorded_needs_recorded', value=attributes.actor_type.title(), offers=offers, needs=needs, domains=domains)
     if plain:
         description = description.replace(' · ', ' / ')
     return ParticipantPortrait(lines, description)
