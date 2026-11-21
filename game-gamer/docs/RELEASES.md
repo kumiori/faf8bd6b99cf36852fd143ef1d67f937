@@ -47,7 +47,9 @@ Install `release/*.py` under `.github/game-gamer/release/`, and the registry und
 second runtime. Copy the update and compatibility workflows from the Commons
 consumer. Configure `config/game-gamer-consumer.json` with exact previous pins,
 baseline wheel, supported extension contracts, required capabilities and existing
-legacy/application tests. The release supplies no executable test commands or
+legacy/application tests. `test_extras` installs application-declared optional
+dependencies needed by that complete suite, inside the disposable environment.
+The release supplies no executable test commands or
 destination paths. Changes to the updater itself are reviewed separately.
 
 Enable Actions to create PRs. Protect the consumer's main branch with at least one

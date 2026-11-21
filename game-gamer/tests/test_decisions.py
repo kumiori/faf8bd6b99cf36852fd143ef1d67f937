@@ -180,8 +180,13 @@ def test_dynamic_roster_is_symbolic_and_scope_is_closed():
     assert len(scope['nodes']) < len(graph['nodes'])
     # All declared, unresolved choices remain visible to the audit.
     assert any(f['code'] == 'unresolved_dynamic_provider' for f in audit_graph(graph)['findings'])
-    decisions = extract_decisions(interfaces='commons', level='decision')
-    assert decisions['edges'] and all(e['level'] == 'decision' for e in decisions['edges'])
+    from importlib.util import find_spec
+    if find_spec('commons_game') is None:
+        with pytest.raises(ValueError, match='interface_unavailable: commons'):
+            extract_decisions(interfaces='commons', level='decision')
+    else:
+        decisions = extract_decisions(interfaces='commons', level='decision')
+        assert decisions['edges'] and all(e['level'] == 'decision' for e in decisions['edges'])
 
 
 def test_source_adapters_keep_ids_when_unrelated_lines_move(tmp_path, monkeypatch):

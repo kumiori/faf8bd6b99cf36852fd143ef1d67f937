@@ -11,5 +11,6 @@
     {"path": "game-gamer/examples/lantern-club/pyproject.toml", "value": "game-gamer==0.3.0", "template": "game-gamer=={version}"}
   ],
   "legacy_tests": ["tests/test_mechanics_freeze.py", "tests/test_extension_boundary.py"],
-  "application_tests": ["tests"]
+  "application_tests": ["tests"],
+  "test_extras": ["trajectory", "terminal-test"]
 }
