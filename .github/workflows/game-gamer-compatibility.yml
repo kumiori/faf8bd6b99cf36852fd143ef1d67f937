@@ -1,7 +1,6 @@
 name: Game-Gamer compatibility
 on:
   pull_request:
-    paths: ['pyproject.toml', 'vendor/**', 'config/game-gamer*.json', 'requirements/**', '.github/**', 'game-gamer/examples/lantern-club/pyproject.toml']
   workflow_dispatch:
 permissions:
   contents: read
