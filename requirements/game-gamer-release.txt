@@ -1,1 +1,1 @@
-vendor/game_gamer-0.3.0-py3-none-any.whl --hash=sha256:8acd98406664c0a2f829b326a3558db051b7ca9c75a60755bef966cb626d0d00
+vendor/game_gamer-0.3.1-py3-none-any.whl --hash=sha256:c9a5a3bacefc8b580f399a8d8a6d6d3656af399c03442f724c95681faa023b25

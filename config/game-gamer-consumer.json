@@ -4,12 +4,38 @@
   "lock": "config/game-gamer-release.json",
   "requirements": "requirements/game-gamer-release.txt",
   "baseline_wheel": "vendor/game_gamer-0.3.0-py3-none-any.whl",
-  "supported_extension_contracts": ["game-gamer/extension/v1"],
-  "required_capabilities": ["extension.commands", "extension.policy_hooks", "extension.projections", "extension.version_binding", "history.replay", "world.fork", "tui.network"],
-  "pins": [
-    {"path": "pyproject.toml", "value": "game-gamer[tui]==0.3.0"},
-    {"path": "game-gamer/examples/lantern-club/pyproject.toml", "value": "game-gamer==0.3.0", "template": "game-gamer=={version}"}
+  "supported_extension_contracts": [
+    "game-gamer/extension/v1"
   ],
-  "legacy_tests": ["tests/test_mechanics_freeze.py", "tests/test_extension_boundary.py"],
-  "application_tests": ["tests"]
+  "required_capabilities": [
+    "extension.commands",
+    "extension.policy_hooks",
+    "extension.projections",
+    "extension.version_binding",
+    "history.replay",
+    "world.fork",
+    "tui.network"
+  ],
+  "pins": [
+    {
+      "path": "pyproject.toml",
+      "value": "game-gamer[tui]==0.3.1"
+    },
+    {
+      "path": "game-gamer/examples/lantern-club/pyproject.toml",
+      "value": "game-gamer==0.3.1",
+      "template": "game-gamer=={version}"
+    }
+  ],
+  "legacy_tests": [
+    "tests/test_mechanics_freeze.py",
+    "tests/test_extension_boundary.py"
+  ],
+  "application_tests": [
+    "tests"
+  ],
+  "test_extras": [
+    "trajectory",
+    "terminal-test"
+  ]
 }

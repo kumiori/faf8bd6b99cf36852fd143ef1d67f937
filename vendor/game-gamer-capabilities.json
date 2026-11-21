@@ -1,0 +1,41 @@
+{
+  "schema": "game-gamer/capabilities/v1",
+  "package": "game-gamer",
+  "version": "0.3.1",
+  "extension_contract": "game-gamer/extension/v1",
+  "world_schema": "game-gamer/world/v1",
+  "history_schema": "game-gamer/history/v1",
+  "capabilities": [
+    "capabilities.inspect",
+    "contract.accept",
+    "contract.amend",
+    "contract.propose",
+    "contract.verify",
+    "extension.commands",
+    "extension.policy_hooks",
+    "extension.projections",
+    "extension.version_binding",
+    "history.replay",
+    "history.serialize",
+    "mission.abandon",
+    "mission.adopt",
+    "mission.challenge",
+    "mission.complete",
+    "mission.create",
+    "mission.reopen",
+    "mission.revise",
+    "mission.verify",
+    "relationship.invite",
+    "relationship.recall",
+    "resource.reserve",
+    "tui.network",
+    "world.fork",
+    "world.target_lock",
+    "world.world_driven"
+  ],
+  "optional_extras": {
+    "tui": [
+      "tui.network"
+    ]
+  }
+}
