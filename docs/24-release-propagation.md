@@ -74,3 +74,26 @@ Read-only verification still finds 25 events in the existing local Commons save,
 with state digest
 `aae0d98ad6c450af0e2de5cbb011a81858f2738ce85f747cc4ab0fe2f28b7e54`.
 Hube's unrelated local edits and Commons' untracked `art/` are untouched.
+
+The repaired hosted Commons validation passed all ten categories: 6 legacy tests
+and 271 application tests passed, with 3 environment-specific skips. Hube's
+required rerun likewise passed all ten categories (30 legacy tests, 106
+application tests, one skip). The checked-in PR reports retain their input
+provenance; each Actions run attaches its own fresh JSON, Markdown and logs.
+
+Final portability repairs also give PR revalidation its explicit read-only
+GitHub token and a check name matching the protected-branch requirement. The
+required gate runs on every PR revision, so documentation-only review edits do
+not leave a new commit without a required check. These repairs are included in
+the draft upgrade branches for human review.
+
+A fresh environment using Python 3.11, setuptools 78.1.0 and wheel 0.45.1 rebuilt
+**all five published assets byte-for-byte from tag `v0.3.1`**. The immutable
+artifacts were not replaced. Consumer test environments use their own compatible
+build backend (Commons uses setuptools 80.9.0 for its existing trajectory extra).
+
+Final latest-commit hosted runs:
+[Commons](https://github.com/kumiori/faf8bd6b99cf36852fd143ef1d67f937/actions/runs/44911288989)
+and [Hube](https://github.com/kumiori/417b59f6d2dcf1c058b91f87871ddca9/actions/runs/44911292445).
+Both passed; their draft PR bodies link the fresh reports and remain awaiting
+human CODEOWNER approval.

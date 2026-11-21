@@ -13,7 +13,7 @@ Removing an advertised or required capability blocks an automated upgrade.
 
 ## Publish
 
-Use Python 3.11, setuptools 75.6.0 and wheel 0.45.1, and run the package tests.
+Use Python 3.11, setuptools 78.1.0 and wheel 0.45.1, and run the package tests.
 Commit the exact candidate, then create its version tag. Never move a published
 tag or replace release assets. Enable repository release immutability before
 publication. Build from a clean source copy with fixed `SOURCE_DATE_EPOCH`:
