@@ -1,0 +1,8 @@
+{
+  "schema": "game-gamer/consumers/v1",
+  "consumers": [
+    {"id": "hube", "repository": "kumiori/417b59f6d2dcf1c058b91f87871ddca9", "workflow": "game-gamer-update.yml"},
+    {"id": "commons", "repository": "kumiori/faf8bd6b99cf36852fd143ef1d67f937", "workflow": "game-gamer-update.yml"}
+  ],
+  "pending": []
+}

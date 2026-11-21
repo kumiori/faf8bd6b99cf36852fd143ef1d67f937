@@ -26,13 +26,18 @@ def check_release():
     lock = json.loads(LOCK.read_text())
     wheel = ROOT/lock['wheel']
     assert hashlib.sha256(wheel.read_bytes()).hexdigest() == lock['sha256'], 'Release wheel hash mismatch'
-    assert tomllib.loads((PACKAGE/'pyproject.toml').read_text())['project']['version'] == lock['version']
+    # The application may deliberately retain an older release than the development tree.
+    current = tomllib.loads((PACKAGE/'pyproject.toml').read_text())['project']['version']
     with zipfile.ZipFile(wheel) as archive:
-        expected = {path.relative_to(PACKAGE/'src').as_posix() for path in source_files()}
-        actual = {name for name in archive.namelist() if name.startswith('game_gamer/')}
-        assert actual == expected, 'Release wheel source inventory differs from checkout'
-        for path in source_files():
-            assert archive.read(path.relative_to(PACKAGE/'src').as_posix()) == path.read_bytes(), str(path)
+        from email.parser import BytesParser
+        metadata = BytesParser().parsebytes(archive.read('game_gamer-'+lock['version']+'.dist-info/METADATA'))
+        assert metadata['Name'] == 'game-gamer' and metadata['Version'] == lock['version']
+        if current == lock['version']:
+            expected = {path.relative_to(PACKAGE/'src').as_posix() for path in source_files()}
+            actual = {name for name in archive.namelist() if name.startswith('game_gamer/')}
+            assert actual == expected, 'Release wheel source inventory differs from checkout'
+            for path in source_files():
+                assert archive.read(path.relative_to(PACKAGE/'src').as_posix()) == path.read_bytes(), str(path)
     print('Verified pinned release '+lock['version']+' '+lock['sha256'])
 
 

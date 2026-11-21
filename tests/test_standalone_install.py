@@ -26,7 +26,7 @@ def test_core_wheel_installs_and_launches_without_neighbouring_projects(tmp_path
     fictional_install=subprocess.run([str(python),'-m','pip','install','--no-index','--find-links',str(wheels),
                                        'lantern-club==0.1.0'],capture_output=True,text=True,timeout=30)
     assert fictional_install.returncode==0,fictional_install.stderr
-    env={**os.environ,'SADDLE_DATA_DIR':str(tmp_path/'data'),'PYTHONPATH':''}
+    env={**os.environ,'SADDLE_DATA_DIR':str(tmp_path/'data'),'PYTHONPATH':'','EXPECTED_GAMER_VERSION':lock['version']}
     core_only=subprocess.run([str(python),'-I','-c',
         'import importlib.util; from lantern_club import main; '
         'assert importlib.util.find_spec("commons_game") is None; '
@@ -51,13 +51,13 @@ def test_core_wheel_installs_and_launches_without_neighbouring_projects(tmp_path
     assert fictional.returncode == 0, fictional.stderr
     assert '\"visits\": 1' in fictional.stdout
     acceptance = r"""
-import json
+import json, os
 from pathlib import Path
 from importlib.metadata import version
 import game_gamer, commons_game
 from game_gamer import Collective, DomainError, SimulationBinding
 from lantern_club import EXTENSION, definition, visit
-assert version('game-gamer') == '0.3.0'
+assert version('game-gamer') == os.environ['EXPECTED_GAMER_VERSION']
 assert 'site-packages' in game_gamer.__file__ and 'site-packages' in commons_game.__file__
 path=Path('independent.sqlite')
 game=Collective.start(definition(),path=path,extension=EXTENSION)

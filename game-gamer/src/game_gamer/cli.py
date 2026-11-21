@@ -10,6 +10,7 @@ from . import Collective, DomainError, SimulationBinding
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='game-gamer')
     commands = parser.add_subparsers(dest='command', required=True)
+    commands.add_parser('capabilities', help='Print this installed release capabilities manifest')
     inspect = commands.add_parser('inspect', help='Read-only developer introspection')
     inspections = inspect.add_subparsers(dest='inspection', required=True)
     decisions = inspections.add_parser('decisions', help='Extract and audit the implemented decision graph')
@@ -43,6 +44,10 @@ def main(argv=None):
     play.add_argument('--line-mode', action='store_true', help='Use the scriptable line viewport')
     play.add_argument('--plain', action='store_true', help='Use portable ASCII and omit colours')
     args = parser.parse_args(argv)
+    if args.command == 'capabilities':
+        from .capabilities import get_capabilities
+        print(json.dumps(get_capabilities(), indent=2))
+        return 0
     if args.command == 'inspect':
         try:
             return inspect_decisions(args, parser)

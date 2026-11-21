@@ -1,0 +1,59 @@
+name: Propose Game-Gamer upgrade
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Optional immutable release tag
+        required: false
+        type: string
+  repository_dispatch:
+    types: [game-gamer-release]
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+concurrency:
+  group: game-gamer-upgrade
+  cancel-in-progress: false
+jobs:
+  proposal:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .github/game-gamer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify and prepare candidate
+        id: candidate
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          args=()
+          if [ -n "$RELEASE_TAG" ]; then args+=(--tag "$RELEASE_TAG"); fi
+          python -m release.consumer --root . --bundle "$RUNNER_TEMP/release" --output "$RUNNER_TEMP/proposal.json" --skip-existing "${args[@]}"
+          if [ -f "$RUNNER_TEMP/proposal.json" ]; then echo 'available=true' >> "$GITHUB_OUTPUT"; fi
+      - name: Validate in disposable environments
+        id: validation
+        if: steps.candidate.outputs.available == 'true'
+        continue-on-error: true
+        run: python -m release.compatibility --root . --proposal "$RUNNER_TEMP/proposal.json" --output "$RUNNER_TEMP/compatibility"
+      - name: Attach compatibility and feature report
+        if: always() && steps.candidate.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-gamer-compatibility
+          path: ${{ runner.temp }}/compatibility/
+          if-no-files-found: error
+      - name: Open review-only proposal
+        if: always() && steps.candidate.outputs.available == 'true'
+        run: python -m release.proposal --root . --proposal "$RUNNER_TEMP/proposal.json" --validation "$RUNNER_TEMP/compatibility"
+      - name: Fail closed
+        if: always() && steps.validation.outcome == 'failure'
+        run: exit 1

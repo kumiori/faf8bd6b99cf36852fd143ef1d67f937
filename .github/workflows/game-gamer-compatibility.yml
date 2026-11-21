@@ -1,0 +1,28 @@
+name: Game-Gamer compatibility
+on:
+  pull_request:
+    paths: ['pyproject.toml', 'vendor/**', 'config/game-gamer*.json', 'requirements/**', '.github/**', 'game-gamer/examples/lantern-club/pyproject.toml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compatibility:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate checked-in upgrade
+        env:
+          PYTHONPATH: .github/game-gamer
+        run: |
+          python -c 'import json,pathlib; lock=json.load(open("config/game-gamer-release.json")); report=pathlib.Path("docs/upgrades/game-gamer-"+lock["version"]+"/compatibility.json"); assert report.exists(), "No reviewed upgrade evidence"; pathlib.Path("/tmp/proposal.json").write_text(report.read_text())'
+          python -m release.compatibility --root . --proposal /tmp/proposal.json --output "$RUNNER_TEMP/compatibility"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: game-gamer-compatibility
+          path: ${{ runner.temp }}/compatibility/

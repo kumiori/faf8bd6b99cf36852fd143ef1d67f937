@@ -38,6 +38,11 @@ and the reusable widget API.
 
 ## Public API
 
+Each release publishes a machine-readable capabilities manifest. Use
+`game-gamer capabilities` or `game_gamer.get_capabilities()` to inspect the
+installed artifact. See [release propagation](docs/RELEASES.md) for immutable
+assets and review-only consumer upgrade proposals.
+
 ```python
 import json
 from pathlib import Path
