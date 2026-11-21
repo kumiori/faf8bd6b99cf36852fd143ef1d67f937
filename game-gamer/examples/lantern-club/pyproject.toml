@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "lantern-club"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["game-gamer==0.3.0"]
+dependencies = ["game-gamer==0.3.1"]
 
 [project.scripts]
 lantern-club = "lantern_club:main"

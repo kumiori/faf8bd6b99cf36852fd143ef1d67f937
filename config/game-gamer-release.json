@@ -1,8 +1,12 @@
 {
   "package": "game-gamer",
-  "version": "0.3.0",
+  "version": "0.3.1",
+  "wheel": "vendor/game_gamer-0.3.1-py3-none-any.whl",
+  "sha256": "c9a5a3bacefc8b580f399a8d8a6d6d3656af399c03442f724c95681faa023b25",
   "extension_contract": "game-gamer/extension/v1",
-  "wheel": "vendor/game_gamer-0.3.0-py3-none-any.whl",
-  "sha256": "8acd98406664c0a2f829b326a3558db051b7ca9c75a60755bef966cb626d0d00",
-  "source_date_epoch": 1795219200
+  "source_date_epoch": 1795219200,
+  "source_commit": "7b83b8d426bc7e58c0030fe974695ca7d0e54465",
+  "repository": "kumiori/113a4cce0c9191877e82b1a0b6767a70",
+  "tag": "v0.3.1",
+  "release_id": 453719371
 }

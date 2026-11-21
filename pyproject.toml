@@ -7,7 +7,7 @@ name = "commons-game"
 version = "0.1.0"
 description = "A shared authoritative engine for experiments in collective agency"
 requires-python = ">=3.11"
-dependencies = ["game-gamer[tui]==0.3.0"]
+dependencies = ["game-gamer[tui]==0.3.1"]
 
 [project.optional-dependencies]
 test = ["pytest>=8"]

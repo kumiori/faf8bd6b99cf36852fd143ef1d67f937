@@ -1,0 +1,38 @@
+{
+  "schema": "game-gamer/upgrade/v1",
+  "previous_version": "0.3.0",
+  "version": "0.3.1",
+  "source_commit": "7b83b8d426bc7e58c0030fe974695ca7d0e54465",
+  "release_id": 453719371,
+  "features": {
+    "baseline": "not_published",
+    "added": [],
+    "removed": [],
+    "newly_available_count": null,
+    "note": "Previous artifact has no manifest; first publication is not proof these features are new."
+  },
+  "adoption": "awaiting approval",
+  "paths": [
+    "config/game-gamer-consumer.json",
+    "config/game-gamer-release.json",
+    "game-gamer/examples/lantern-club/pyproject.toml",
+    "pyproject.toml",
+    "requirements/game-gamer-release.txt",
+    "vendor/game-gamer-capabilities.json",
+    "vendor/game_gamer-0.3.1-py3-none-any.whl"
+  ],
+  "checks": {
+    "artifact_integrity": "PASS",
+    "public_api": "PASS",
+    "extension_version_binding": "PASS",
+    "event_replay": "PASS",
+    "restart": "PASS",
+    "branch_isolation": "PASS",
+    "clean_install": "PASS",
+    "legacy_saves": "PASS",
+    "application_tests": "FAIL / NOT VALIDATED",
+    "capabilities": "FAIL / NOT VALIDATED"
+  },
+  "compatible": false,
+  "error": "application-tests failed; see application-tests.log"
+}
