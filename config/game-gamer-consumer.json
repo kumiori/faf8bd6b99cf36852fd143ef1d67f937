@@ -33,5 +33,9 @@
   ],
   "application_tests": [
     "tests"
+  ],
+  "test_extras": [
+    "trajectory",
+    "terminal-test"
   ]
 }

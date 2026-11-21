@@ -43,7 +43,8 @@ def validate(root, proposal, output):
     root, output = Path(root).resolve(), Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     config = json.loads((root/'config/game-gamer-consumer.json').read_text())
-    report = {**proposal, 'checks': {key: 'NOT RUN' for key in ('artifact_integrity', 'public_api',
+    prior = {key: value for key, value in proposal.items() if key not in {'checks', 'error', 'compatible', 'test_summaries'}}
+    report = {**prior, 'checks': {key: 'NOT RUN' for key in ('artifact_integrity', 'public_api',
               'extension_version_binding', 'event_replay', 'restart', 'branch_isolation', 'clean_install',
               'legacy_saves', 'application_tests', 'capabilities')}, 'compatible': False}
     probe = Path(__file__).with_name('probe.py').resolve()
@@ -89,10 +90,14 @@ def validate(root, proposal, output):
             run([python, '-I', str(probe), 'restart', str(temporary/'synthetic.sqlite')], cwd=temporary,
                 environment=environment, name='restart')
             report['checks']['restart'] = 'PASS'
-            run([python, '-m', 'pip', 'install', 'setuptools==75.6.0', 'wheel==0.45.1', 'pytest==8.4.2',
+            run([python, '-m', 'pip', 'install', 'setuptools==80.9.0', 'wheel==0.45.1', 'pytest==8.4.2',
                  'wcwidth==0.2.13', 'PyYAML==6.0.2'], cwd=temporary, environment=environment, name='test-dependencies')
             run([python, '-m', 'pip', 'install', '--no-deps', '--no-build-isolation', str(root)],
                 cwd=temporary, environment=environment, name='application-install')
+            extras = config.get('test_extras', [])
+            if extras:
+                run([python, '-m', 'pip', 'install', '--no-build-isolation', str(root)+'['+','.join(extras)+']'],
+                    cwd=temporary, environment=environment, name='application-test-extras')
             run([python, '-m', 'pip', 'check'], cwd=temporary, environment=environment, name='dependency-consistency')
             report['checks']['clean_install'] = 'PASS'
             legacy = run([python, '-m', 'pytest', '-q', '-p', 'no:cacheprovider', *config['legacy_tests']],

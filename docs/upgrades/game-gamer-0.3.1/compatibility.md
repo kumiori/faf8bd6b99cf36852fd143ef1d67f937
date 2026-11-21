@@ -10,8 +10,8 @@
 | branch isolation | PASS |
 | clean install | PASS |
 | legacy saves | PASS |
-| application tests | FAIL / NOT VALIDATED |
-| capabilities | FAIL / NOT VALIDATED |
+| application tests | PASS |
+| capabilities | PASS |
 
 Newly available capabilities: unknown (previous release had no manifest)
 
@@ -21,4 +21,4 @@ Removed: none
 
 **Adoption: awaiting approval.** No persisted worlds or extension versions were migrated.
 
-Validation error: `application-tests failed; see application-tests.log`
+Validation origin: clean local rerun; hosted CI reruns on this commit. The initial failure is retained in Actions run 44910045857.
