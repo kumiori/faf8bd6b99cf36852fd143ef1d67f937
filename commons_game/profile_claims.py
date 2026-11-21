@@ -41,7 +41,7 @@ def issue(game, target, *, curator, provider, subject, reference, now=None):
     claims[ident] = {'actor_id': target, 'identity': identity, 'provider': provider.strip(),
                      'status': 'issued', 'issued_by': curator, 'issued_at': now.isoformat(),
                      'expires_at': expires, 'issue_reference': reference}
-    game._commit(before, after, 'profile_claim.invited', actor=curator)
+    game.record_transition(before, after, 'profile_claim.invited', actor=curator)
     return {'ok': True, 'actor_id': target, 'token': token, 'expires_at': expires}
 
 
@@ -69,5 +69,5 @@ def verify(game, token, *, curator, provider, subject, reference, now=None):
         status='verified', verified_by=curator, verified_at=now.isoformat(), verification_reference=reference,
     )
     after['actors'][target]['status'] = 'active'
-    game._commit(before, after, 'profile_claim.verified', actor=curator)
+    game.record_transition(before, after, 'profile_claim.verified', actor=curator)
     return {'ok': True, 'actor_id': target, 'status': 'verified'}

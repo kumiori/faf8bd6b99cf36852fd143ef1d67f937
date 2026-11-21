@@ -244,7 +244,7 @@ def import_snapshot(game, snapshot):
         after['configuration'][import_id] = {'id': import_id, 'status': 'recorded', 'snapshot_id': snapshot_id,
             'captured_at': captured_at, 'report': deepcopy(report)}
     if after != before:
-        event = game._commit(before, after, 'ecosystem.imported')
+        event = game.record_transition(before, after, 'ecosystem.imported')
         report['commit_id'] = event['commit']['id']
     return report
 
@@ -268,5 +268,5 @@ def import_reconstruction_sources(game, document):
         after['evidence'][ident] = record
         added.append(ident)
     if added:
-        game._commit(before, after, 'reconstruction.sources_imported')
+        game.record_transition(before, after, 'reconstruction.sources_imported')
     return {'ok': True, 'imported': added, 'unchanged': len(records)-len(added)}

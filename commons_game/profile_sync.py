@@ -205,11 +205,11 @@ def sync_one(store, job_id, client):
         except (ValueError, KeyError, TypeError) as error:
             attempt = {'attempted_at': datetime.now(timezone.utc).isoformat(), 'error': _error_code(error)}
             job['attempts'].append(attempt)
-            game._commit(before, after, 'profile_sync.failed', actor=job['approval']['actor_id'])
+            game.record_transition(before, after, 'profile_sync.failed', actor=job['approval']['actor_id'])
             return {'ok': True, 'reserved': False, 'status': 'pending', 'job_id': job_id, **attempt}
         job['creation_attempted'] = True
         job['creation_data_source_id'] = client.data_source_id
-        game._commit(before, after, 'profile_sync.creation_reserved', actor=job['approval']['actor_id'])
+        game.record_transition(before, after, 'profile_sync.creation_reserved', actor=job['approval']['actor_id'])
         return {'ok': True, 'reserved': True}
 
     reservation = store.transact(reserve)
@@ -257,7 +257,7 @@ def sync_one(store, job_id, client):
             audit['error'] = _error_code(error)
             job['status'] = 'pending'
         job['attempts'].append(audit)
-        game._commit(before, after, 'profile_sync.succeeded' if job['status'] == 'synced' else 'profile_sync.failed',
+        game.record_transition(before, after, 'profile_sync.succeeded' if job['status'] == 'synced' else 'profile_sync.failed',
                      actor=job['approval']['actor_id'])
         return {'ok': True, 'status': job['status'], 'job_id': job_id, **audit}
 

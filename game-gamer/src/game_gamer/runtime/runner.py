@@ -1,5 +1,6 @@
 """One scoped, simulated collective over an atomic store."""
 from copy import deepcopy
+from types import MappingProxyType
 
 from ..history.replay import HISTORY_SCHEMA, branch_scope, restore, scope_of
 from ..model import DomainError, require
@@ -8,8 +9,9 @@ from ..persistence.protocol import CollectiveStore
 from ..projections.inbox import action_options, inbox
 from ..schema.definitions import initialise
 from .actions import ActionSubmission, SimulationBinding
-from .engine import CollectiveEngine, digest, text
+from .engine import FIELDS, CollectiveEngine, digest, text
 from .governance import PolicyDecision
+from ..extensions import EngineFactory
 
 
 class Collective:
@@ -17,29 +19,31 @@ class Collective:
         self._store = store
         self._scope = scope_of(store.load())
         self._fork = None
+        self.extension = store.load().extension
+        self._engine_factory = EngineFactory(self.extension)
 
     @classmethod
-    def start(cls, definition, *, path=None):
-        game = initialise(definition)
+    def start(cls, definition, *, path=None, extension=None):
+        game = initialise(definition, extension=extension)
         if path is None:
             return cls(MemoryStore(game))
         from ..persistence.sqlite import SQLiteStore
 
-        store = SQLiteStore(path, CollectiveEngine)
+        store = SQLiteStore(path, EngineFactory(game.extension))
         store.initialise(game)
         return cls(store)
 
     @classmethod
-    def open(cls, path, *, scope_id):
+    def open(cls, path, *, scope_id, extension=None):
         from ..persistence.sqlite import SQLiteStore
 
-        collective = cls(SQLiteStore(path, CollectiveEngine))
+        collective = cls(SQLiteStore(path, EngineFactory(extension)))
         require(collective._scope == scope_id, 'scope_mismatch')
         return collective
 
     @classmethod
-    def from_history(cls, document):
-        collective = cls(MemoryStore(restore(document)))
+    def from_history(cls, document, *, extension=None):
+        collective = cls(MemoryStore(restore(document, extension=extension)))
         collective._fork = deepcopy(document['fork'])
         return collective
 
@@ -55,7 +59,17 @@ class Collective:
     def _command(self, submission, binding):
         require(isinstance(submission, ActionSubmission) and isinstance(binding, SimulationBinding),
                 'invalid_submission')
-        return binding.bind(submission, self.scope_id, counterfactual=self._fork is not None)
+        return binding.bind(submission, self.scope_id, counterfactual=self._fork is not None,
+                            registry=self.command_registry)
+
+    @property
+    def command_registry(self):
+        """The immutable active command schemas accepted by this collective."""
+        registry = {name: (frozenset(required), frozenset(optional))
+                    for name, (required, optional) in FIELDS.items()}
+        if self.extension:
+            registry.update(self.extension.commands)
+        return MappingProxyType(registry)
 
     def evaluate(self, submission, *, binding):
         """Inspect a decision against one history prefix without accepting it."""
@@ -86,7 +100,7 @@ class Collective:
         require(binding.authority in {'personal', 'organisation'}, 'invalid_binding_authority')
         game = self._store.load()
         if at is not None:
-            game = CollectiveEngine.from_log(game.project('log', at=at))
+            game = self._engine_factory.from_log(game.project('log', at=at))
         actor = game.get_world()['actors'].get(binding.actor_id, {})
         require(actor.get('status') == 'active', 'unknown_actor')
         require(actor['kind'] != 'organisation' or binding.authority == 'organisation',
@@ -112,6 +126,6 @@ class Collective:
         branch_id = text(branch_id, 'branch_id_required')
         require(type(at) is int and at >= 1, 'invalid_event')
         events = self.project('log', at=at)
-        branch = type(self)(MemoryStore(CollectiveEngine.from_log(events)))
+        branch = type(self)(MemoryStore(self._engine_factory.from_log(events)))
         branch._fork = {'id': branch_id, 'revision': at, 'prefix_digest': digest(events)}
         return branch

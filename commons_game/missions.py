@@ -13,7 +13,7 @@ def missions_installed(world):
 
 def install_missions(game):
     """Trusted setup, also used to extend saved Montréal worlds in place."""
-    with game._lock:
+    with game.transaction():
         before = game.get_world()
         configuration = before['configuration']
         if configuration['world']['scenario'] != 'montreal-commons' or missions_installed(before):
@@ -31,5 +31,5 @@ def install_missions(game):
             after['configuration'][definition['id']] = {
                 'kind': 'mission_definition', 'curation': {'kind': 'curated_gameplay'}, **definition,
             }
-        game._commit(before, after, 'missions.installed')
+        game.record_transition(before, after, 'missions.installed')
         return {'ok': True, 'changed': True}

@@ -87,8 +87,7 @@ def record_receipt(app, result, previous_revision):
 
 def run_screens(app):
     """Draw and dispatch a host's screens without coupling to its world."""
-    major = {'matrix', 'gathering', 'scenarios', 'exercises', 'history',
-             'montreal_network', 'montreal_network_graph', 'network'}
+    major = getattr(app, 'major_routes', {'matrix', 'gathering', 'scenarios', 'exercises', 'history', 'network'})
     previous_route = pulse_started = None
     pulse_colour = NAVIGATION
     while not app.finished:

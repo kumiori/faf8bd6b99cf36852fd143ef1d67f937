@@ -94,3 +94,11 @@ IDs, structured UI traces and passed-test release evidence. Use
 `--filter uninstrumented` and the other finding filters keep remaining source-only
 gaps visible. A scoped release gate never certifies the complete application;
 see [the verification extension](docs/DECISION_INSPECTION.md#executable-transition-contracts-and-scoped-release-verification).
+
+## Application extensions
+
+Game-Gamer 0.3.0 exposes a versioned extension contract for registered commands,
+policy hooks, initial state and projections. See [the public extension API](docs/EXTENSIONS.md)
+and the independently packaged [Lantern Club example](examples/lantern-club/).
+World-driven play is the default. Missions are optional mutable world objects,
+and target locking adds explicit constraints to the same runtime.

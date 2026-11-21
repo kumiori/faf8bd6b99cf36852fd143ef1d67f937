@@ -8,7 +8,7 @@ from . import curation
 CATALOGUE_ID = 'mission-catalogues'
 SCHEMA = 'game-gamer/missions/v1'
 PROPOSAL_TYPES = ('initiative', 'actor', 'means', 'step')
-REVISION_FIELDS = ('need', 'rationale', 'target', 'requirements')
+REVISION_FIELDS = ('need', 'rationale', 'target', 'requirements', 'feasibility')
 FIELDS = {
     'mission_join': ({'mission_id'}, set()),
     'mission_propose': ({'mission_id', 'proposal_type', 'description'}, {'card_id', 'after_step_id'}),
@@ -23,8 +23,8 @@ FIELDS = {
 
 
 def definitions(world):
-    return {record['id']: record for record in world['configuration'].values()
-            if record.get('kind') == 'mission_definition'}
+    return dict(sorted((record['id'], record) for record in world['configuration'].values()
+                       if record.get('kind') == 'mission_definition'))
 
 
 def contributions(world, mission_id=None):
@@ -103,7 +103,7 @@ def _challenge(command, catalogue, mission):
                     set(replacement) <= catalogue['requirements'].keys(), 'invalid_mission_requirements')
         else:
             replacement = _text(replacement)
-        require(replacement != mission[field], 'unchanged_mission_revision')
+        require(replacement != mission.get(field), 'unchanged_mission_revision')
         challenge['replacement'] = replacement
     return challenge
 
@@ -123,7 +123,8 @@ def _review(world, command, mission, actor, audit, action):
     elif kind == 'mission_verify':
         require(record['type'] == 'commit' and record['status'] in {'pledged', 'accepted'},
                 'reviewable_mission_offer_required')
-        require('verifier' in roles and actor not in {author, recipient}, 'independent_mission_verifier_required')
+        permitted = actor in mission['governance']['verifiers'] if 'governance' in mission else 'verifier' in roles
+        require(permitted and actor not in {author, recipient}, 'independent_mission_verifier_required')
         reference = _text(command['reference'])
         evidence_id = 'evidence_' + audit['event_ref'].removeprefix('commit_')
         applicable = [ident for ident, definition in definitions(world).items()
@@ -140,11 +141,17 @@ def _review(world, command, mission, actor, audit, action):
     else:
         require(record['type'] == 'challenge' and record['status'] == 'submitted' and 'replacement' in record,
                 'pending_mission_revision_required')
-        require('curator' in roles and actor != author, 'independent_mission_curator_required')
+        permitted = actor in mission['governance']['operators'] if 'governance' in mission else 'curator' in roles
+        require(permitted and actor != author, 'independent_mission_curator_required')
         require(record['mission_version'] == mission['version'], 'mission_version_conflict')
         mission[record['field']] = deepcopy(record['replacement'])
+        if mission.get('lifecycle_schema') and record['field'] == 'requirements':
+            catalogue = world['configuration'][CATALOGUE_ID]['requirements']
+            mission['criteria'] = {key: catalogue[key]['title'] for key in mission['requirements']}
         mission['version'] += 1
         mission['revision_ref'] = audit['event_ref']
+        from .mission_lifecycle import revised
+        revised(mission)
         record['status'] = 'applied'
     if kind == 'mission_accept':
         action['mission_ids'] = [ident for ident, definition in definitions(world).items()
@@ -158,8 +165,10 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
     mission = definitions(world).get(mission_id)
     catalogue = world['configuration'].get(CATALOGUE_ID, {})
     require(catalogue.get('schema') == SCHEMA, 'unsupported_mission_catalogue')
-    require(mission is not None and mission['status'] == 'open', 'open_mission_required')
+    require(mission is not None and mission['status'] in {'open', 'proposed', 'adopted', 'pursued'}, 'open_mission_required')
     kind = command['kind']
+    require(mission['status'] != 'proposed' or kind in {'mission_challenge', 'mission_revise', 'mission_explore'},
+            'adopt_mission_first')
     action['target_ids'] = [mission_id]
     audit = {'actor_id': actor, 'recorded_at': timestamp, 'event_ref': f'commit_{sequence:06}',
              'action_id': action['id']}
@@ -173,7 +182,7 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
         require(not joined, 'already_joined_mission')
         status, details = 'joined', {}
     else:
-        require(joined, 'join_mission_first')
+        require(joined or kind == 'mission_challenge' and mission.get('lifecycle_schema'), 'join_mission_first')
         if kind == 'mission_propose':
             status, details = 'proposed', _proposal(world, command, catalogue, mission_id)
         elif kind == 'mission_challenge':
@@ -182,9 +191,12 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
             details = _offer(world, command, mission, actor)
             status = 'offered' if 'recipient_id' in details else 'pledged'
     ident = f'mission_contribution_{sequence:06}'
+    require(ident not in world['configuration'], 'mission_contribution_id_conflict')
     world['configuration'][ident] = {
         'id': ident, 'kind': 'mission_contribution', 'type': kind.removeprefix('mission_'),
         'mission_id': mission_id, 'mission_version': mission['version'], 'status': status,
         'provenance': {'kind': 'player_contribution'}, **audit, **details,
     }
+    if mission.get('lifecycle_schema') and kind in {'mission_propose', 'mission_commit'}:
+        mission['status'] = 'pursued'
     action['target_ids'].append(ident)

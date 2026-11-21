@@ -87,5 +87,5 @@ def request_binding(game, identity, *, actor_id=None, profile_label=None):
               'subject': identity.subject, 'actor_id': actor_id, 'profile_label': profile_label,
               'mode': 'simulation', 'requested_at': game._timestamp()}
     after['configuration'][request_id] = record
-    game._commit(before, after, 'identity_binding.requested')
+    game.record_transition(before, after, 'identity_binding.requested')
     return {'ok': True, 'request': deepcopy(record), 'duplicate': False}

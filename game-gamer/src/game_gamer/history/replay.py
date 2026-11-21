@@ -2,6 +2,7 @@
 from ..model import DomainError, require
 from ..runtime.engine import CollectiveEngine, digest
 from ..schema.definitions import WORLD_SCHEMA
+from ..extensions import extension_from_events
 
 HISTORY_SCHEMA = 'game-gamer/history/v1'
 
@@ -17,18 +18,19 @@ def scope_of(game):
     return scope
 
 
-def restore(document):
+def restore(document, *, extension=None):
     require(isinstance(document, dict) and document.get('schema') == HISTORY_SCHEMA, 'unsupported_history_schema')
     require(set(document) == {'schema', 'scope_id', 'events', 'history_digest', 'fork'}, 'invalid_history')
     events = document['events']
     require(isinstance(events, list) and events, 'empty_history')
     try:
         require(digest(events) == document['history_digest'], 'invalid_history_digest')
+        extension = extension_from_events(events, extension)
         require(events[0]['kind'] == 'world.initialized' and events[0]['command'] is None,
                 'invalid_genesis')
         require(all(m.get('schema_version') == '0.1' for event in events for m in event['mutations']),
                 'unsupported_mutation_schema')
-        game = CollectiveEngine.from_log(events[:1])
+        game = CollectiveEngine.from_log(events[:1], extension=extension)
         require(document['scope_id'] == scope_of(game), 'scope_mismatch')
         fork = document['fork']
         if fork is not None:

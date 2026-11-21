@@ -55,6 +55,22 @@ def known(node, kind, registries):
         return kind
     if expression(node) in registries:
         return registries[expression(node)]
+    if isinstance(node, ast.BoolOp):
+        values = [known(value, kind, registries) for value in node.values]
+        if isinstance(node.op, ast.And):
+            if any(value is False for value in values):
+                return False
+            if all(value is True for value in values):
+                return True
+        else:
+            if any(value is True for value in values):
+                return True
+            if all(value is False for value in values):
+                return False
+        return None
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+        value = known(node.operand, kind, registries)
+        return not value if isinstance(value, bool) else None
     if isinstance(node, ast.Compare) and len(node.ops) == 1:
         left = known(node.left, kind, registries)
         right = known(node.comparators[0], kind, registries)

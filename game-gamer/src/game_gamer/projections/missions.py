@@ -37,5 +37,7 @@ def project_mission(world, mission_id):
         ],
         'outcomes': [item for item in outcomes if item['requirement_id'] in definition['requirements']
                      or item['mission_id'] == mission_id],
-        'complete': all(item['evidence_ids'] for item in requirements),
+        'criteria_satisfied': bool(requirements) and all(item['evidence_ids'] for item in requirements),
+        'complete': definition['status'] == 'completed' if definition.get('lifecycle_schema') else
+                    all(item['evidence_ids'] for item in requirements),
     })

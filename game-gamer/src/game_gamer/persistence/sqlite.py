@@ -21,6 +21,11 @@ class SQLiteStore:
         # Read and compare the complete stored prefix before reusing its validated snapshot.
         with self._cache_lock:
             cached = self._cached
+            if cached is not None and hasattr(cached, 'extension'):
+                from ..extensions import extension_from_events
+                active = extension_from_events(entries, cached.extension)
+                if active is not cached.extension:
+                    cached = None
             if cached is not None and entries[:cached.revision] == cached._log:
                 game = cached.snapshot()
                 game._replay_events(entries[cached.revision:])

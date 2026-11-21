@@ -171,7 +171,6 @@ network:
     disputed: Disputed recollection
     documented: Other documented relationships
     inferred: Inferred complementarities
-    montreal_topology: Montréal source topology
     mutual: Mutual recollection
     one_sided: One-sided recollection
     pending_invitations: Pending invitations

@@ -112,7 +112,8 @@ def extract_decisions(*, interfaces='auto', adapters=(), collective=None, bindin
     from importlib.util import find_spec
     from pathlib import Path
     source_modules = {'game_gamer.runtime.' + name for name in
-                      ('engine', 'actions', 'governance', 'invitations', 'curation', 'curation_requests', 'reconstruction', 'runner', 'transactions')}
+                      ('engine', 'actions', 'governance', 'invitations', 'curation', 'curation_requests', 'reconstruction', 'runner', 'transactions', 'missions', 'mission_lifecycle')}
+    source_modules.add('game_gamer.extensions')
     source_modules |= {m for a in available for m in a.modules}
     if graph.get('contract'):
         source_modules |= set(reconstruction_registry().dependency_modules)

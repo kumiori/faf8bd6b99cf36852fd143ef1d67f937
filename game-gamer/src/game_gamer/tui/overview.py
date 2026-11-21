@@ -63,7 +63,7 @@ def _walk(neighbours, root, allowed=None):
     return ordered
 
 
-def overview(scope, width, height, *, selected=None):
+def overview(scope, width, height, *, selected=None, layer_styles=None):
     """Allocate overview slots to components, grouping adjacent traversal rows.
 
     Every actor belongs to exactly one slot. Cross-slot edges retain their
@@ -114,7 +114,7 @@ def overview(scope, width, height, *, selected=None):
             bundles[a, b, edge['layer'], directed] += 1
     edges = []
     for (a, b, layer, directed), count in bundles.items():
-        colour, pattern = LAYERS.get(layer, (SECONDARY, 'solid'))
+        colour, pattern = (layer_styles or {}).get(layer, LAYERS.get(layer, (SECONDARY, 'solid')))
         edges.append({'id': (a, b, layer), 'visual_source': a, 'visual_target': b,
                       'layer': layer, 'weight': count, 'pattern': pattern, 'colour': colour,
                       'directed': directed, 'unknown_marker': directed is None,

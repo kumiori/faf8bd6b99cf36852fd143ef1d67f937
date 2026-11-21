@@ -2,24 +2,25 @@
 import ast
 
 from ..runtime.engine import FIELDS, CollectiveEngine
-from ..runtime import invitations, reconstruction, curation, curation_requests, missions
+from ..runtime import invitations, reconstruction, curation, curation_requests, missions, mission_lifecycle
 from .source import expression, functions, load, name, provenance, statements
 
 ENGINE = 'game_gamer.runtime.engine'
 REGISTRIES = {'invitations.KINDS': invitations.KINDS, 'curation.FIELDS': curation.FIELDS,
               'reconstruction.FIELDS': reconstruction.FIELDS, 'curation_requests.FIELDS': curation_requests.FIELDS,
               'missions.FIELDS': missions.FIELDS,
+              'mission_lifecycle.FIELDS': mission_lifecycle.FIELDS, 'self.extension': False,
               'self.extension_fields': CollectiveEngine.extension_fields}
 
 
 def extract_engine():
     modules = [ENGINE, 'game_gamer.runtime.invitations', 'game_gamer.runtime.reconstruction',
                'game_gamer.runtime.curation', 'game_gamer.runtime.curation_requests', missions.__name__,
-               'game_gamer.runtime.governance', 'game_gamer.runtime.actions']
+               mission_lifecycle.__name__, 'game_gamer.runtime.governance', 'game_gamer.runtime.actions']
     sources = {module: dict(functions(load(module)[0])) for module in modules}
     nodes, edges = [], []
     for kind, (required, optional) in sorted(FIELDS.items()):
-        owner = next((m for m in (invitations, reconstruction, curation, curation_requests, missions) if kind in m.FIELDS), None)
+        owner = next((m for m in (invitations, reconstruction, curation, curation_requests, missions, mission_lifecycle) if kind in m.FIELDS), None)
         module = owner.__name__ if owner else ENGINE
         function = 'prepare' if owner else 'CollectiveEngine._prepare'
         guards, effects, events, helpers = [], [], [], []
@@ -51,7 +52,7 @@ def extract_engine():
                         prefix = call.func.value.id
                         target_mod = {'invitations': invitations.__name__, 'reconstruction': reconstruction.__name__,
                                       'curation': curation.__name__, 'curation_requests': curation_requests.__name__,
-                                      'missions': missions.__name__}.get(prefix)
+                                      'missions': missions.__name__, 'mission_lifecycle': mission_lifecycle.__name__}.get(prefix)
                         if target_mod and callee in sources[target_mod]:
                             helper = (target_mod, callee)
                         elif prefix == 'self' and 'CollectiveEngine.' + callee in sources[ENGINE]:

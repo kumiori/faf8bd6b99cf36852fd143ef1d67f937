@@ -35,5 +35,5 @@ def provision_curator(game, actor_name, *, enabled, reference):
     audit['decisions'].append({
         'enabled': enabled, 'reference': reference.strip(), 'authority': 'trusted_local_operator',
         'recorded_at': game._timestamp(), 'event_ref': f'commit_{game.revision+1:06}'})
-    game._commit(world, after, 'curator.access_granted' if enabled else 'curator.access_revoked')
+    game.record_transition(world, after, 'curator.access_granted' if enabled else 'curator.access_revoked')
     return {'ok': True, 'changed': True, 'actor_id': actor['id'], 'enabled': enabled}

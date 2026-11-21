@@ -9,7 +9,9 @@ from dataclasses import replace
 from game_gamer.projections.participants import ParticipantFilters, ParticipantProfile
 from game_gamer.runtime.curation import canonical
 from game_gamer.tui.i18n import message_key
-from game_gamer.tui.network import draw_graph, focus_graph, object_type_label
+from game_gamer.tui.network import object_type_label
+from .network_view import draw_graph, focus_graph
+from .network_config import LAYER_STYLES
 from game_gamer.tui.overview import overview, select_scope
 from game_gamer.tui.portrait import generate_portrait
 from game_gamer.tui.reconstruction import REGIONS, selected_network_edges
@@ -26,7 +28,7 @@ from .source_review import DECISIONS, candidates
 from .reconstruction import SORT_LABELS, exercise_projection
 from .reconstruction_filters import filter_label
 
-VIEWS = {'topology': message_key('network.layers.montreal_topology'), 'recollections': message_key('navigation.montreal_network.layers.recollections'),
+VIEWS = {'topology': message_key('network.montreal_topology'), 'recollections': message_key('navigation.montreal_network.layers.recollections'),
           'connections': message_key('navigation.montreal_network.layers.connections')}
 EDGE_GROUPS = {LAYER: 'topology', 'recollection': 'recollections', 'corroborated': 'recollections',
                'disputed_recollection': 'recollections', 'connection': 'connections'}
@@ -214,7 +216,7 @@ def network_rows(app, scoped, width, height):
             canvas, raster = draw_graph(visual, width, graph_height, selected=route.target,
                                         plain=app.plain, zoom=zoom, angle=angle, background='hidden', **options)
         else:
-            visual = overview(scoped, width, graph_height, selected=route.target)
+            visual = overview(scoped, width, graph_height, selected=route.target, layer_styles=LAYER_STYLES)
             canvas, raster = draw_graph(visual, width, graph_height, selected=visual['centre'], plain=app.plain,
                                         zoom=min(1., zoom), angle=angle, background='hidden', **options)
         styles.extend((row+len(rows), x, length, fg, bg, bold) for row, x, length, fg, bg, bold in raster)

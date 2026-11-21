@@ -7,6 +7,8 @@ from ..model import Actor, DomainError, GovernancePolicy, Resource, require
 from .reconstruction_sources import prepare_reconstruction_sources
 from ..runtime.reconstruction import CLAIM_KINDS
 from ..runtime.engine import CollectiveEngine, instant, text
+from ..extensions import EXTENSION_RECORD, extension_record
+from ..runtime import mission_lifecycle
 
 WORLD_SCHEMA = 'game-gamer/world/v1'
 _SEED_TABLES = ('actors', 'resources', 'governance', 'relationships', 'capacities', 'needs', 'objectives')
@@ -77,12 +79,12 @@ def _validate_references(world):
                 'invalid_initial_objective')
 
 
-def initialise(definition):
+def initialise(definition, *, extension=None):
     """Create the canonical genesis event from a JSON-compatible definition."""
     require(isinstance(definition, dict) and definition.get('schema') == WORLD_SCHEMA, 'unsupported_world_schema')
     try:
         require(set(definition) <= {*_SEED_TABLES, 'schema', 'scope_id', 'revision', 'execution_mode',
-                                    'world_time', 'title', 'reconstruction_sources'}, 'unknown_world_field')
+                                    'world_time', 'title', 'reconstruction_sources', 'missions', 'gameplay'}, 'unknown_world_field')
         require(json.loads(json.dumps(definition, sort_keys=True, allow_nan=False)) == definition,
                 'invalid_world_definition')
         scope = text(definition['scope_id'], 'scope_required')
@@ -102,7 +104,7 @@ def initialise(definition):
                 if table not in _MODELS:
                     text(record['status'], 'status_required')
                     text(record['provenance']['kind'], 'provenance_required')
-        game = CollectiveEngine()
+        game = CollectiveEngine(extension=extension)
         configuration = {'id': 'world', 'status': 'active', 'scope_id': scope, 'title': title,
                          'definition_revision': definition['revision'], 'execution_mode': 'simulation',
                          'schema_version': WORLD_SCHEMA}
@@ -112,6 +114,25 @@ def initialise(definition):
         require(isinstance(sources, list), 'invalid_reconstruction_sources')
         world['evidence'].update(prepare_reconstruction_sources(sources, world['actors'].keys()))
         require(not world['evidence'].keys() & ids, 'invalid_seed_id')
+        if game.extension:
+            require(EXTENSION_RECORD not in ids, 'invalid_seed_id')
+            if game.extension.initialise:
+                game.extension.initialise(world, deepcopy(definition))
+            world['configuration'][EXTENSION_RECORD] = extension_record(game.extension)
+        _validate_references(world)
+        mission_seeds = definition.get('missions', [])
+        require(isinstance(mission_seeds, list), 'invalid_mission_seeds')
+        for seed in mission_seeds:
+            require(isinstance(seed, dict) and set(seed) == {'id', 'title', 'rationale', 'target', 'criteria',
+                                                          'governance', 'proposed_by'}, 'invalid_mission_seed')
+            actor = seed['proposed_by']
+            require(actor in world['actors'] and world['actors'][actor]['status'] == 'active', 'unknown_actor')
+            command = {key: value for key, value in seed.items() if key not in {'id', 'proposed_by'}}
+            mission_lifecycle.create(world, {**command, 'mission_id': seed['id']}, actor=actor,
+                                     timestamp=definition['world_time'])
+        if 'gameplay' in definition:
+            mission_lifecycle.configure_gameplay(world, definition['gameplay'], game.fields.keys())
+        game.validate_world(world)
         game._commit(game.get_world(), world, 'world.initialized')
         return game
     except DomainError:

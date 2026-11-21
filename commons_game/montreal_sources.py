@@ -125,7 +125,7 @@ def import_montreal_network(game, sources, *, identities=None, dry_run=False):
     if report['changed'] and not dry_run:
         after = deepcopy(before)
         after['configuration'][LAYER] = dataset
-        event = game._commit(before, after, 'reconstruction.sources_imported')
+        event = game.record_transition(before, after, 'reconstruction.sources_imported')
         report['commit_id'] = event['commit']['id']
     return report
 

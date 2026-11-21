@@ -31,6 +31,7 @@ from .global_history import history_key, history_screen
 from .heatmap import BANDS
 from .i18n import t
 from .montreal_sources import profile_statements
+from .network_config import MAJOR_ROUTES
 from .network_view import (
     CATEGORIES,
     OBJECT_TYPES,
@@ -69,6 +70,7 @@ def score_text(detail):
 
 class FullScreenTerminal(PlayableTerminal):
     """A screen stack over one shared saved world and one simulated perspective."""
+    major_routes = MAJOR_ROUTES
     def __init__(self, game, *, viewport, **options):
         options.pop('output', None)
         self.transition_trace=options.pop('transition_trace',None)

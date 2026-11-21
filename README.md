@@ -453,3 +453,7 @@ runtime contract. The [completeness report](docs/decision-graphs/COMPLETENESS_RE
 links the reconciled baseline inventory, four graph views, trace schema, actual
 scoped release gate and remaining application-wide uncertainty. Optional JSONL
 observations are available with `commons play --ui-trace-output ui.jsonl`.
+
+The [public extension boundary and migration notes](docs/22-extension-boundary-migration.md)
+describe Commons application registration, legacy saves and the pinned Game-Gamer
+0.3.0 release bundle.

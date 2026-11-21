@@ -1045,6 +1045,7 @@ navigation:
     description: Inspect source scenarios, linked objectives and recorded trajectories.
   workshop: WORKSHOP
 network:
+  montreal_topology: Montréal source topology
   camera:
     experimental_3d: ' · EXPERIMENTAL 3D'
     planar: ' · Planar'

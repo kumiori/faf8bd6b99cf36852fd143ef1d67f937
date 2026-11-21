@@ -1,0 +1,8 @@
+{
+  "package": "game-gamer",
+  "version": "0.3.0",
+  "extension_contract": "game-gamer/extension/v1",
+  "wheel": "vendor/game_gamer-0.3.0-py3-none-any.whl",
+  "sha256": "8acd98406664c0a2f829b326a3558db051b7ca9c75a60755bef966cb626d0d00",
+  "source_date_epoch": 1795219200
+}

@@ -45,10 +45,8 @@ LAYERS = {'inferred':('#71889f','dotted'),'documented':('#a3bd95','solid'),
           'historical_whiteboard':('#a7b6ff','solid'), 'recollection':('#c4a7e7','dotted'),
           'corroborated':('#78d8ba','solid'), 'disputed_recollection':('#e38a76','dotted'),
           'prior_relationship':('#d7b494','solid'), 'reconstruction_invitation':('#e8b65e','dashed')}
-LAYERS['montreal_2026_reconstructed'] = ('#a7b6ff', 'solid')
 
 RECONSTRUCTION_CATEGORIES = {
-    'montreal_2026_reconstructed': message_key('network.layers.montreal_topology'),
     'historical_whiteboard': message_key('network.layers.whiteboard'), 'recollection': message_key('network.layers.one_sided'),
     'corroborated': message_key('network.layers.mutual'), 'disputed_recollection': message_key('network.layers.disputed'),
     'prior_relationship': message_key('network.layers.prior_relationship'),
@@ -64,7 +62,6 @@ _CATEGORY_IDS = {
     message_key('network.layers.proposed_agreements'): 'Proposed agreements',
     message_key('network.layers.accepted_agreements'): 'Accepted or active agreements',
     message_key('network.layers.verified_outcomes'): 'Verified outcomes',
-    message_key('network.layers.montreal_topology'): 'Montréal source topology',
     message_key('network.layers.whiteboard'): 'Whiteboard evidence',
     message_key('network.layers.one_sided'): 'One-sided recollection',
     message_key('network.layers.mutual'): 'Mutual recollection',
@@ -98,7 +95,9 @@ def object_type_label(kind):
     return t(OBJECT_TYPE_MESSAGES[kind])
 
 
-def edge_category(edge, lookup):
+def edge_category(edge, lookup, *, layer_categories=None):
+    if layer_categories and edge['layer'] in layer_categories:
+        return layer_categories[edge['layer']]
     return _CATEGORY_IDS[_category_key(edge, lookup)]
 
 
@@ -108,18 +107,20 @@ def category_label(category):
 
 
 
-def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, scope='neighbourhood', categories=None, three_d=False, labeler=node_label, object_type=None):
+def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, scope='neighbourhood', categories=None, three_d=False, labeler=node_label, object_type=None, layer_styles=None, layer_categories=None):
     """All incident relations remain available; pages disclose visual reduction.
 
     Party contracts retain their policy/objective/resources even though those
     are two hops from the actor. Strong inferred matches do not crowd them out.
     """
+    styles = {**LAYERS, **(layer_styles or graph.get('layer_styles', {}))}
+    layer_categories = layer_categories or graph.get('layer_categories', {})
     full_node_count=len(graph['nodes']); full_edge_count=len(graph['edges'])
     lookup = {n['id']:n for n in graph['nodes']}
     actor_ids = sorted(key for key, node in lookup.items() if node['kind'] in {'person', 'organisation'})
     incident = {e[key] for e in graph['edges'] for key in ('source_id', 'target_id')}
     if categories is not None or scope=='connections':
-        edges=[e for e in graph['edges'] if (categories is None or edge_category(e, lookup) in categories)
+        edges=[e for e in graph['edges'] if (categories is None or edge_category(e, lookup, layer_categories=layer_categories) in categories)
                and (scope!='connections' or e['layer'] in {'invitation','connection'})]
         ids={e[k] for e in edges for k in ('source_id','target_id')}|{centre}
         graph={'nodes':[n for n in graph['nodes'] if n['id'] in ids],'edges':edges}
@@ -157,7 +158,7 @@ def focus_graph(graph, centre, *, related=None, query='', offset=0, limit=12, sc
         # Commons projection; unknown source relation direction stays unknown.
         if 'directed' not in records[0] and layer in {'agreement','institutional'}:
             directed = True
-        colour,pattern = LAYERS.get(layer,('#aaaaaa','solid'))
+        colour,pattern = styles.get(layer,('#aaaaaa','solid'))
         epistemic_status=(records[0].get('status','unknown')+t('network.contact_invitation')) if layer=='invitation' else t('network.acknowledged_contact_only') if layer=='connection' else layer
         if kind=='party_to':
             accepted=records[0].get('status') in {'accepted','authorized','active','fulfilled'}

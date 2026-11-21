@@ -19,11 +19,12 @@ class ActionSubmission:
     action_type: str
     payload: dict
 
-    def command(self):
+    def command(self, *, registry=None):
+        registry = FIELDS if registry is None else registry
         text(self.action_id, 'key_required')
         text(self.actor_id, 'actor_required')
         require(type(self.expected_revision) is int and self.expected_revision >= 1, 'invalid_expected_revision')
-        require(isinstance(self.action_type, str) and self.action_type in FIELDS, 'unknown_command')
+        require(isinstance(self.action_type, str) and self.action_type in registry, 'unknown_command')
         require(isinstance(self.payload, dict) and not
                 self.payload.keys() & {'key', 'actor', 'kind', 'session'}, 'invalid_action_payload')
         try:
@@ -31,7 +32,15 @@ class ActionSubmission:
             require(json.loads(serialised) == self.payload, 'invalid_action_payload')
         except (TypeError, ValueError) as error:
             raise DomainError('invalid_action_payload') from error
-        target = next((self.payload[key] for key in _TARGET_FIELDS if key in self.payload), None)
+        spec = registry[self.action_type]
+        required, optional = (spec.required, spec.optional) if hasattr(spec, 'required') else spec
+        require(required <= self.payload.keys(), 'missing_field')
+        require(self.payload.keys() <= required | optional, 'unsupported_field')
+        target_field = getattr(spec, 'target_field', None)
+        if hasattr(spec, 'target_field'):
+            target = self.payload.get(target_field) if target_field else None
+        else:
+            target = next((self.payload[key] for key in _TARGET_FIELDS if key in self.payload), None)
         require(target == self.target_id, 'target_mismatch')
         return {**deepcopy(self.payload), 'key': self.action_id, 'actor': self.actor_id, 'kind': self.action_type}
 
@@ -43,11 +52,11 @@ class SimulationBinding:
     actor_id: str
     authority: str = 'personal'
 
-    def bind(self, action, scope, *, counterfactual=False):
+    def bind(self, action, scope, *, counterfactual=False, registry=None):
         require(self.scope_id == action.scope_id == scope, 'scope_mismatch')
         require(self.actor_id == action.actor_id, 'actor_mismatch')
         require(self.authority in {'personal', 'organisation'}, 'invalid_binding_authority')
-        return {**action.command(), 'session': {
+        return {**action.command(registry=registry), 'session': {
             'mode': 'simulation',
             'provider': 'counterfactual_simulation' if counterfactual else 'development_simulation',
             'subject': scope, 'binding_actor': self.actor_id,
