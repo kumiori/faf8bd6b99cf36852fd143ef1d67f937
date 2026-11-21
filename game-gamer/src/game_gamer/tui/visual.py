@@ -3,6 +3,7 @@
 from itertools import zip_longest
 import os
 
+from .i18n import t
 from .text import display_width, pad
 
 PRIMARY = '#f5f5f5'
@@ -28,6 +29,13 @@ def panel_columns(panels, *, row_offset=0, gutter=3):
     lines = [(' '*gutter).join(part or ' '*panel[0] for part, panel in zip(row, panels))
              for row in zip_longest(*columns)]
     return lines, spans
+
+
+def graph_pages(offset, total, limit, *, arrows=True):
+    if total <= limit:
+        return ''
+    return t('network.pages_arrows' if arrows else 'network.pages_brackets',
+             current=offset//limit+1, total=(total+limit-1)//limit)
 
 
 def motion_enabled(viewport):

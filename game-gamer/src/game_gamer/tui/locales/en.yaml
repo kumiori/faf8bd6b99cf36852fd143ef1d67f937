@@ -94,6 +94,14 @@ history:
     technical: Technical
     truncated: '{value}… (full value in Technical)'
   summary:
+    mission_join: '{actor} joined a mission'
+    mission_propose: '{actor} proposed a mission contribution'
+    mission_commit: '{actor} offered a mission contribution'
+    mission_challenge: '{actor} challenged a mission definition'
+    mission_explore: '{actor} explored mission activity'
+    mission_accept: '{actor} accepted a mission offer'
+    mission_verify: '{actor} verified a mission outcome'
+    mission_revise: '{actor} approved a mission revision'
     accept: '{actor} accepted agreement terms'
     activate: '{actor} activated an agreement'
     amend: '{actor} revised agreement terms'
@@ -145,13 +153,15 @@ navigation:
   terminal_bar: m Paths | H History{context} | e Ecosystem | g Gathering | s Scenarios | {contracts_key} Contracts
     | i Inbox | p Player
 network:
+  pages_arrows: '← Previous · {current}/{total} · Next →'
+  pages_brackets: '[ Previous · {current}/{total} · Next ]'
   accepted_agreement_party: accepted agreement party
   acknowledged_contact_only: acknowledged contact only
   background:
     title: NETWORK BACKGROUND
   contact_invitation: ' contact invitation'
   ecosystem_network: ECOSYSTEM / NETWORK
-  enter_inspect_tab_view_s: Enter Inspect · Tab View · S Scope · L Layers · B Background · [] Page · f Centre ·
+  enter_inspect_tab_view_s: Enter Inspect · Tab View · S Scope · L Layers · B Background · f Centre ·
     +/- Zoom
   experimental_3d: EXPERIMENTAL 3D
   layers:
@@ -274,6 +284,9 @@ terminal:
     verified_agreements_required: '{verified_agreements} verified agreements required'
     who_will_you_play_simulation: WHO WILL YOU PLAY? / SIMULATION ONLY
 viewport:
+  directory_keys: 'Arrows Select  / Search  Enter Choose  b Back '
+  directory_pages: 'PgUp Previous · {current}/{total} · PgDn Next'
+  directory_search: Search by name
   confirm: CONFIRM
   context_panel: CONTEXT PANEL
   decisions: DECISIONS
@@ -328,7 +341,7 @@ workshop:
     no_whiteboard_connections_have_been: No whiteboard connections have been imported.
     none_declared: None declared
     not_yet_recorded: Not yet recorded
-    observations_l_layers_v_view: '{incident_count} observations · L Layers · v View · [ ] Page'
+    observations_l_layers_v_view: '{incident_count} observations · L Layers · v View'
     offers: 'Offers: '
     organisation: 'Organisation: '
     partial_record: ' (partial record)'

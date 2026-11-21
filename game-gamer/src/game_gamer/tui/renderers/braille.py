@@ -50,6 +50,8 @@ def draw_edges(edges, points, width, height, *, colour_for, progress, put):
             continue
         lo, hi = interval
         limit, bold = progress(edge)
+        foreground = bool(edge.get('highlighted'))
+        bold = bold or foreground
         hi = min(hi, limit)
         if hi < lo:
             continue
@@ -69,8 +71,9 @@ def draw_edges(edges, points, width, height, *, colour_for, progress, put):
             depth = a[2] + fraction*(b[2]-a[2]) + .2
             cell = pixels.setdefault((x//2, y//4), {})
             dot = DOTS[y % 4][x % 2]
-            if dot not in cell or depth < cell[dot][0]:
-                cell[dot] = (depth, colour, bold)
+            order = (not foreground, depth)
+            if dot not in cell or order < cell[dot][0]:
+                cell[dot] = (order, colour, bold)
         if hi > lo and (edge.get('directed') or edge.get('unknown_marker')):
             fraction = lo + (hi-lo)*.65
             dx, dy = b[0]-a[0], b[1]-a[1]
@@ -79,7 +82,7 @@ def draw_edges(edges, points, width, height, *, colour_for, progress, put):
             marks.append((x, y, depth+.2, '?' if edge.get('unknown_marker') else arrow, colour, bold))
 
     for (x, y), dots in pixels.items():
-        depth, colour, bold = min(dots.values())
+        (_, depth), colour, bold = min(dots.values())
         # A terminal cell has one foreground. Keep the front colour's dots only.
         mask = sum(dot for dot, value in dots.items() if value[1] == colour)
         put(x, y, depth, chr(0x2800+mask), colour, bold, priority=2)

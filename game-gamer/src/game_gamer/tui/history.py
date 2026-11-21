@@ -4,6 +4,14 @@ import json
 from .i18n import message_key, t
 
 _SUMMARIES = {
+    'mission_join': message_key('history.summary.mission_join'),
+    'mission_propose': message_key('history.summary.mission_propose'),
+    'mission_commit': message_key('history.summary.mission_commit'),
+    'mission_challenge': message_key('history.summary.mission_challenge'),
+    'mission_explore': message_key('history.summary.mission_explore'),
+    'mission_accept': message_key('history.summary.mission_accept'),
+    'mission_verify': message_key('history.summary.mission_verify'),
+    'mission_revise': message_key('history.summary.mission_revise'),
     'recall_connection': message_key('history.summary.recall_connection'),
     'record_prior_relationship': message_key('history.summary.record_prior_relationship'),
     'send_contact': message_key('history.summary.send_contact'),
@@ -56,7 +64,7 @@ def overview(row, label):
     summary = (t(key, actor=actor) if key else
                t('history.summary.other_action', actor=actor, action=action.replace('.', ' ').replace('_', ' ')))
     command = event.get('command') or {}
-    target = next((command[key] for key in ('target_id', 'recipient_id', 'agreement_id', 'invitation_id', 'claim_id')
+    target = next((command[key] for key in ('mission_id', 'target_id', 'recipient_id', 'agreement_id', 'invitation_id', 'claim_id')
                    if command.get(key)), None)
     return t('history.summary.with_target', summary=summary, target=label(target)) if target else summary
 

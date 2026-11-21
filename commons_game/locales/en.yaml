@@ -341,7 +341,6 @@ curation:
   reverse_an_identity_merge: Reverse an identity merge
   reverse_identity_merge: REVERSE IDENTITY MERGE
   reverse_this_identity_merge: REVERSE THIS IDENTITY MERGE?
-  role_suffix: ' · CURATOR'
   save_this_curator_correction: SAVE THIS CURATOR CORRECTION?
   select_verified_canonical_identity: SELECT VERIFIED CANONICAL IDENTITY
   self_links_suppressed_in_projections: 'Self-links suppressed in projections: {self_links_hidden}'
@@ -1039,7 +1038,6 @@ navigation:
     search_participant_names_blank_clears: Search participant names (blank clears)
     status: 'Status · '
     title: MONTRÉAL NETWORK
-    use_reviewed_stable_actor_ids: Use reviewed stable actor IDs with import-montreal-network --identities.
   path_entry: '{title} · {description}'
   scenario:
     label: Scenario
@@ -1055,10 +1053,9 @@ network:
     · {value_2} isolated'
   ecosystem_network_hack_renderer: ECOSYSTEM / NETWORK / HACK RENDERER
   ecosystem_network_object_list: ECOSYSTEM / NETWORK / OBJECT LIST
-  enter_inspect_tab_view_t: Enter Inspect  Tab View  T Types  S Scope  L Layers  B Background  [ ] Page  f Centre  +
+  enter_inspect_tab_view_t: Enter Inspect  Tab View  T Types  S Scope  L Layers  B Background  f Centre  +
     - Zoom  r Rotate
   layers: ' · Layers: '
-  neighbours_page: Neighbours {value}–{value_2}/{total} · [ ] Page
   network_hack_terminal: NETWORK / HACK TERMINAL
   no_matching_graph_nodes_search: No matching graph nodes. / Search or b Back.
   player_centred_neighbourhood: Player-centred neighbourhood
@@ -1583,7 +1580,7 @@ montreal_ui:
   shape: 'Linked groups {components} · Isolated actors {isolates}'
   stats_compact: 'Actors {profiles_count} · Links {edges_count} · {views}'
   local_links: 'Direct links {count}'
-  local_page: 'Neighbours {first}–{last} / {total}'
+  pages: '← Previous · {current}/{total} · Next →'
   empty_scope: No actors in this scope.
   actor_types: FILTER GRAPH BY ACTOR TYPE
   focus_title: FOCUS A PARTICIPANT
@@ -1605,9 +1602,139 @@ montreal_ui:
     overview: 'Montréal overview — ◆ or + groups actors to fit the window, ∘ or o marks an isolate, @ marks the focus. F finds an actor in the current scope and opens their local network.'
     directory: 'Montréal directory — / searches by name, f filters, o sorts. Tab and Shift+Tab move between panels. Enter opens a profile, and D expands or collapses it.'
     network: 'Montréal graph — n focuses the network, G opens it full width, v toggles local/global, L selects layers and T filters actor types. [ ] pages local neighbours, +/− zooms and r rotates.'
+    display: 'Graph display — Y toggles labels, N numbers, A edge annotations and V constellation mode. Use ←/→ to page local neighbours.'
     source: 'Montréal sources — ↑↓ selects a connection, Enter inspects it or focuses its counterpart. d opens source details. Curators can use U to review identities.'
 terminal_polish:
   context: '{world}  ·  {actor}  ·  {mode} / Simulation{historical}'
   scenario_source: d opens scenario sources.
   world: WORLD
   activity: ACTIVITY
+missions:
+  choose_mission: Select mission
+  menu_note: Montréal missions share one world. Workshop references and regression fixtures follow the missions.
+  menu_keys: Enter Open mission · H Global history
+  summary: 'Definition v{version} · {verified}/{total} requirements verified'
+  page_keys: Enter Expand section · a Your moves · h Mission history · H Global history
+  section_keys: ↑↓ Select or scroll · Enter Open · b Back
+  choose_section: Open mission section
+  why: WHY
+  where: WHERE
+  who: WHO
+  how: HOW
+  requirements: WHAT’S MISSING
+  moves: YOUR MOVES
+  activity: Proposals, commitments and outcomes
+  sources: Workshop sources
+  history: Mission history
+  need: Need and obstacle
+  rationale: Rationale
+  target: Target
+  structural_result: Structural result from the scenario card
+  finalities: Related finality cards
+  generic_results: Related generic result cards
+  no_generic_result: The scenario card supplies the structural result.
+  actors: Relevant actor categories
+  players: Participating players
+  no_players: No players have joined yet.
+  principal_means: Principal means from the scenario card
+  complementary_means: Complementary means cards
+  trajectory: CURRENT STATE → PROPOSED STEPS → TARGET
+  current: 'Current state · '
+  future_steps: Proposed route steps
+  after_step: ' · after step {number}'
+  no_steps: Propose a step to start a route.
+  met: Verified
+  outstanding: Outstanding
+  completed: Completed outcomes · independently verified in simulation
+  completed_step: 'Completed route step · {description}'
+  no_outcomes: No verified outcomes yet.
+  contributions: Player contributions · proposals, challenges and offers
+  no_contributions: No contributions yet.
+  source_note: The printed scenario, actor, means, finality and result cards supply the source material.
+  selection_note: Participants’ workshop selections have not been supplied.
+  curated_note: The rationale, related cards and requirements are curated for play. Player proposals, offers and challenges are recorded during play.
+  source_page: Scenario card on page {page} of the scenario deck.
+  join: JOIN · Participate in the mission
+  propose: PROPOSE · Suggest an initiative, actor, means or step
+  commit: COMMIT · Offer responsibility or a resource
+  challenge: CHALLENGE · Question the mission or propose a revision
+  explore: EXPLORE · Inspect mission activity
+  accept: ACCEPT · Respond to an offer addressed to you
+  verify: VERIFY · Review delivery evidence independently
+  revise: APPLY REVISION · Approve a proposed definition change
+  initiative: Initiative
+  actor: Actor
+  means: Means
+  step: Route step
+  proposed: Proposed
+  submitted: Submitted
+  offered: Awaiting recipient acceptance
+  pledged: Pledged · awaiting verification
+  accepted: Accepted · awaiting verification
+  verified: Verified
+  applied: Revision applied
+  proposal_type: What are you proposing?
+  describe: Describe your contribution
+  choose_card: Link a catalogue card
+  no_card: Use the written description
+  choose_predecessor: Which proposed step comes before this one?
+  no_predecessor: Start an independent step
+  choose_requirement: Which requirement does this offer support?
+  choose_resource: What are you offering?
+  responsibility: A responsibility
+  choose_recipient: Who needs to accept this offer?
+  no_recipient: Make a voluntary pledge without a recipient
+  quantity: How many units are offered? Maximum {maximum}
+  link_step: Link this offer to a route step
+  no_step_link: Leave the offer independent of the route
+  choose_field: Which part of the mission are you challenging?
+  reason: Why are you challenging this?
+  suggest_replacement: Propose a specific revision?
+  change_requirement: Choose a requirement to add or remove
+  replacement: Enter the proposed replacement text
+  evidence: Record the evidence reference for delivery against this criterion
+  confirm: Save this move to the shared simulation?
+  move_unavailable: This move is unavailable to the current player.
+  select_player: Choose a simulated player with p to take a move.
+  saved: Move recorded in the shared world.
+  unknown: Choose one of the Montréal mission IDs.
+  resource_offer_note: This records an offer. Use a contract to reserve or transfer resources in the simulation.
+identity_ui:
+  match: MATCH · Link to an existing Notion person
+  create: CREATE · Stage a provisional profile
+  defer: DEFER · Keep the source unresolved
+  reject: REJECT · Exclude the source from topology
+  matched: Matched
+  created: Provisional profile created
+  deferred: Deferred
+  rejected: Rejected
+  pending: Awaiting review
+  review_explanation: Review the source evidence before choosing a canonical person.
+  open_review: Enter Open or choose · PgUp/PgDn Scroll
+  source_identity: 'Source identity · {name}'
+  name_suggestion: 'Earlier name-only suggestion · {name}'
+  source_observation: '{organisation} · {role} · {file}, line {line}'
+  source_links: 'Source connections {count}'
+  review_history: '{decision} · {actor} · {reason}'
+  no_notion_candidates: No Notion people are present in the imported roster.
+  notion_candidates: REVIEW NOTION CANDIDATES
+  notion_candidate: '{name} · {organisations} · {record}'
+  confirm_review: 'Record this review decision? {decision}'
+  edit_title: PROPOSE A PROFILE CORRECTION
+  edit_key: E Edit profile
+  review_key: U Review sources
+  constellation: Constellation
+  organisation: Organisation
+  domains: Domains
+  current_value: 'Current canonical value · {value}'
+  proposed_value: 'Proposed value · {value}'
+  topics_prompt: Enter comma-separated topics (blank clears the list)
+  correction_pending: Profile correction submitted for curator review.
+  change_summary: '{field} · {before} → {after}'
+  sync_pending: Approved. Awaiting Notion synchronisation.
+  sync_confirmed: Applied to the canonical profile and confirmed in Notion.
+  cli:
+    sync: Apply one approved profile operation to the configured Notion data source
+    claim: Issue or verify a provisional profile invitation as a trusted operator
+    token: 'Profile invitation token: '
+    mapping_required: Supply --mapping to apply a profile operation.

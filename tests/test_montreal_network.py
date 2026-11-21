@@ -43,7 +43,8 @@ def test_import_preserves_rows_flags_ambiguity_and_replays_a_saved_world(tmp_pat
     sources = source_files(tmp_path)
     preview = import_montreal_network(game, sources, dry_run=True)
     assert (preview['nodes'], preview['edges'], preview['statements']) == (3, 3, 3)
-    assert (preview['matched'], preview['ambiguous'], preview['unmatched'], preview['duplicate_edges']) == (1, 1, 1, 1)
+    assert (preview['matched'], preview['ambiguous'], preview['unmatched'], preview['duplicate_edges']) == (0, 1, 1, 1)
+    assert any(row['status'] == 'suggested' and row['names'] == ['Alex Example'] for row in preview['review'])
     assert game.project('log') == previous_events
     report = store.transact(lambda engine: import_montreal_network(engine, sources))
     assert report['changed']
@@ -69,10 +70,16 @@ def test_import_preserves_rows_flags_ambiguity_and_replays_a_saved_world(tmp_pat
     assert current.get_world() == current.replay().get_world()
 
 
+def import_reviewed_fixture(game, sources):
+    actors = {row['label']: row['id'] for row in game.get_world()['actors'].values()}
+    bindings = {key: actors[names[0]] for key, names in sources['names'].items() if names[0] in actors}
+    return import_montreal_network(game, sources, identities=bindings)
+
+
 def test_direct_workshop_explorer_keeps_layers_and_connection_inspection_separate(tmp_path):
     game = world()
     sources = source_files(tmp_path)
-    assert import_montreal_network(game, sources)['ok']
+    assert import_reviewed_fixture(game, sources)['ok']
     actors = {actor['label']: actor['id'] for actor in game.get_world()['actors'].values()}
     alex, casey = actors['Alex Example'], actors['Casey Example']
     assert game.submit({'key': 'recall', 'kind': 'recall_connection', 'actor': alex,
@@ -115,7 +122,7 @@ def test_direct_workshop_explorer_keeps_layers_and_connection_inspection_separat
 
 def test_scope_keys_expand_membership_and_focus_without_world_writes(tmp_path):
     game = world()
-    assert import_montreal_network(game, source_files(tmp_path, include_isolate=True))['ok']
+    assert import_reviewed_fixture(game, source_files(tmp_path, include_isolate=True))['ok']
     ui, _ = app(game, choices=[4, 1, 0, lambda item: item == ui.playing_actor])
     before = game.project('log')
     ui.choose_mode()
@@ -153,7 +160,7 @@ def test_scope_keys_expand_membership_and_focus_without_world_writes(tmp_path):
 
 def test_connection_source_is_opt_in(tmp_path):
     game = world()
-    assert import_montreal_network(game, source_files(tmp_path))['ok']
+    assert import_reviewed_fixture(game, source_files(tmp_path))['ok']
     ui, _ = app(game, choices=[4])
     ui.choose_mode()
     ui.handle('n', ui.build_screen())

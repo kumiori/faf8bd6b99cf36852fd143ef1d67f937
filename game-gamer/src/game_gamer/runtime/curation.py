@@ -13,6 +13,40 @@ FIELDS = {
 }
 
 
+PROFILE_TEXT = {'label', 'motivation', 'profile_role', 'profile_organisation'}
+PROFILE_TOPICS = {'profile_domains', 'profile_offers', 'profile_needs'}
+PROFILE_FIELDS = PROFILE_TEXT | PROFILE_TOPICS
+
+
+def validate_changes(changes, error):
+    require(isinstance(changes, dict) and changes.keys() <= PROFILE_FIELDS, error)
+    for field, value in changes.items():
+        if field in PROFILE_TEXT:
+            require(isinstance(value, str) and len(value) <= (4000 if field == 'motivation' else 240)
+                    and all(char.isprintable() or field == 'motivation' and char == '\n' for char in value), error)
+            require(field != 'label' or bool(value.strip()), 'invalid_profile_label')
+        else:
+            require(isinstance(value, list) and len(value) <= 50
+                    and all(isinstance(topic, str) and 0 < len(topic.strip()) <= 160
+                            and topic.isprintable() and topic == topic.strip() for topic in value), error)
+            require(len({topic.casefold() for topic in value}) == len(value), error)
+
+
+def apply_profile(world, target, changes, audit):
+    profiles = container(world)['profiles']
+    before = profile(world, target)
+    prior = profiles.get(target, {}).get('changes', {})
+    profiles[target] = {'changes': {**prior, **deepcopy(changes)}, **audit,
+                        'previous': {field: before.get(field) for field in changes}}
+
+
+def container(world):
+    return world['configuration'].setdefault('curation', {
+        'id': 'curation', 'status': 'active', 'schema_version': 'game-gamer/curation/v1',
+        'aliases': {}, 'merges': {}, 'profiles': {}, 'visibility': {},
+    })
+
+
 def state(world):
     return world['configuration'].get('curation', {})
 
@@ -74,10 +108,7 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
     require(isinstance(reference, str) and bool(reference.strip()) and len(reference) <= 2000,
             'curator_reference_required')
     preview = merge_preview(world, command['source_id'], command['target_id']) if command['kind'] == 'merge_profiles' else None
-    config = world['configuration'].setdefault('curation', {
-        'id': 'curation', 'status': 'active', 'schema_version': 'game-gamer/curation/v1',
-        'aliases': {}, 'merges': {}, 'profiles': {}, 'visibility': {},
-    })
+    config = container(world)
     audit = {'actor_id': actor, 'reference': reference, 'recorded_at': timestamp,
              'event_ref': f'commit_{sequence:06}'}
     kind = command['kind']
@@ -96,13 +127,9 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
     action['target_ids'] = [target]
     if kind == 'correct_profile':
         changes = command['changes']
-        require(isinstance(changes, dict) and changes and set(changes) <= {'label', 'motivation', 'profile_role'},
-                'invalid_profile_correction')
-        require(all(isinstance(value, str) and len(value) <= 4000 for value in changes.values()),
-                'invalid_profile_correction')
-        require('label' not in changes or bool(changes['label'].strip()), 'invalid_profile_label')
-        prior = config['profiles'].get(target, {}).get('changes', {})
-        config['profiles'][target] = {'changes': {**prior, **deepcopy(changes)}, **audit}
+        require(changes, 'invalid_profile_correction')
+        validate_changes(changes, 'invalid_profile_correction')
+        apply_profile(world, target, changes, audit)
     elif kind == 'set_profile_visibility':
         require(command['visibility'] in {'visible', 'hidden', 'archived'}, 'invalid_profile_visibility')
         config['visibility'][target] = {'value': command['visibility'], **audit}

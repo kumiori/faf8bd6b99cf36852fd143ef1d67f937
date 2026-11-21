@@ -17,10 +17,12 @@ from game_gamer.tui.screen import Screen
 from game_gamer.tui.text import clip, display_width
 from game_gamer.tui.visual import ACTION, NAVIGATION, PRIMARY, SECONDARY, panel_columns, text_span
 
-from .curator import allowed
+from .curator import allowed, write
 from .i18n import t
-from .montreal_sources import LAYER
+from .montreal_sources import LAYER, resolved_actor
 from .presentation import status
+from .profile_editor import propose
+from .source_review import DECISIONS, candidates
 from .reconstruction import SORT_LABELS, exercise_projection
 from .reconstruction_filters import filter_label
 
@@ -33,8 +35,13 @@ SCOPES = {'local': message_key('montreal_ui.scopes.local'),
           'global': message_key('montreal_ui.scopes.global')}
 HEADINGS = {'directory': message_key('workshop.directory.who_directory'),
             'profile': message_key('montreal_ui.profile'), 'network': message_key('montreal_ui.network')}
+REVIEW_LABELS = {'match': message_key('identity_ui.match'), 'create': message_key('identity_ui.create'),
+                 'defer': message_key('identity_ui.defer'), 'reject': message_key('identity_ui.reject')}
+REVIEW_STATUSES = {'matched': message_key('identity_ui.matched'), 'created': message_key('identity_ui.created'),
+                   'deferred': message_key('identity_ui.deferred'), 'rejected': message_key('identity_ui.rejected'),
+                   'pending': message_key('identity_ui.pending')}
 MAIN_ROUTES = {'montreal_network', 'montreal_network_graph'}
-ROUTES = MAIN_ROUTES | {'montreal_connection', 'montreal_profile_source', 'montreal_source_review'}
+ROUTES = MAIN_ROUTES | {'montreal_connection', 'montreal_profile_source', 'montreal_source_review', 'montreal_source_identity'}
 
 
 def projection(app):
@@ -53,7 +60,7 @@ def projection(app):
             for row in dataset['statements']:
                 statements.setdefault(row['person_id'], []).append(row)
             for source_id, binding in dataset['identities'].items():
-                actor = canonical(world, binding['actor_id']) if binding['actor_id'] else source_id
+                actor = canonical(world, resolved_actor(binding) or source_id)
                 if actor not in graph_nodes:
                     continue
                 name = dataset['names'][source_id][0]
@@ -70,10 +77,19 @@ def projection(app):
                     roles = (curated['profile_role'],) if curated['profile_role'] else ()
                 else:
                     roles = roles or profile.roles
+                if 'profile_organisation' in curated:
+                    organisations = (curated['profile_organisation'],) if curated['profile_organisation'] else ()
+                else:
+                    organisations = organisations or profile.organisations
                 directory.profiles[actor] = replace(
-                    profile, name=curated.get('label', name), organisations=organisations or profile.organisations,
-                    roles=roles,
-                    motivation=profile.motivation if 'motivation' in curated else '\n'.join(motivations) or profile.motivation)
+                    profile, name=curated.get('label', graph_nodes[actor]['label']), organisations=organisations,
+                    roles=roles, domains=tuple(curated.get('profile_domains', profile.domains)),
+                    offers=tuple(curated.get('profile_offers', profile.offers)),
+                    needs=tuple(curated.get('profile_needs', profile.needs)),
+                    offers_state='answered' if 'profile_offers' in curated else profile.offers_state,
+                    needs_state='answered' if 'profile_needs' in curated else profile.needs_state,
+                    motivation=(curated.get('motivation') if 'motivation' in curated else
+                                '\n'.join(motivations) or profile.motivation))
                 provenance.setdefault(actor, []).append({'source_id': source_id, 'binding': binding, 'statements': rows})
         ids = directory.profiles.keys()
         edges = [{**edge, 'display_group': EDGE_GROUPS[edge['layer']]} for edge in graph['edges']
@@ -148,8 +164,10 @@ def profile_rows(app, profile, width, height, provenance):
                 add(t('workshop.directory.none_declared') if state == 'answered' else t('common.not_recorded'), SECONDARY)
             if state == 'partial':
                 add(t('montreal_ui.partial'), SECONDARY)
+    if expanded and profile.domains:
+        add(t('identity_ui.domains')+' · '+', '.join(profile.domains), SECONDARY)
     if allowed(app):
-        if any(not item['binding']['actor_id'] for item in provenance.get(profile.id, [])):
+        if any(not resolved_actor(item['binding']) for item in provenance.get(profile.id, [])):
             add(t('navigation.montreal_network.identity_pending_review') + profile.id, SECONDARY)
         else:
             add(t('navigation.montreal_network.roster_identity') + profile.id, SECONDARY)
@@ -171,6 +189,14 @@ def network_rows(app, scoped, width, height):
         rows.append(t('montreal_ui.shape', components=len(scoped.components), isolates=len(scoped.isolates)))
     else:
         rows.append(t('montreal_ui.local_links', count=len(incident)))
+    constellation = route.extra.get('constellation', False)
+    options = {
+        'show_labels': route.extra.get('show_labels', scope == 'local') or constellation,
+        'show_numbers': route.extra.get('show_numbers', scope == 'local') and not constellation,
+        'edge_annotations': route.extra.get('edge_annotations', scope == 'local') and not constellation,
+        'selected_only': constellation,
+        'emphasise': True,
+    }
     graph_height = height-len(rows)-min(2, max(1, len(incident)))
     if len(scoped.nodes) <= 4:
         graph_height = min(graph_height, 9)
@@ -181,15 +207,16 @@ def network_rows(app, scoped, width, height):
                                  limit=page_size(width), offset=route.extra.get('network_page', 0))
             route.extra['network_page'] = visual['offset']
             if visual['total'] > page_size(width) and graph_height >= 4:
-                rows.append(t('montreal_ui.local_page', first=visual['offset']+1,
-                              last=min(visual['offset']+page_size(width), visual['total']), total=visual['total']))
+                limit = page_size(width)
+                rows.append(t('montreal_ui.pages', current=visual['offset']//limit+1,
+                              total=(visual['total']+limit-1)//limit))
                 graph_height -= 1
             canvas, raster = draw_graph(visual, width, graph_height, selected=route.target,
-                                        plain=app.plain, zoom=zoom, angle=angle, background='hidden')
+                                        plain=app.plain, zoom=zoom, angle=angle, background='hidden', **options)
         else:
             visual = overview(scoped, width, graph_height, selected=route.target)
             canvas, raster = draw_graph(visual, width, graph_height, selected=visual['centre'], plain=app.plain,
-                                        zoom=min(1., zoom), angle=angle, background='hidden', show_labels=False)
+                                        zoom=min(1., zoom), angle=angle, background='hidden', **options)
         styles.extend((row+len(rows), x, length, fg, bg, bold) for row, x, length, fg, bg, bold in raster)
         rows.extend(canvas)
     for index, edge in enumerate(incident[offset:offset+min(2, max(0, height-len(rows)))], offset):
@@ -238,6 +265,8 @@ def explorer_screen(app, directory, graph, provenance, dataset):
     actor_type = route.extra.get('actor_type')
     if actor_type:
         scopes += '  ·  '+object_type_label(actor_type)
+    if route.extra.get('constellation'):
+        scopes += '  ·  '+t('identity_ui.constellation')
     stats = t('montreal_ui.stats_compact' if app.width < 70 else 'navigation.montreal_network.connections_participants',
               views=layer, edges_count=len(scoped.edges), profiles_count=len(scoped.nodes))
     summary = [scopes, stats]
@@ -294,12 +323,92 @@ def explorer_screen(app, directory, graph, provenance, dataset):
             footer = t('montreal_ui.keys.panels')+'  '+footer
     elif route.region == 'profile':
         footer = t('montreal_ui.keys.profile_less' if route.extra.get('profile_expanded') else 'montreal_ui.keys.profile')
+        if app.session and route.target in app.world()['actors']:
+            footer = t('identity_ui.edit_key')+'  '+footer
     else:
         footer = t('montreal_ui.keys.directory_compact' if app.width < 70 else 'montreal_ui.keys.directory')
+    if allowed(app) and app.width >= 80:
+        footer = t('identity_ui.review_key')+'  '+footer
     lines = summary+body
     return Screen(t('navigation.montreal_network.title'), lines, [(p.name, p.id) for p in profiles], footer,
                   route.index, show_entries=False, styles=styles, fixed_rows=set(range(len(lines))),
                   refresh_interval_ms=1500)
+
+
+def source_review_screen(app, dataset):
+    route = app.route
+    title = t('navigation.montreal_network.headings.source_review', title=t('navigation.montreal_network.title'))
+    if not allowed(app):
+        return Screen(title, [t('curation.permission_required')])
+    bindings = dataset.get('identities', {})
+    if route.kind == 'montreal_source_review':
+        queue = [(key, row) for key, row in bindings.items()
+                 if not row['actor_id'] or row.get('method') == 'unique_full_name' or row.get('review_status')]
+        queue.sort(key=lambda item: (item[1].get('review_status') in {'matched', 'created', 'rejected'},
+                                     dataset['names'][item[0]][0].casefold(), item[0]))
+        unresolved = sum(row.get('review_status') not in {'matched', 'created', 'rejected'} for _, row in queue)
+        entries = [(' / '.join(dataset['names'][key])+' · '+t(REVIEW_STATUSES[row.get('review_status', 'pending')]), key)
+                   for key, row in queue]
+        route.index = min(route.index, max(0, len(entries)-1))
+        return Screen(title, [t('navigation.montreal_network.identities_awaiting_review', unresolved_count=unresolved),
+                              t('identity_ui.review_explanation')], entries, t('identity_ui.open_review'),
+                      route.index, route.scroll)
+    key = route.target
+    binding = bindings[key]
+    names = ' / '.join(dataset['names'][key])
+    lines = [t('identity_ui.source_identity', name=names), t(REVIEW_STATUSES[binding.get('review_status', 'pending')])]
+    if binding['actor_id'] and not resolved_actor(binding):
+        lines.append(t('identity_ui.name_suggestion', name=app.label(binding['actor_id'])))
+    if resolved_actor(binding):
+        lines.append(t('curation.canonical_id')+app.label(binding['actor_id'])+' · '+binding['actor_id'])
+        job = app.world()['configuration'].get('profile-sync', {}).get('jobs', {}).get(binding['actor_id'])
+        if job:
+            lines.append(t('identity_ui.sync_confirmed' if job['status'] == 'synced' else 'identity_ui.sync_pending'))
+    for record in dataset['statements']:
+        if record['person_id'] == key:
+            raw, origin = record['raw'], record['provenance']
+            lines.append(t('identity_ui.source_observation', organisation=raw['Organisation'] or t('common.not_recorded'),
+                           role=raw['Titre / fonction'] or t('common.not_recorded'),
+                           file=origin['file'], line=origin['line']))
+            if raw['Remarque']:
+                lines.append(raw['Remarque'])
+    incident = sum(key in (row['source_id'], row['target_id']) for row in dataset['connections'])
+    lines.append(t('identity_ui.source_links', count=incident))
+    choices = [] if binding.get('review_status') in {'matched', 'created', 'rejected'} else [
+        (t(REVIEW_LABELS[decision]), decision) for decision in DECISIONS]
+    if not choices:
+        lines += [t('identity_ui.review_history', decision=t(REVIEW_LABELS[item['decision']]),
+                    actor=app.label(item['actor_id']), reason=item['reference']) for item in binding.get('history', ())]
+    route.index = min(route.index, max(0, len(choices)-1))
+    return Screen(title, lines, choices, t('identity_ui.open_review'), route.index, route.scroll)
+
+
+def source_review_key(app, key, screen, dataset):
+    if key != 'enter' or not screen.entries:
+        return False
+    if not allowed(app):
+        return True
+    route = app.route
+    value = screen.entries[route.index][1]
+    if route.kind == 'montreal_source_review':
+        app.push('montreal_source_identity', value)
+        return True
+    version = app._frame_revision
+    command = {'kind': 'reconcile_source_identity', 'source_id': route.target, 'decision': value}
+    if value == 'match':
+        options = candidates(app.world(), dataset, route.target)
+        if not options:
+            app.notice = t('identity_ui.no_notion_candidates')
+            return True
+        candidate = app.choose(t('identity_ui.notion_candidates'), options,
+                               lambda row: t('identity_ui.notion_candidate', name=row[2],
+                                             organisations=', '.join(row[3]) or t('common.not_recorded'), record=row[4]))
+        command['target_id'] = candidate[1]
+        app.write(candidate[2])
+    command['reference'] = app.read(t('curation.source_or_reason_for_this'))
+    if app.confirm(t('identity_ui.confirm_review', decision=t(REVIEW_LABELS[value]))):
+        write(app, command, version)
+    return True
 
 
 def build(app):
@@ -324,14 +433,8 @@ def build(app):
     if route.kind == 'montreal_profile_source':
         lines = json.dumps(provenance.get(route.target, []), ensure_ascii=False, indent=2).splitlines()
         return Screen(t('navigation.montreal_network.headings.profile_sources', title=t('navigation.montreal_network.title')), lines, footer=t('navigation.montreal_network.b_network_pgup_pgdn_scroll'), scroll=route.scroll)
-    if route.kind == 'montreal_source_review':
-        if not allowed(app):
-            return Screen(t('navigation.montreal_network.headings.source_review', title=t('navigation.montreal_network.title')), [t('curation.permission_required')])
-        unresolved = {key: {'names': dataset['names'][key], **binding}
-                      for key, binding in dataset.get('identities', {}).items() if not binding['actor_id']}
-        lines = [t('navigation.montreal_network.identities_awaiting_review', unresolved_count=len(unresolved)), t('navigation.montreal_network.use_reviewed_stable_actor_ids')]
-        lines += json.dumps(unresolved, ensure_ascii=False, indent=2).splitlines()
-        return Screen(t('navigation.montreal_network.headings.source_review', title=t('navigation.montreal_network.title')), lines, footer=t('navigation.montreal_network.b_network_pgup_pgdn_scroll'), scroll=route.scroll)
+    if route.kind in {'montreal_source_review', 'montreal_source_identity'}:
+        return source_review_screen(app, dataset)
     return explorer_screen(app, directory, graph, provenance, dataset)
 
 
@@ -354,8 +457,13 @@ def handle(app, key, screen):
         app.back()
         focus_participant(app, screen.entries[0][1], projection(app)[0])
         return True
+    if route.kind in {'montreal_source_review', 'montreal_source_identity'}:
+        return source_review_key(app, key, screen, projection(app)[3])
     if route.kind not in MAIN_ROUTES:
         return False
+    if key == 'E' and route.kind == 'montreal_network' and app.session and route.target in app.world()['actors']:
+        propose(app, route.target)
+        return True
     directory, graph, _, _ = projection(app)
     if key in {'tab', 'backtab'} and route.kind == 'montreal_network':
         route.region = REGIONS[(REGIONS.index(route.region)+(1 if key == 'tab' else -1)) % len(REGIONS)]
@@ -419,9 +527,18 @@ def handle(app, key, screen):
             route.region = 'directory'
     elif key == 'n':
         route.region = 'network'
-    elif key in {'[', ']'}:
+    elif key in {'Y', 'N', 'A', 'V'}:
+        scope = scope_name(route)
+        field = {'Y': 'show_labels', 'N': 'show_numbers', 'A': 'edge_annotations', 'V': 'constellation'}[key]
+        if key != 'V' and route.extra.pop('constellation', False):
+            route.extra.update(show_labels=False, show_numbers=False, edge_annotations=False)
+        route.extra[field] = not route.extra.get(field, key != 'V' and scope == 'local')
+        route.region = 'network'
+    elif key in {'[', ']'} or route.region == 'network' and key in {'left', 'right'}:
+        if scope_name(route) != 'local':
+            return True
         width = dict(panel_widths(app)).get('network', app.width-2)
-        step = page_size(width) * (1 if key == ']' else -1)
+        step = page_size(width) * (1 if key in {']', 'right'} else -1)
         route.extra['network_page'] = max(0, route.extra.get('network_page', 0)+step)
     elif key in {'+', '-'}:
         route.extra['zoom'] = max(.4, min(2., route.extra.get('zoom', 1.)*(1.2 if key == '+' else 1/1.2)))

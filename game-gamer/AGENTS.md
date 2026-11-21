@@ -18,5 +18,19 @@ decision-making across hosts.
 - Validate portable data and reject unsupported schema versions explicitly.
   Preserve legacy event ordering and shape for compatibility consumers.
 
+## State invariants
+
+- **Admissibility.** Every command path validates the domain relationships it
+  would introduce before an event may become authoritative.
+- **Identity.** Exact retries preserve typed command identity. Mapping order is
+  immaterial, while sequence order and scalar types are part of identity.
+- **Determinism.** Equivalent states and configuration yield the same ordered
+  projections after persistence and replay. Define the order explicitly.
+- **Round-trip integrity.** Keeping a field during editing preserves its exact
+  valid value. Interpret editor controls only when explicitly entered.
+- **Semantic revision.** A revision and its change provenance advance only when
+  canonical content changes. Distinguish rejected attempts, recorded actions
+  and effective state transformations.
+
 Run `python -m pytest` in this directory with the test and tui extras installed. Run the
 host's golden trajectories when editing legacy-compatible semantics.

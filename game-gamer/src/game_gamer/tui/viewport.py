@@ -9,7 +9,7 @@ from .i18n import t
 from .navigation import navigation_bar
 from .screen import Cancelled, Screen
 from .text import clean, clip, column_slice, display_width, folded
-from .visual import ACTION, CONFIRMED, ERROR, NAVIGATION, PRIMARY, SECONDARY
+from .visual import ACTION, CONFIRMED, ERROR, NAVIGATION, PRIMARY, SECONDARY, panel_columns, text_span
 
 
 class CursesViewport:
@@ -321,7 +321,7 @@ class CursesViewport:
             if key in {'y', 'n', 'esc', 'b'}:
                 return key == 'y'
 
-    def choose(self, title, items, label, context, *, preview=None, section=None, header_indicator='', masthead='', menu=None):
+    def choose(self, title, items, label, context, *, preview=None, section=None, header_indicator='', masthead='', menu=None, directory=False):
         index = 0; query = ''; scroll = 0; region = 'explore'
         while True:
             filtered = [item for item in items if folded(query) in folded(label(item))]
@@ -345,11 +345,36 @@ class CursesViewport:
                         sections[i] = current
                     previous = current
             entries = [(menu[item][0] if menu else label(item), item) for item in filtered]
-            self.draw(Screen(title, lines, entries,
-                t('viewport.enter_confirm_tab_regions_search')+(t('viewport.v_preview') if preview else '')+t('viewport.esc_b_back'),
-                index, scroll if region == 'explore' else 0, navigation=False,
-                show_entries=region == 'explore', reveal=region == 'explore', entry_sections=sections,
-                header_indicator=header_indicator, masthead=masthead, hint=hint), context)
+            if directory:
+                width, height = self.size()
+                rows = max(1, height-10)
+                columns = min(4, max(1, (width-1)//25))
+                page_size = rows*columns
+            if directory and region == 'explore':
+                page, total = index//page_size, max(1, (len(entries)+page_size-1)//page_size)
+                start = page*page_size
+                cell_width = max(1, (width-1-2*(columns-1))//columns)
+                panels = []
+                for offset in range(start, min(start+page_size, len(entries)), rows):
+                    names = [('> ' if number == index else '  ')+name
+                             for number, (name, _) in enumerate(entries[offset:min(offset+rows, start+page_size)], offset)]
+                    styles = [text_span(index-offset, 0, names[index-offset], NAVIGATION, bold=True)] if offset <= index < offset+len(names) else []
+                    panels.append((cell_width, names, styles))
+                body, styles = panel_columns(panels, row_offset=len(lines), gutter=2)
+                footer = t('viewport.directory_keys')
+                if preview:
+                    footer += t('viewport.v_preview')
+                if total > 1:
+                    footer = t('viewport.directory_pages', current=page+1, total=total)+'  '+footer
+                self.draw(Screen(title, lines+body, footer=footer, navigation=False,
+                                 fixed_rows=set(range(len(lines+body))), styles=styles,
+                                 header_indicator=header_indicator, masthead=masthead), context)
+            else:
+                self.draw(Screen(title, lines, entries,
+                    t('viewport.enter_confirm_tab_regions_search')+(t('viewport.v_preview') if preview else '')+t('viewport.esc_b_back'),
+                    index, scroll if region == 'explore' else 0, navigation=False,
+                    show_entries=region == 'explore', reveal=region == 'explore', entry_sections=sections,
+                    header_indicator=header_indicator, masthead=masthead, hint=hint), context)
             key = self.key()
             if key in {'b', 'q', 'esc'}:
                 if not self.form_active or self.confirm_discard(context):
@@ -359,15 +384,18 @@ class CursesViewport:
                 region = 'details' if region == 'explore' else 'explore'
                 continue
             if key == '/':
-                value = self.prompt(t('viewport.search_by_name_or_organisation'), [], context)
+                value = self.prompt(t('viewport.directory_search' if directory else 'viewport.search_by_name_or_organisation'), [], context)
                 if value is not None:
                     query = value; index = scroll = 0
                     region = 'explore'
             elif key in {'up', 'down'}:
                 index = max(0, min(len(filtered)-1, index+(-1 if key == 'up' else 1)))
                 scroll = max(0, index-max(1,self.size()[1]-10))
+            elif directory and key in {'left', 'right'}:
+                index = max(0, min(len(filtered)-1, index+(-rows if key == 'left' else rows)))
             elif key in {'pageup', 'pagedown'}:
-                index = max(0, min(len(filtered)-1, index+(-1 if key == 'pageup' else 1)*max(1,self.size()[1]-10)))
+                step = page_size if directory else max(1, self.size()[1]-10)
+                index = max(0, min(len(filtered)-1, index+(-step if key == 'pageup' else step)))
                 scroll = max(0, index-max(1,self.size()[1]-10))
             elif key == 'enter' and filtered:
                 return filtered[index]
@@ -465,7 +493,7 @@ class LineViewport:
             if not self.form_active or self.confirm_discard(context):
                 return None
 
-    def choose(self, title, items, label, context, *, preview=None, section=None, header_indicator='', masthead='', menu=None):
+    def choose(self, title, items, label, context, *, preview=None, section=None, header_indicator='', masthead='', menu=None, directory=False):
         while True:
             self.draw(Screen(title, entries=[(label(item), item) for item in items], navigation=False, header_indicator=header_indicator, masthead=masthead), context)
             key = self.key()

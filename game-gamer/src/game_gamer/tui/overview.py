@@ -104,14 +104,19 @@ def overview(scope, width, height, *, selected=None):
             membership.update(dict.fromkeys(members, key))
 
     bundles = Counter()
+    singletons = {node['id'] for node in nodes if node['member_count'] == 1}
     for edge in scope.edges:
         a, b = membership[edge['source_id']], membership[edge['target_id']]
         if a != b:
-            bundles[(*sorted((a, b)), edge['layer'])] += 1
+            directed = edge.get('directed') if {a, b} <= singletons else False
+            if not directed:
+                a, b = sorted((a, b))
+            bundles[a, b, edge['layer'], directed] += 1
     edges = []
-    for (a, b, layer), count in sorted(bundles.items()):
+    for (a, b, layer, directed), count in bundles.items():
         colour, pattern = LAYERS.get(layer, (SECONDARY, 'solid'))
         edges.append({'id': (a, b, layer), 'visual_source': a, 'visual_target': b,
                       'layer': layer, 'weight': count, 'pattern': pattern, 'colour': colour,
+                      'directed': directed, 'unknown_marker': directed is None,
                       'directed': False})
     return {'nodes': nodes, 'edges': edges, 'centre': membership.get(selected)}

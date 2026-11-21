@@ -52,7 +52,7 @@ def test_source_metadata_refresh_preserves_operator_roles():
     assert 'curator' in game.get_world()['actors'][result['actor_id']]['roles']
 
 
-def test_authorised_picker_carries_badge_and_marks_curator_choices():
+def test_authorised_picker_carries_badge_with_a_names_only_directory():
     game = world()
     result = provision_curator(game, 'Alex', enabled=True, reference='Fictional local operator')
 
@@ -66,7 +66,8 @@ def test_authorised_picker_carries_badge_and_marks_curator_choices():
     ui.assume_actor(game.get_world()['actors'][result['actor_id']])
     ui.select_actor()
     assert port.options['header_indicator'] == '◆ CURATOR'
-    assert any(label.startswith('Alex') and label.endswith('· CURATOR') for label in port.drawn[-1][1])
+    assert port.options['directory'] is True
+    assert port.drawn[-1][1][:3] == ['Alex Example', 'Casey Example', 'Morgan Example']
     native = object.__new__(CursesViewport)
     shown = []
     native.draw = lambda screen, context: shown.append(screen)

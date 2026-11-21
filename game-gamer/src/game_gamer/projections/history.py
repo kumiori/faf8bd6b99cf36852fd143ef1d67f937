@@ -40,7 +40,10 @@ def event_summary(event):
             affected.extend(after.get('target_ids', []))
         if after.get('objective_id'):
             missions.append(after['objective_id'])
-        if mutation['entity_type'] == 'objective':
+        if after.get('mission_id'):
+            missions.append(after['mission_id'])
+        missions.extend(after.get('mission_ids', []))
+        if mutation['entity_type'] == 'objective' or after.get('kind') == 'mission_definition':
             missions.append(mutation['entity_id'])
         if mutation['entity_id'] == 'curation-requests':
             request_id = command.get('request_id')
@@ -55,9 +58,11 @@ def event_summary(event):
                             'after_status': after.get('status'), 'outcome': after.get('outcome_status'),
                             'values': {key: {'before': (before or {}).get(key), 'after': after[key]} for key in fields}})
     affected.extend(command[key] for key in ('target_id', 'source_id', 'agreement_id', 'invitation_id',
-                                              'resource_id', 'request_id', 'related_id') if command.get(key))
+                                              'resource_id', 'request_id', 'related_id', 'mission_id', 'contribution_id') if command.get(key))
     if command.get('objective_id'):
         missions.append(command['objective_id'])
+    if command.get('mission_id'):
+        missions.append(command['mission_id'])
     return {'event': event, 'actor_id': event['actor_id'], 'action': command.get('kind') or event['kind'],
             'affected_ids': list(dict.fromkeys(affected)), 'mission_ids': list(dict.fromkeys(missions)),
             'changes': changes, 'request_status': request_status}

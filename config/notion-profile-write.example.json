@@ -1,0 +1,13 @@
+{
+  "data_source_id": "REPLACE_WITH_CANONICAL_PROFILE_DATA_SOURCE_UUID",
+  "actor_id_property": "Commons Actor ID",
+  "properties": {
+    "label": {"name": "Name", "type": "title"},
+    "profile_organisation": {"name": "Canonical Organisation", "type": "rich_text"},
+    "profile_role": {"name": "Canonical Role", "type": "rich_text"},
+    "motivation": {"name": "Canonical Motivation", "type": "rich_text"},
+    "profile_domains": {"name": "Canonical Domains", "type": "multi_select"},
+    "profile_offers": {"name": "Canonical Offers", "type": "multi_select"},
+    "profile_needs": {"name": "Canonical Needs", "type": "multi_select"}
+  }
+}

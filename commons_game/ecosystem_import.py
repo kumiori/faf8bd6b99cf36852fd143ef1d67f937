@@ -143,6 +143,9 @@ def import_snapshot(game, snapshot):
     require(isinstance(snapshot.get('records'), list), 'invalid_snapshot_records')
     before = game.get_world(); after = deepcopy(before)
     report = {'ok': True, 'created': [], 'updated': [], 'skipped': [], 'rejected': []}
+    bindings = before['configuration'].get('profile-sync', {}).get('bindings', {})
+    actor_ids = {source_id('person', remote['data_source_id'], remote['record_id']): target
+                 for target, remote in bindings.items()}
     seen = set()
     # Endpoints must resolve regardless of the ordering of snapshot records.
     require(all(isinstance(r, dict) for r in snapshot['records']), 'invalid_snapshot_record')
@@ -174,6 +177,12 @@ def import_snapshot(game, snapshot):
                 if value:
                     require(instant(value) <= instant(captured_at), 'source_timestamp_after_capture')
             base = {'id': rid, 'provenance': provenance}
+            if kind == 'person' and rid in actor_ids:
+                report['skipped'].append({'id': actor_ids[rid], 'reason': 'already_bound_canonical_profile'})
+                continue
+            for field in ('source_id', 'target_id', 'actor_id', 'owner_id'):
+                if field in fields and isinstance(fields[field], str):
+                    fields[field] = actor_ids.get(fields[field], fields[field])
             if kind in {'person', 'organisation'}:
                 record = asdict(Actor(**base, label=text(fields.get('label')), kind=kind))
             elif kind in {'affiliation', 'relationship'}:
@@ -214,7 +223,12 @@ def import_snapshot(game, snapshot):
     snapshot_id = digest(snapshot)
     if 'expertise' in snapshot:
         from .expertise import validate_expertise
-        assertions = validate_expertise(snapshot['expertise'], after['actors'])
+        expertise = snapshot['expertise']
+        if actor_ids and isinstance(expertise, dict) and isinstance(expertise.get('participants'), dict):
+            participants = {actor_ids.get(key, key): row for key, row in expertise['participants'].items()}
+            require(len(participants) == len(expertise['participants']), 'duplicate_canonical_expertise_actor')
+            expertise = {**expertise, 'participants': participants}
+        assertions = validate_expertise(expertise, after['actors'])
         previous = before['configuration'].get('ecosystem-expertise')
         require(not previous or instant(previous['captured_at']) <= instant(captured_at), 'stale_expertise_snapshot')
         after['configuration']['ecosystem-expertise'] = {'id':'ecosystem-expertise','status':'recorded',

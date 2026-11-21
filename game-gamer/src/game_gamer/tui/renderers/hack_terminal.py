@@ -53,6 +53,7 @@ def raster(frame, width, height, *, layers, mode='structural', selected=None, as
             if (ix, iy) not in cells or depth <= cells[ix, iy][0]:
                 cells[ix, iy] = (depth, character, color, bold)
     edges = visual['edges']
+    emphasised = any(edge.get('highlighted') for edge in edges)
     if removed and phase < 1:
         edges = edges + [{**e, 'visual_source': e['source'], 'visual_target': e['target'], 'fading': True} for e in removed]
     added = {e['id'] for e in frame['changes']['edges_added']}
@@ -91,7 +92,9 @@ def raster(frame, width, height, *, layers, mode='structural', selected=None, as
                 character = ('>' if b[0] >= a[0] else '<') if abs(b[0] - a[0]) > abs(b[1] - a[1]) else ('v' if b[1] > a[1] else '^')
             if edge.get('unknown_marker') and abs(fraction - .5) < 1 / steps:
                 character = '?'
-            put(x, y, z + .2, character, color, forming or edge['weight'] >= 3)
+            highlighted = edge.get('highlighted', False)
+            put(x, y, z + .2, character, color, highlighted or forming or edge['weight'] >= 3,
+                priority=1 if emphasised and not highlighted else 0)
     born = {n['id'] for n in frame['changes']['nodes_added']}
     node_index = {n['visual_id']: n for n in visual['nodes']}
     for key, point in sorted(points.items(), key=lambda item: -item[1][2]):
@@ -108,7 +111,7 @@ def raster(frame, width, height, *, layers, mode='structural', selected=None, as
         if mode == 'crystal' and node['id'] in born and phase < .85:
             put(point[0] - 1, point[1], point[2], '(' if ascii_only else '◌', color)
             put(point[0] + 1, point[1], point[2], ')' if ascii_only else '◌', color)
-        put(*point, '@' if active else char, color, active or node['id'] in born and phase < 1)
+        put(*point, '@' if active else char, color, active or node['id'] in born and phase < 1, priority=-1 if emphasised else 0)
     result = Text()
     for y in range(height):
         for x in range(width):

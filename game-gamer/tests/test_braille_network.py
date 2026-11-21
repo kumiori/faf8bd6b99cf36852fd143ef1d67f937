@@ -36,3 +36,22 @@ def test_renderers_share_layout_across_camera_changes_and_ascii_fallback():
                 assert braille[row][column] == legacy[row][column] == '●'
         ascii_rows, _ = draw_graph(visual, 60, 20, angle=angle, zoom=zoom, plain=True)
         assert all(row.isascii() for row in ascii_rows)
+
+
+def test_labels_numbers_and_annotations_toggle_independently_and_keep_focus_visible():
+    graph = {'nodes': [{'id': key, 'label': name, 'kind': 'person'}
+                       for key, name in [('a', 'Aster'), ('b', 'Beryl'), ('c', 'Cedar')]],
+             'edges': [{'source_id': source, 'target_id': target, 'kind': 'transcription',
+                        'layer': 'montreal_2026_reconstructed', 'directed': True}
+                       for source, target in [('a', 'b'), ('b', 'c')]]}
+    visual = focus_graph(graph, 'a', scope='whole')
+    lines, styles = draw_graph(visual, 60, 20, selected='a', show_labels=True, show_numbers=False,
+                               edge_annotations=False, selected_only=True, emphasise=True)
+    canvas = '\n'.join(lines)
+    assert 'Aster' in canvas and '@' in canvas and 'Beryl' not in canvas
+    assert not set('123→←↑↓') & set(canvas)
+    assert {'#5fd7d7', '#465060'} <= {foreground for _, _, _, foreground, _, _ in styles}
+    lines, _ = draw_graph(visual, 60, 20, selected='a', show_labels=False, show_numbers=True)
+    canvas = '\n'.join(lines)
+    assert 'Aster' not in canvas and '1' in canvas and set('→←↑↓') & set(canvas)
+    assert all(edge['directed'] for edge in visual['edges'])

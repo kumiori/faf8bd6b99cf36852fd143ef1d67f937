@@ -10,6 +10,7 @@ from game_gamer.tui.screen import Screen
 
 from . import curator
 from .i18n import t
+from .profile_editor import FIELDS as PROFILE_FIELDS
 
 
 def candidates(app, screen):
@@ -105,17 +106,27 @@ def contents(app, choices):
                        (t('curation.panel.request_clarification'), ('decision', 'request_clarification'))]
         if not historical and request['status'] == 'needs_clarification' and canonical(world, request['requester_id']) == app.playing_actor:
             entries.append((t('curation.panel.add_clarification'), ('clarify', request['id'])))
-        if not historical and curator.allowed(app) and request['status'] == 'approved':
+        if not historical and curator.allowed(app) and request['status'] == 'approved' and not request['proposed_changes']:
             entries.append((t('curation.panel.open_target_apply_separately'), ('target', request['target_id'])))
         lines = [t('curation.target_prefix')+app.label(request['target_id']), t('common.stable_id_prefix')+request['target_id'],
                  t('curation.request_type', type=request['request_type'].replace('_', ' ')), t('curation.panel.request_id')+request['id'],
                  t('curation.panel.requester')+app.label(request['requester_id']), t('common.status_prefix')+request['status'],
-                 t('curation.panel.request')+request['reason'],
-                 t('curation.panel.approval_records_a_review_apply')]
+                 t('curation.panel.request')+request['reason']]
+        if not request['proposed_changes']:
+            lines.append(t('curation.panel.approval_records_a_review_apply'))
         if request['related_id']:
             lines += [t('curation.panel.related_identity')+app.label(request['related_id']), t('curation.panel.related_id')+request['related_id']]
         if request['proposed_changes']:
-            lines += [t('curation.panel.proposed_correction')+json.dumps(request['proposed_changes'], ensure_ascii=False, sort_keys=True)]
+            lines.append(t('curation.panel.proposed_correction'))
+            for field, value in request['proposed_changes'].items():
+                previous = request.get('previous_values', {}).get(field)
+                old = ', '.join(previous) if isinstance(previous, list) else previous
+                new = ', '.join(value) if isinstance(value, list) else value
+                lines.append(t('identity_ui.change_summary', field=t(PROFILE_FIELDS[field]),
+                               before=old or t('common.not_recorded'), after=new or t('common.not_recorded')))
+            job = world['configuration'].get('profile-sync', {}).get('jobs', {}).get(request['id'])
+            if job:
+                lines.append(t('identity_ui.sync_confirmed' if job['status'] == 'synced' else 'identity_ui.sync_pending'))
         lines += [item['kind']+' · '+app.label(item['actor_id'])+' · '+item['reason'] for item in request['history']]
         return Screen(t('curation.panel.curation_request_review'), lines, entries, t('curation.panel.enter_choose_b_queue'),
                       route.index, route.scroll, navigation=False, wrap_entries=True)

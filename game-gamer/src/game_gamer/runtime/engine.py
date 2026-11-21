@@ -8,7 +8,7 @@ import json
 from .transactions import WorldEngine
 from ..model import (TABLES, ENTITY_TABLES, Agreement, AgreementVersion, Approval,
                     Commitment, DomainError, require)
-from . import invitations, reconstruction, curation, curation_requests
+from . import invitations, reconstruction, curation, curation_requests, missions
 from .governance import evaluate_authorisation
 
 
@@ -37,6 +37,7 @@ FIELDS = {
     **reconstruction.FIELDS,
     **curation.FIELDS,
     **curation_requests.FIELDS,
+    **missions.FIELDS,
     'draft': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, {'interaction_context'}),
     'propose': ({'id', 'label', 'parties', 'objective_id', 'terms', 'resources', 'valid_until', 'policy_id', 'verification'}, {'interaction_context'}),
     'publish_proposal': ({'agreement_id', 'version'}, set()),
@@ -64,6 +65,8 @@ TERMINAL = {'rejected', 'withdrawn', 'expired', 'terminated'}
 
 class CollectiveEngine(WorldEngine):
     tables = TABLES
+    fields = FIELDS
+    extension_fields = {}
     entity_tables = ENTITY_TABLES
     epoch = datetime.fromisoformat('2026-11-02T00:00:00+00:00')
 
@@ -83,6 +86,7 @@ class CollectiveEngine(WorldEngine):
             'authorization': deepcopy(action.get('authorization', {
                 'decision': 'allowed', 'rule': {'ecosystem.imported': 'read_only_ecosystem_import',
                     'reconstruction.sources_imported': 'trusted_historical_source_import',
+                    'missions.installed': 'trusted_mission_pack_installation',
                     'curator.access_granted': 'trusted_local_curator_provisioning',
                     'curator.access_revoked': 'trusted_local_curator_provisioning',
                     'identity_binding.requested': 'pending_identity_claim'}.get(event['kind'], 'synthetic_scenario_initialisation'),
@@ -109,8 +113,8 @@ class CollectiveEngine(WorldEngine):
             text(command.get('kind'), 'unknown_command')
             text(command.get('actor'), 'actor_required')
             kind = command['kind']
-            require(kind in FIELDS, 'unknown_command')
-            required, optional = FIELDS[kind]
+            require(kind in self.fields, 'unknown_command')
+            required, optional = self.fields[kind]
             require(required <= command.keys(), 'missing_field')
             require(not (command.keys() - required - optional - {'key', 'kind', 'actor', 'session'}), 'unsupported_field')
             if 'session' in command:
@@ -250,10 +254,14 @@ class CollectiveEngine(WorldEngine):
 
         if kind in invitations.KINDS:
             summary = invitations.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
+        elif kind in missions.FIELDS:
+            missions.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
         elif kind in curation_requests.FIELDS:
             curation_requests.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
         elif kind in curation.FIELDS:
             curation.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
+        elif kind in self.extension_fields:
+            self._prepare_extension(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
         elif kind in reconstruction.FIELDS:
             reconstruction.prepare(world, command, actor=actor, timestamp=timestamp, sequence=seq, action=action)
         elif kind in {'draft', 'propose'}:
@@ -472,6 +480,9 @@ class CollectiveEngine(WorldEngine):
             return world
         if view == 'network':
             return self._network(world)
+        if view == 'missions':
+            from ..projections.missions import project_mission
+            return [project_mission(world, ident) for ident in missions.definitions(world)]
         if view in self.tables:
             return list(world[view].values())
         if view == 'now':

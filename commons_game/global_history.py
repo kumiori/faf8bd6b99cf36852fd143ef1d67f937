@@ -20,6 +20,11 @@ from .i18n import t
 def label(app, key):
     if key == 'system':
         return t('history.system')
+    definition = app.world()['configuration'].get(key, {})
+    if definition.get('kind') == 'mission_definition':
+        return key + ' · ' + definition['title']
+    if definition.get('kind') == 'mission_contribution':
+        return definition['id']
     request = records(app.world()).get(key)
     if request:
         return t('history.curation_request')+app.label(request['target_id'])

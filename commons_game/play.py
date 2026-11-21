@@ -8,9 +8,11 @@ from game_gamer.tui.errors import error_message
 from game_gamer.tui.i18n import message_key
 from game_gamer.tui.navigation import navigation_label
 
+from . import mission_ui
 from .catalogue import SimulationAuthority, affiliations, people
 from .commands import contract_aliases, invitation_aliases, menu, parse, resolve
 from .i18n import t
+from .missions import install_missions, missions_installed
 from .player import ActorSession
 from .presentation import (
     OBJECTS,
@@ -675,6 +677,9 @@ class PlayableTerminal(Terminal):
         self.write(t('help.shortcuts_are_followed_by_enter'))
 
     def cmd_history(self,arg):
+        mission_id = arg.upper()
+        if self.world()['configuration'].get(mission_id, {}).get('kind') == 'mission_definition':
+            return mission_ui.show_line_history(self, mission_id)
         target=self.select_reference(arg)
         entries=[e for e in self.current().project('log') if any(m['entity_id']==target for m in e['mutations'])]
         if not entries:self.write(t('line.cmd_history.no_transitions_recorded_for_this'));return
@@ -780,7 +785,25 @@ class PlayableTerminal(Terminal):
         self.mode_name='gathering';self.kind_filter='objective';self.focus_actor=None;self.query=''
         return 'back' if self.screen!='explorer' else None
 
+    def ensure_missions(self):
+        self.refresh()
+        world = self.world()
+        if world['configuration']['world']['scenario'] != 'montreal-commons' or missions_installed(world):
+            return
+        if self.store:
+            self.store.transact(install_missions)
+        else:
+            install_missions(self.game)
+        self.refresh()
+
     def cmd_scenarios(self,arg):
+        self.ensure_missions()
+        if mission_ui.mission_menu(self.world()):
+            mission_id = arg.upper() or None
+            if mission_id and self.world()['configuration'].get(mission_id, {}).get('kind') != 'mission_definition':
+                self.write(t('missions.unknown'))
+                return
+            return mission_ui.run_line(self, mission_id)
         self.mode_name='scenarios';self.kind_filter='objective';self.focus_actor=None;self.query=''
         return 'back' if self.screen!='explorer' else None
 

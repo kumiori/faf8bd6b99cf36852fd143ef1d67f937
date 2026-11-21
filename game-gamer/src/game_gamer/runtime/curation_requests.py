@@ -2,7 +2,7 @@
 from copy import deepcopy
 
 from ..model import require
-from .curation import canonical
+from .curation import canonical, profile, validate_changes
 
 FIELDS = {
     'request_curation': ({'target_id', 'request_type', 'reason'}, {'related_id', 'proposed_changes'}),
@@ -38,9 +38,7 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
         request_type = command['request_type']
         require(request_type in TYPES, 'invalid_curation_request_type')
         changes = command.get('proposed_changes', {})
-        require(isinstance(changes, dict) and set(changes) <= {'label', 'motivation', 'profile_role'}
-                and all(isinstance(value, str) and len(value) <= 4000 for value in changes.values()),
-                'invalid_proposed_correction')
+        validate_changes(changes, 'invalid_proposed_correction')
         require(not changes or (request_type == 'correction' and target in world['actors']),
                 'profile_correction_target_required')
         related = command.get('related_id')
@@ -56,6 +54,9 @@ def prepare(world, command, *, actor, timestamp, sequence, action):
                    'requester_id': actor, 'target_id': target, 'related_id': related,
                    'reason': reason.strip(), 'proposed_changes': deepcopy(changes), 'status': 'submitted',
                    'created_at': timestamp, 'history': [{**audit, 'kind': 'submitted'}]}
+        if changes:
+            before = profile(world, target)
+            request['previous_values'] = {field: deepcopy(before.get(field)) for field in changes}
         requests[ident] = request
     else:
         request = requests.get(command['request_id'])

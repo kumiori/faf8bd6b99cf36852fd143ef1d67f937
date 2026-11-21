@@ -48,7 +48,7 @@ montreal_ui:
   shape: 'Groupes reliés {components} · Acteurs isolés {isolates}'
   stats_compact: 'Acteurs {profiles_count} · Liens {edges_count} · {views}'
   local_links: 'Liens directs {count}'
-  local_page: 'Voisins {first}–{last} / {total}'
+  pages: '← Précédent · {current}/{total} · Suivant →'
   empty_scope: Aucun acteur dans cette vue.
   actor_types: FILTRER LE GRAPHE PAR TYPE D’ACTEUR
   focus_title: CENTRER SUR UN PARTICIPANT
@@ -70,9 +70,100 @@ montreal_ui:
     overview: 'Vue d’ensemble — ◆ ou + regroupe des acteurs, ∘ ou o indique un acteur isolé, @ indique la sélection. F ouvre le réseau local d’un acteur de la vue.'
     directory: 'Répertoire — / recherche par nom, f filtre, o trie. Tab et Maj+Tab changent de panneau. Entrée ouvre le profil et D développe ou réduit son contenu.'
     network: 'Graphe — n sélectionne le réseau, G l’ouvre en pleine largeur, v bascule entre local et global, L choisit les couches et T filtre les types. [ ] change de page en local, +/− zoome et r fait pivoter le graphe.'
+    display: 'Affichage — Y bascule les noms, N les numéros, A les annotations et V le mode constellation. ←/→ change de page en local.'
     source: 'Sources — ↑↓ sélectionne un lien, Entrée l’inspecte ou centre sur l’autre acteur. d ouvre les sources. U permet aux curateurs de vérifier les identités.'
 terminal_polish:
   context: '{world}  ·  {actor}  ·  {mode} / Simulation{historical}'
   scenario_source: d ouvre les sources du scénario.
   world: MONDE
   activity: ACTIVITÉ
+missions:
+  choose_mission: Choisir une mission
+  menu_note: Les missions de Montréal partagent le même monde. Les références de l’atelier et les scénarios de test suivent les missions.
+  menu_keys: Entrée Ouvrir la mission · H Historique global
+  summary: 'Définition v{version} · {verified}/{total} conditions vérifiées'
+  page_keys: Entrée Déplier une rubrique · a Vos actions · h Historique de la mission · H Historique global
+  section_keys: ↑↓ Sélectionner ou défiler · Entrée Ouvrir · b Retour
+  choose_section: Ouvrir une rubrique de la mission
+  why: POURQUOI
+  where: OÙ ALLER
+  who: QUI
+  how: COMMENT
+  requirements: CE QUI MANQUE
+  moves: VOS ACTIONS
+  activity: Propositions, engagements et résultats
+  sources: Sources de l’atelier
+  history: Historique de la mission
+  need: Besoin et obstacle
+  rationale: Raison d’agir
+  target: État visé
+  structural_result: Résultat structurant de la carte scénario
+  finalities: Cartes de finalité associées
+  generic_results: Cartes de résultat générique associées
+  no_generic_result: Le résultat structurant figure sur la carte scénario.
+  actors: Catégories d’acteurs pertinentes
+  players: Personnes participant à la mission
+  no_players: Personne n’a encore rejoint la mission.
+  principal_means: Moyens principaux de la carte scénario
+  complementary_means: Cartes de moyens complémentaires
+  trajectory: ÉTAT ACTUEL → ÉTAPES PROPOSÉES → ÉTAT VISÉ
+  current: 'État actuel · '
+  future_steps: Étapes proposées
+  after_step: ' · après l’étape {number}'
+  no_steps: Proposez une étape pour amorcer un parcours.
+  met: Vérifiée
+  outstanding: À remplir
+  completed: Résultats réalisés · vérifiés de façon indépendante dans la simulation
+  completed_step: 'Étape réalisée · {description}'
+  no_outcomes: Aucun résultat vérifié pour le moment.
+  contributions: Contributions des joueurs · propositions, contestations et offres
+  no_contributions: Aucune contribution pour le moment.
+  source_note: Les cartes imprimées de scénarios, d’acteurs, de moyens, de finalités et de résultats constituent les sources.
+  selection_note: Les choix des participants à l’atelier n’ont pas été fournis.
+  curated_note: La raison d’agir, les cartes associées et les conditions sont définies pour le jeu. Les propositions, offres et contestations sont consignées pendant le jeu.
+  source_page: Carte à la page {page} du jeu de scénarios.
+  join: REJOINDRE · Participer à la mission
+  propose: PROPOSER · Suggérer une initiative, un acteur, un moyen ou une étape
+  commit: S’ENGAGER · Offrir une responsabilité ou une ressource
+  challenge: CONTESTER · Questionner la mission ou proposer une révision
+  explore: EXPLORER · Consulter l’activité de la mission
+  accept: ACCEPTER · Répondre à une offre qui vous est adressée
+  verify: VÉRIFIER · Examiner la preuve de réalisation de manière indépendante
+  revise: APPLIQUER LA RÉVISION · Approuver une modification proposée
+  initiative: Initiative
+  actor: Acteur
+  means: Moyen
+  step: Étape du parcours
+  proposed: Proposition
+  submitted: Soumise
+  offered: En attente d’acceptation
+  pledged: Engagement volontaire · en attente de vérification
+  accepted: Acceptée · en attente de vérification
+  verified: Vérifiée
+  applied: Révision appliquée
+  proposal_type: Que proposez-vous ?
+  describe: Décrivez votre contribution
+  choose_card: Associer une carte du catalogue
+  no_card: Utiliser la description écrite
+  choose_predecessor: Quelle étape proposée précède celle-ci ?
+  no_predecessor: Créer une étape indépendante
+  choose_requirement: À quelle condition cette offre contribue-t-elle ?
+  choose_resource: Qu’offrez-vous ?
+  responsibility: Une responsabilité
+  choose_recipient: Qui doit accepter cette offre ?
+  no_recipient: Prendre un engagement volontaire sans destinataire
+  quantity: Combien d’unités offrez-vous ? Maximum {maximum}
+  link_step: Relier cette offre à une étape
+  no_step_link: Laisser l’offre indépendante du parcours
+  choose_field: Quelle partie de la mission contestez-vous ?
+  reason: Pourquoi la contestez-vous ?
+  suggest_replacement: Proposer une révision précise ?
+  change_requirement: Choisir une condition à ajouter ou à retirer
+  replacement: Saisir le texte de remplacement proposé
+  evidence: Indiquer la référence de la preuve de réalisation selon ce critère
+  confirm: Enregistrer cette action dans la simulation commune ?
+  move_unavailable: Cette action n’est pas disponible pour la personne qui joue.
+  select_player: Choisissez un rôle simulé avec p pour agir.
+  saved: Action consignée dans le monde commun.
+  unknown: Choisissez un identifiant de mission montréalaise.
+  resource_offer_note: Cette action consigne une offre. Utilisez un contrat pour réserver ou transférer des ressources dans la simulation.

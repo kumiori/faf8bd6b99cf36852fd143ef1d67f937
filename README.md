@@ -182,10 +182,26 @@ documents the earlier full-screen checkpoint. The current
 [heatmap, relational navigation and renderer-reuse report](docs/12-relational-playtest.md)
 includes the Jeanne playtest and the scenario/Gathering audit. Gathering has invitation/attendance
 operations only in worlds with registered gathering objectives; Montréal currently
-has none. Scenarios now has a distinct catalogue: the authored Montréal → Geneva
-workshop framing is inspectable with provenance, possible desired conditions and
-links to this world's simulation objectives. It is not presented as completed
-strategy gameplay. Synthetic fixtures are labelled separately.
+has none. **Scenarios → Select mission** opens the six playable Montréal missions
+in the same saved world. Press `s` to open Scenarios, `a` for mission moves,
+`h` for mission history, or `H` for global history and `f` to filter by mission.
+In line mode, enter `scenarios` or a command such as `scenarios S09`.
+
+Join a mission to propose an initiative or route step, make an offer, or challenge
+its definition. The named recipient can accept an addressed offer. An independent
+verifier records simulated delivery evidence against the selected requirement.
+Every mission with that requirement reads the same evidence. The default Montréal
+world includes a simulation facilitator and independent reviewer. A third simulated
+player allows a named recipient and independent reviewer on the same offer.
+
+Curators can apply a player’s proposed revision as a new definition version. Use
+`curator-access grant` to assign a simulated curator. Source cards, curated
+gameplay criteria and player contributions have separate records. The workshop
+selections are empty pending the actual records. The Montréal → Geneva framing
+and synthetic fixture descriptions are available below the missions.
+
+Opening Scenarios in an existing Montréal save appends the mission pack once.
+`show missions` displays the projected requirements, contributions and progress.
 
 [Architecture, source coverage, design system, command repairs and regression evidence](docs/10-playable-terminal.md)
 are documented together. The previous [two-person checkpoint](docs/09-montreal-collective-play.md)

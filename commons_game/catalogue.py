@@ -5,16 +5,20 @@ from game_gamer.runtime.curation import canonical, profile, visible
 from .identity import ActorBinding, PlayerIdentity
 from .model import require
 from .presentation import display_label, folded, person_labels
+from .source_review import notion_identity
 
 
 def affiliations(world, actor_id):
+    correction = profile(world, actor_id).get('profile_organisation') if actor_id in world['actors'] else None
+    if correction is not None:
+        return [correction] if correction else []
     return [profile(world, canonical(world, r['target_id']))['label'] for r in world['relationships'].values()
             if r['kind'] == 'affiliated_with' and r['source_id'] == actor_id and r['target_id'] in world['actors']]
 
 
 def people(world, *, search='', organisation='', development=False):
     imported = [a for a in world['actors'].values() if a['kind']=='person'
-                and a['status']=='active' and a.get('provenance',{}).get('kind')=='notion_snapshot']
+                and a['status']=='active' and notion_identity(world, a['id'])]
     if development:
         actors=list(world['actors'].values())
     elif imported or not world['configuration']['world'].get('synthetic',True):

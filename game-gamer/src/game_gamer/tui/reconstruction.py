@@ -8,7 +8,7 @@ from .navigation import navigation_bar
 from .network import RECONSTRUCTION_CATEGORIES, draw_graph, focus_graph
 from .portrait import generate_portrait
 from .screen import Screen
-from .visual import NAVIGATION, SECONDARY, panel_columns, text_span
+from .visual import NAVIGATION, SECONDARY, graph_pages, panel_columns, text_span
 
 REGIONS = ('directory', 'profile', 'network')
 LAYER_NAMES = {
@@ -90,12 +90,16 @@ def _network_panel(graph, target, width, height, *, route, plain, show_unconnect
                  for edge in selected_edges]
         endpoints = {edge[field] for edge in edges for field in ('source_id', 'target_id')}
         nodes = [node for node in graph['nodes'] if node['kind'] == 'person' or node['id'] in endpoints]
+        limit = max(8, len(graph['nodes'])) if view == 'collective' and width >= 90 else 5 if width < 60 else 8
         visual = focus_graph({**graph, 'nodes': nodes, 'edges': edges}, target, offset=route.extra.get('network_page', 0),
-                             limit=max(8, len(graph['nodes'])) if view == 'collective' and width >= 90 else 5 if width < 60 else 8,
+                             limit=limit,
                              scope='whole' if view == 'collective' else 'neighbourhood')
         route.extra['network_page'] = visual['offset']
         visual['isolated_actor_ids'] = set(visual['actor_ids']) - reconstructed_ids
-        canvas, spans = draw_graph(visual, width, height-5, selected=target, plain=plain,
+        page = graph_pages(visual['offset'], visual['total'], limit, arrows=False)
+        if page:
+            lines.append(page)
+        canvas, spans = draw_graph(visual, width, height-5-bool(page), selected=target, plain=plain,
                                    background='dim' if show_unconnected else 'hidden',
                                    zoom=route.extra.get('zoom', 1.), angle=route.extra.get('angle', 0.))
         start = len(lines)

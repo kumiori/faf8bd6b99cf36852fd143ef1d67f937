@@ -12,6 +12,7 @@ from .objects import OBJECTS
 from .renderers.hack_terminal import project, raster
 from .text import display_width, folded
 from .text import label as node_label
+from .visual import NAVIGATION, SECONDARY
 
 OBJECT_TYPES = {
     'All types': None, 'People': 'person', 'Organisations': 'organisation',
@@ -206,12 +207,13 @@ def _fit_points(points, width, height, margin, zoom, perspective):
             for key, (x, y, depth) in points.items()}
 
 
-def _place_labels(lines, nodes, points, labels, plain, labeler, *, numbered=False, selected=None):
+def _place_labels(lines, nodes, points, labels, plain, labeler, *, numbered=False, selected=None, show_numbers=True, selected_only=False):
     """Use only clear raster cells. Leave a numbered marker if text cannot fit."""
     height, width = len(lines), len(lines[0])
+    placements = []
     for i, node in enumerate(nodes, 1):
         key = node['id']
-        if key not in points:
+        if key not in points or selected_only and key != selected:
             continue
         x, y = map(round, points[key][:2])
         if not (0 <= x < width and 0 <= y < height):
@@ -222,13 +224,16 @@ def _place_labels(lines, nodes, points, labels, plain, labeler, *, numbered=Fals
         # Raster coordinates are single-cell. Full names are available in Inspect.
         name = ''.join(c for c in name if c.isprintable() and not unicodedata.combining(c)
                        and display_width(c) == 1)
-        full = f'{i} {name}'.rstrip()
+        full = (f'{i} {name}' if show_numbers else name).rstrip()
+        if not full:
+            continue
         mark = '~' if plain else '…'
         cap = min(22, max(4, width//3))
         candidates = [(full if len(full) <= cap else full[:cap-1]+mark)]
         if len(full) > 9:
             candidates.append(full[:8]+mark)
-        candidates.append(str(i))
+        if show_numbers:
+            candidates.append(str(i))
         for label in candidates:
             placed = False
             for row, shift in ((y+1,0),(y-1,0),(y,1),(y,-1),(y+2,0),(y-2,0)):
@@ -237,10 +242,12 @@ def _place_labels(lines, nodes, points, labels, plain, labeler, *, numbered=Fals
                 if 0 <= row < height and 0 <= start <= width-len(label) and all(
                         cell == ' ' for cell in lines[row][start:start+len(label)]):
                     lines[row][start:start+len(label)] = label
+                    placements.append((row, start, len(label), key))
                     placed = True
                     break
             if placed:
                 break
+    return placements
 
 
 def _draw_context(lines, visual, plain, mode):
@@ -305,18 +312,43 @@ def layout_graph(visual, width, height, *, angle=0., zoom=1., yaw=0., pitch=0., 
 
 def draw_graph(visual, width, height, *, selected=None, plain=False, angle=0., zoom=1., labels=None,
                yaw=0., pitch=0., margin=None, background='dim', labeler=node_label, edge_renderer='braille',
-               show_labels=True):
+               show_labels=True, show_numbers=None, edge_annotations=True, selected_only=False,
+               emphasise=False):
     if background not in {'hidden', 'dim', 'full'}:
         raise ValueError('unknown_graph_background')
     layout = layout_graph(visual, width, height, angle=angle, zoom=zoom, yaw=yaw, pitch=pitch, margin=margin)
     width, height, points = layout.width, layout.height, layout.points
+    if emphasise or not edge_annotations:
+        edges = []
+        for edge in visual['edges']:
+            edge = dict(edge)
+            if emphasise and selected is not None:
+                incident = selected in (edge['visual_source'], edge['visual_target'])
+                edge.update(colour=NAVIGATION if incident else '#465060', highlighted=incident)
+            if not edge_annotations:
+                edge.update(directed=False, unknown_marker=False)
+            edges.append(edge)
+        nodes = visual['nodes']
+        if emphasise and selected is not None:
+            neighbours = {edge[field] for edge in edges if edge['highlighted']
+                          for field in ('visual_source', 'visual_target')}
+            nodes = [{**node, 'colour': NAVIGATION if node['id'] in neighbours else '#636b75'}
+                     for node in nodes]
+        visual = {**visual, 'edges': edges, 'nodes': nodes}
     frame = {'changes': {'nodes_added': [], 'edges_added': []}}
     image=raster(frame,width,height,layers=set(LAYERS),selected=selected,ascii_only=plain,
                  visual=visual,projected=points,edge_renderer=edge_renderer)
     lines=[list(line) for line in image.plain.splitlines()]
-    if show_labels:
-        _place_labels(lines, visual['nodes'], points, labels, plain, labeler, numbered=zoom < .85, selected=selected)
-    spans=[]
+    legacy = show_numbers is None
+    spans = []
+    if show_labels or show_numbers:
+        placements = _place_labels(lines, visual['nodes'], points, labels, plain, labeler,
+                                   numbered=not show_labels or legacy and zoom < .85,
+                                   selected=selected if show_labels else None,
+                                   show_numbers=legacy or show_numbers, selected_only=selected_only)
+        if emphasise and selected is not None:
+            spans.extend((row, column, length, NAVIGATION if key == selected else SECONDARY, None, key == selected)
+                         for row, column, length, key in placements)
     for offset,length,style in image.spans:
         row,column=divmod(offset,width+1)
         spans.append((row,column,length,style.split()[-1],None,'bold' in style))

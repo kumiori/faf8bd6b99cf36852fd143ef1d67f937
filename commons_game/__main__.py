@@ -13,6 +13,7 @@ from commons_engine.store import SQLiteStore
 
 from .engine import CommonsGame
 from .i18n import t
+from .missions import install_missions
 from .scenario import SCENARIOS, demo_commands, load_scenario
 
 
@@ -52,6 +53,16 @@ def main(argv=None):
     capture.add_argument('--source-mapping', type=Path, required=True)
     capture.add_argument('--protocol-project', type=Path, default=Path('../app_protocol_hack'))
     capture.add_argument('--output', type=Path, required=True)
+    sync = commands.add_parser('sync-profile', help=t('identity_ui.cli.sync'))
+    sync.add_argument('job_id', nargs='?')
+    sync.add_argument('--mapping', type=Path)
+    claim = commands.add_parser('profile-claim', help=t('identity_ui.cli.claim'))
+    claim.add_argument('decision', choices=('issue', 'verify'))
+    claim.add_argument('--actor')
+    claim.add_argument('--curator', required=True)
+    claim.add_argument('--provider', required=True)
+    claim.add_argument('--subject', required=True)
+    claim.add_argument('--reference', required=True)
     trajectory = commands.add_parser('trajectory', help=t('cli.help.trajectory'))
     trajectory.add_argument('--export', type=Path)
     inspect = commands.add_parser('inspect-trajectory', help=t('cli.help.inspect_trajectory'))
@@ -63,7 +74,7 @@ def main(argv=None):
     submit = commands.add_parser('submit', help=t('cli.help.submit'))
     submit.add_argument('--expected-version', type=int)
     show = commands.add_parser('show')
-    show.add_argument('view', choices=['now', 'world', 'network', 'agreements', 'commitments', 'reservations', 'objectives', 'log'], nargs='?', default='now')
+    show.add_argument('view', choices=['now', 'world', 'network', 'agreements', 'commitments', 'reservations', 'objectives', 'missions', 'log'], nargs='?', default='now')
     show.add_argument('--at', type=int)
     commands.add_parser('replay')
     serve = commands.add_parser('serve', help=t('cli.help.serve'))
@@ -120,6 +131,30 @@ def main(argv=None):
             result = store.transact(lambda game: provision_curator(
                 game, args.actor, enabled=args.decision == 'grant', reference=args.reference))
             print(json.dumps(result, indent=2))
+        elif args.operation == 'sync-profile':
+            from .profile_sync import NotionProfiles, sync_one
+            if args.job_id is None:
+                jobs = store.load().get_world()['configuration'].get('profile-sync', {}).get('jobs', {})
+                print(json.dumps({key: {field: job[field] for field in ('kind', 'actor_id', 'status')}
+                                  for key, job in jobs.items() if job['status'] != 'synced'}, indent=2))
+                return 0
+            if args.mapping is None:
+                raise ValueError(t('identity_ui.cli.mapping_required'))
+            token = os.getenv('COMMONS_NOTION_WRITE_TOKEN')
+            client = NotionProfiles(token, json.loads(args.mapping.read_text()))
+            result = sync_one(store, args.job_id, client)
+            print(json.dumps(result, indent=2))
+            return 0 if result['status'] == 'synced' else 1
+        elif args.operation == 'profile-claim':
+            from .profile_claims import issue, verify
+            context = dict(curator=args.curator, provider=args.provider, subject=args.subject, reference=args.reference)
+            if args.decision == 'issue':
+                result = store.transact(lambda game: issue(game, args.actor, **context))
+            else:
+                from getpass import getpass
+                token = getpass(t('identity_ui.cli.token')) if sys.stdin.isatty() else sys.stdin.readline().strip()
+                result = store.transact(lambda game: verify(game, token, **context))
+            print(json.dumps(result, indent=2))
         elif args.operation == 'play':
             from .tui import Cancelled, Terminal, run_play
             primary = not (args.developer_ui or args.actor or args.mock_identities or args.hot_seat)
@@ -163,6 +198,7 @@ def main(argv=None):
                 if args.actor is not None and args.actor not in game.get_world()['actors']:
                     raise ValueError('unknown_actor')
                 store.path.parent.mkdir(parents=True,exist_ok=True)
+                install_missions(game)
                 store.initialise(game)
             if args.mock_player and not args.mock_identities:
                 raise ValueError('mock_identities_manifest_required')
@@ -260,7 +296,9 @@ def main(argv=None):
             if Path(args.db).exists():
                 raise ValueError('world_exists_choose_another_db')
             store.path.parent.mkdir(parents=True,exist_ok=True)
-            store.initialise(load_scenario(args.scenario))
+            game = load_scenario(args.scenario)
+            install_missions(game)
+            store.initialise(game)
             print(t('cli.world_started', scenario=args.scenario, db=args.db))
         elif args.operation == 'demo':
             game = load_scenario(args.scenario)

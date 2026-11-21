@@ -8,6 +8,8 @@ from game_gamer.tui.errors import error_list
 from game_gamer.tui.screen import Screen
 
 from .i18n import t
+from .profile_editor import propose
+from .source_review import notion_identity
 
 
 def allowed(app):
@@ -113,6 +115,9 @@ def handle(app, key, screen):
     elif action in {'correct', 'visibility'}:
         command = {'kind': 'correct_profile' if action == 'correct' else 'set_profile_visibility', 'target_id': target}
         if action == 'correct':
+            if notion_identity(world, target):
+                propose(app, target)
+                return True
             fields = {'label': t('curation.fields.label'), 'motivation': t('curation.fields.motivation'),
                       'profile_role': t('curation.fields.profile_role')}
             field = app.choose(t('curation.profile_field'), list(fields), fields.__getitem__)

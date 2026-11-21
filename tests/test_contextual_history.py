@@ -220,7 +220,7 @@ def test_global_history_includes_operator_events_without_a_player_command():
     assert ui.current().project('log') == before
 
 
-def test_confirmed_correction_modifies_only_the_explicit_counterparty():
+def test_confirmed_correction_proposes_a_change_to_the_explicit_counterparty():
     from game_gamer.runtime.curation import profile
     ui, port = app()
     provision_curator(ui.game, 'Alex', enabled=True, reference='Fixture operator')
@@ -236,7 +236,11 @@ def test_confirmed_correction_modifies_only_the_explicit_counterparty():
     choose_panel(ui, 'correct')
     assert ui.current().project('log')[-1]['command']['target_id'] == target != player
     assert profile(ui.world(), player) == original_player
-    assert profile(ui.world(), target)['label'] == 'Corrected participant'
+    assert profile(ui.world(), target)['label'] == 'Casey Example'
+    from game_gamer.runtime.curation_requests import records
+    request = next(iter(records(ui.world()).values()))
+    assert request['target_id'] == target and request['status'] == 'submitted'
+    assert request['proposed_changes'] == {'label': 'Corrected participant'}
     assert ui.route.extra['pinned_target'] == target
     ui.handle('tab', ui.build_screen())
     ui.handle('b', ui.build_screen())

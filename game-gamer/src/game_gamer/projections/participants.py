@@ -22,6 +22,7 @@ class ParticipantProfile:
     needs: tuple[str, ...] = ()
     offers_state: str | None = None
     needs_state: str | None = None
+    domains: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -71,12 +72,15 @@ class ParticipantDirectory:
             motivation = '\n'.join(sorted(statements[key])) or None
             if 'motivation' in actor:
                 motivation = actor['motivation'] or None
+            organisation = ((actor['profile_organisation'],) if actor['profile_organisation'] else ()) if 'profile_organisation' in actor else tuple(sorted(organisations[key], key=_fold))
             self.profiles[key] = ParticipantProfile(
                 id=key, name=labels.get(key, actor['label']), actor_type=actor['kind'],
-                organisations=tuple(sorted(organisations[key], key=_fold)), roles=roles,
-                motivation=motivation, offers=tuple(sorted(offers[key], key=_fold)),
-                needs=tuple(sorted(needs[key], key=_fold)),
-                offers_state=states['capacities'].get(key), needs_state=states['needs'].get(key))
+                organisations=organisation, roles=roles,
+                motivation=motivation, offers=tuple(actor.get('profile_offers', sorted(offers[key], key=_fold))),
+                needs=tuple(actor.get('profile_needs', sorted(needs[key], key=_fold))),
+                offers_state='answered' if 'profile_offers' in actor else states['capacities'].get(key),
+                needs_state='answered' if 'profile_needs' in actor else states['needs'].get(key),
+                domains=tuple(actor.get('profile_domains', ())))
         self.recalled_by = defaultdict(set)
         for record in world['relationships'].values():
             if record['kind'] == 'recollection_claim' and record['status'] != 'retracted' and (

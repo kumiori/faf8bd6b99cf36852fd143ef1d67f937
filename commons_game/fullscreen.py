@@ -7,7 +7,9 @@ viewport owns keyboard/display concerns only; line-mode play remains available.
 from copy import deepcopy
 from io import StringIO
 
+from game_gamer.projections.history import HistoryFilters
 from game_gamer.projections.inbox import action_options
+from game_gamer.runtime.missions import CATALOGUE_ID
 from game_gamer.tui.errors import error_list
 from game_gamer.tui.i18n import message_key
 from game_gamer.tui.matrix import AxisLabel, MatrixView, render_matrix
@@ -18,8 +20,9 @@ from game_gamer.tui.screen import inspector, record_receipt, run_screens
 from game_gamer.tui.viewport import CursesViewport as CursesViewport
 from game_gamer.tui.viewport import action_form, run_curses
 from game_gamer.tui.viewport import supported as supported
+from game_gamer.tui.visual import graph_pages
 
-from . import curation_panel, curator, montreal_network
+from . import curation_panel, curator, mission_ui, montreal_network
 from .catalogue import affiliations, people
 from .commands import resolve
 from .exercises import exercise_menu, tutorial_graph, tutorial_key, tutorial_screen
@@ -37,6 +40,7 @@ from .network_view import (
     object_type_label,
 )
 from .play import ACTION_EFFECTS, PlayableTerminal
+from .profile_editor import FIELDS as PROFILE_EDITOR_FIELDS, propose as propose_profile_edit
 from .presentation import (
     INBOX_CATEGORIES,
     OBJECTS,
@@ -113,7 +117,7 @@ class FullScreenTerminal(PlayableTerminal):
             if route.kind=='matrix':parts.append(t('navigation.ecosystem.label'))
             elif route.kind=='cell' and route.extra.get('relation'):
                 parts.append(' → '.join(self.label(p) for p in route.extra['relation']))
-            elif route.kind=='scenario':parts.append(t('navigation.scenario.label'))
+            elif route.kind in {'mission', 'mission_section', 'scenario'}:parts.append(t('navigation.scenario.label'))
             elif route.target:parts.append(self.label(route.target) if route.kind!='network' else t('terminal.network')+self.label(route.target))
             else:parts.append(navigation_label(route.kind))
         return ' > '.join(parts)
@@ -187,7 +191,7 @@ class FullScreenTerminal(PlayableTerminal):
             return result
         return super().confirm(prompt)
 
-    def picker(self, title, items, *, render=None, preview=None, section=None, menu=None):
+    def picker(self, title, items, *, render=None, preview=None, section=None, menu=None, directory=False):
         if not items:
             self.notice = t('terminal.no_matching_choices_are_available')
             raise Cancelled
@@ -196,6 +200,8 @@ class FullScreenTerminal(PlayableTerminal):
                 return render(item)
             return display_label(item)
         options = {'preview': preview, 'masthead': t('branding.title')}
+        if directory:
+            options['directory'] = True
         if menu is not None:
             options['menu'] = menu
         if curator.allowed(self) and self.route.kind not in {'tutorial', 'tutorial_graph'}:
@@ -213,14 +219,14 @@ class FullScreenTerminal(PlayableTerminal):
         # Deliberate development-only roles remain reachable without polluting
         # the imported people catalogue or implying source authentication.
         choices = [*roster, {'id': '__development__', 'kind': 'role', 'label': t('terminal.development_simulation_roles')}]
-        def label(actor):
-            orgs = affiliations(self.world(), actor['id'])
-            return display_label(actor) + (' · '+', '.join(orgs) if orgs else '') + (t('curation.role_suffix') if 'curator' in actor.get('roles', []) else '')
-        actor = self.picker(t('terminal.who_will_you_play_search'), choices, render=label,
-            preview=lambda a: self.capture(lambda: self.inspect_node(a['id'])) if a['id'] != '__development__' else
-                [t('terminal.explicit_development_roles_grant_simulation')])
+        choices[:-1] = sorted(roster, key=lambda actor: (folded(actor['label']), actor['id']))
+        actor = self.picker(t('terminal.who_will_you_play_search'), choices, render=lambda actor: actor['label'],
+                            directory=True,
+                            preview=lambda actor: self.capture(lambda: self.inspect_node(actor['id']))
+                            if actor['id'] != '__development__' else [t('terminal.explicit_development_roles_grant_simulation')])
         if actor['id'] == '__development__':
-            actor = self.picker(t('terminal.development_roles_simulation_authority_only'), people(self.world(), development=True))
+            actor = self.picker(t('terminal.development_roles_simulation_authority_only'),
+                                people(self.world(), development=True), render=lambda actor: actor['label'], directory=True)
         self.assume_actor(actor)
         if not self.mode_routes['ecosystem'].extra.get('positioned'):
             ids = [a['id'] for a in matrix(self.world())['actors']]
@@ -264,6 +270,8 @@ class FullScreenTerminal(PlayableTerminal):
         self.selected = None
 
     def resume_mode(self, mode):
+        if mode == 'scenarios':
+            self.ensure_missions()
         self.navigation.resume(mode)
         self.mode_name = mode
         self.selected = None
@@ -282,7 +290,8 @@ class FullScreenTerminal(PlayableTerminal):
         if self.route.kind == 'montreal_network_graph' and len(self.stack) > 1:
             parent = self.stack[-2]
             parent.target = self.route.target
-            for key in ('graph_groups', 'zoom', 'angle', 'filter', 'actor_type', 'sort'):
+            for key in ('graph_groups', 'zoom', 'angle', 'filter', 'actor_type', 'sort',
+                        'show_labels', 'show_numbers', 'edge_annotations', 'constellation'):
                 if key in self.route.extra:
                     parent.extra[key] = self.route.extra[key]
             parent.extra.update(network_detail=0, network_page=0)
@@ -410,13 +419,20 @@ class FullScreenTerminal(PlayableTerminal):
             lines += [self.label(r['source_id'])+' → '+self.label(r['target_id'])+' · '+status(r['status']) for r in pending]
             lines += [t('gathering.conditions_and_outcomes_come_from')]
             return self.list_screen(t('gathering.gathering_conditions'), objectives, lines, t('gathering.j_invite_r_respond'))
+        if route.kind in {'mission', 'mission_section'}:
+            return mission_ui.build(self)
         if route.kind == 'scenarios':
             records=[r for r in catalogue(self.world()) if folded(route.query) in folded(r['title'])]
+            missions = mission_ui.mission_menu(self.world(), route.query)
+            entries = missions + [(r['title']+' · '+r['status'], ('scenario', r['id'])) for r in records]
+            if CATALOGUE_ID in self.world()['configuration']:
+                return Screen(t('missions.choose_mission'), [t('missions.menu_note')], entries,
+                              t('missions.menu_keys'), route.index, route.scroll, wrap_entries=True)
             return Screen(t('scenarios.scenarios_catalogue'),[
                 t('scenarios.scenario_situation_and_possible_transformation'),
                 t('scenarios.workshop_source_material_is_inspectable'),
                 t('scenarios.synthetic_fixtures_are_labelled_separately')],
-                [(r['title']+' · '+r['status'],('scenario',r['id'])) for r in records],
+                entries,
                 t('scenarios.enter_inspect_scenario_t_trajectory'),route.index,route.scroll)
         if route.kind == 'scenario':
             record=next(r for r in catalogue(self.world()) if r['id']==route.target)
@@ -437,7 +453,7 @@ class FullScreenTerminal(PlayableTerminal):
         if route.kind == 'help':
             montreal_help = [
                 t('montreal_ui.help.scopes'), t('montreal_ui.help.overview'), t('montreal_ui.help.directory'),
-                t('montreal_ui.help.network'), t('montreal_ui.help.source'),
+                t('montreal_ui.help.network'), t('montreal_ui.help.display'), t('montreal_ui.help.source'),
             ]
             general_help = [
                 t('help.arrows_move_the_heatmap_cell'),
@@ -606,9 +622,16 @@ class FullScreenTerminal(PlayableTerminal):
                     motivations = dict.fromkeys(row['raw']['Pourquoi suis-je ici ?'].strip() for row in statements)
                     lines.append(t('profiles.motivation') + (' / '.join(text for text in motivations if text)
                                                             or t('common.not_recorded')))
-            for table, label in (('capacities',t('objects.offers')),('needs',t('objects.need.plural'))):
-                records = [r for r in world[table].values() if r['actor_id']==node['id']]
-                lines.append(label+f' ({len(records)}): '+(', '.join(r['domain'] for r in records[:3]) or t('common.not_recorded'))+(' …' if len(records)>3 else ''))
+            if 'motivation' in node and not statements:
+                lines.append(t('profiles.motivation')+(node['motivation'] or t('common.not_recorded')))
+            for table, field in (('capacities', 'profile_offers'), ('needs', 'profile_needs')):
+                topics = node.get(field, [r['domain'] for r in world[table].values() if r['actor_id']==node['id']])
+                lines.append(t(PROFILE_EDITOR_FIELDS[field])+f' ({len(topics)}): '+
+                             (', '.join(topics[:3]) or t('common.not_recorded'))+(' …' if len(topics)>3 else ''))
+            if node.get('profile_role'):
+                lines.append(t('curation.fields.profile_role')+' · '+node['profile_role'])
+            if node.get('profile_domains'):
+                lines.append(t('identity_ui.domains')+' · '+', '.join(node['profile_domains']))
             connections = [r for r in world['relationships'].values() if r['kind']=='acknowledged_connection' and node['id'] in (r['source_id'],r['target_id'])]
             lines += [t('profiles.acknowledged_connections', connections_count=len(connections)), t('profiles.potential_complementarities_are_declared_possibilities')]
             entries = []
@@ -632,7 +655,10 @@ class FullScreenTerminal(PlayableTerminal):
                     if other not in relevant: relevant.append(other)
             entries += [(t('profiles.potential')+self.label(p),('relation_to',(node['id'],p))) for p in relevant[:4]]
             lines += [t('profiles.potential_counterparties_w_opens_the', relevant_count=len(relevant))]
-            return Screen(t('objects.inspect_title', kind=node['kind'].upper()),lines,entries,t('profiles.enter_choose_a_actions_w'),route.index,route.scroll)
+            footer = t('profiles.enter_choose_a_actions_w')
+            if self.session:
+                footer = t('identity_ui.edit_key')+'  '+footer
+            return Screen(t('objects.inspect_title', kind=node['kind'].upper()), lines, entries, footer, route.index, route.scroll)
         lines = self.capture(lambda:self.inspect_node(route.target))
         entries = [(self.node_label(n),n['id']) for n in self.neighbours(route.target)]
         if node['kind']=='objective': entries = [(t('objects.inspector.scenario')+r['title'],('scenario',r['id'])) for r in scenarios_for(route.target,world)]+entries
@@ -768,8 +794,10 @@ class FullScreenTerminal(PlayableTerminal):
                t('network.showing_nodes_edges_bundles', nodes_count=len(visual['nodes']), full_node_count=visual['full_node_count'], rendered_relationship_count=visual['rendered_relationship_count'], full_relationship_count=visual['full_relationship_count'], edges_count=len(visual['edges'])),
                t('network.types')+object_type_label(route.extra.get('object_type'))+t('network.layers')+(', '.join(category_label(category) for category in route.extra['categories']) if route.extra.get('categories') else t('controls.all'))+
                t('network.zoom_x_rotation_rad', zoom=zoom, rotation=rotation),
-               t('network.context_off_scope_actors_background', context_actor_ids_count=len(visual['context_actor_ids']), value=route.extra.get('background', 'dim').title(), value_2='o' if self.plain else '∘'),
-               t('network.neighbours_page', value=visual['offset'] + 1 if visual['total'] else 0, value_2=min(visual['total'], visual['offset'] + limit), total=visual['total'])]
+               t('network.context_off_scope_actors_background', context_actor_ids_count=len(visual['context_actor_ids']), value=route.extra.get('background', 'dim').title(), value_2='o' if self.plain else '∘')]
+        page = graph_pages(visual['offset'], visual['total'], limit)
+        if page:
+            lines.append(page)
         # Four header and three footer rows are reserved by CursesViewport.
         canvas_height = self.height-7-len(lines)
         lines = [line if len(line) <= canvas_width else line[:max(0,canvas_width-3)]+'...' for line in lines]
@@ -781,7 +809,7 @@ class FullScreenTerminal(PlayableTerminal):
                           route.index, route.scroll)
         canvas, spans = draw_graph(visual,canvas_width,canvas_height,selected=selected['id'],plain=self.plain,
             angle=route.extra.get('angle',0.),zoom=zoom,
-            yaw=rotation,pitch=route.extra.get('pitch',0.),background=route.extra.get('background','dim'),
+            yaw=rotation,pitch=route.extra.get('pitch',0.),background=route.extra.get('background','dim'), emphasise=True,
             labels={n['id']:self.aliases()[n['id']]+' '+display_label(n) for n in visual['nodes'] if n['kind']=='agreement'})
         start = len(lines)
         styles=[(row+start,column,length,fg,bg,bold) for row,column,length,fg,bg,bold in spans]
@@ -797,6 +825,8 @@ class FullScreenTerminal(PlayableTerminal):
                 return
         if key == 'H':
             self.push('history')
+            return
+        if route.kind in {'mission', 'mission_section'} and mission_ui.handle(self, key, screen):
             return
         if route.kind in {'history', 'history_event', 'history_object'} and history_key(self, key, screen):
             return
@@ -838,6 +868,9 @@ class FullScreenTerminal(PlayableTerminal):
         if route.kind=='inbox' and key=='F':
             route.extra['category'] = self.choose(t('terminal.inbox_filter'), list(INBOX_CATEGORIES), inbox_category)
             route.index=route.scroll=0; return
+        if key == 'E' and route.kind == 'inspect' and self.session and route.extra.get('at') is None and route.target in self.world()['actors']:
+            propose_profile_edit(self, route.target)
+            return
         if route.kind=='inspect' and key in {'y','j','R','X'}:
             kinds = {'y':('accept','respond_contact'),'j':('amend',),'R':('reject','respond_contact'),'X':('withdraw','withdraw_contact')}
             candidate = next((c for c in self.object_actions(route.target) if c['kind'] in kinds[key]
@@ -908,9 +941,9 @@ class FullScreenTerminal(PlayableTerminal):
                 route.index=(route.index+(-1 if key=='up' else 1))%max(1,len(screen.entries))
                 route.reveal = True
                 return
-            if key in {'[',']'}:
+            if key in {'[', ']', 'left', 'right'}:
                 limit = route.extra.setdefault('page_limit', 6 if self.width < 85 or self.height < 26 else 8)
-                route.extra['offset']=max(0,route.extra.get('offset',0)+(-limit if key=='[' else limit));route.index=0;return
+                route.extra['offset']=max(0,route.extra.get('offset',0)+(-limit if key in {'[', 'left'} else limit));route.index=0;return
             if key=='f' and screen.entries:
                 route.target=screen.entries[route.index][1];route.index=0
                 route.extra.update(offset=0,scope='neighbourhood',scope_label=t('terminal.selected_object_neighbourhood'));return
@@ -1226,7 +1259,24 @@ class FullScreenTerminal(PlayableTerminal):
         if not command:
             self.notice = t('terminal.unknown_command_opens_help'); return
         name = command.name
-        if name in MODES:
+        if name == 'scenarios':
+            self.resume_mode(name)
+            if arg:
+                mission_id = arg.upper()
+                if self.world()['configuration'].get(mission_id, {}).get('kind') == 'mission_definition':
+                    self.push('mission', mission_id)
+                else:
+                    self.notice = t('missions.unknown')
+            return
+        mission_id = arg.upper() if arg else self.route.target
+        mission = self.world()['configuration'].get(mission_id, {})
+        if mission.get('kind') == 'mission_definition' and name in {'open', 'history'}:
+            if name == 'history':
+                self.push('history', history_filters=HistoryFilters(mission_id=mission_id))
+            else:
+                self.resume_mode('scenarios')
+                self.push('mission', mission_id)
+        elif name in MODES:
             self.resume_mode(name)
         elif name == 'paths':
             self.choose_mode()

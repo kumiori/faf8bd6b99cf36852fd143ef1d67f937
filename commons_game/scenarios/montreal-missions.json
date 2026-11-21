@@ -1,0 +1,893 @@
+{
+  "schema": "game-gamer/missions/v1",
+  "sources": {
+    "scenario": {
+      "file": "scenarios_01_09_A5_portrait.pdf",
+      "project_path": "project_protocol_hack/montreal/scenarios_01_09_A5_portrait.pdf",
+      "sha256": "798cae46b8cf0c1c97b6e6a702465e448a57faa30afbab9e79be63e36381dd99"
+    },
+    "actor": {
+      "file": "cartes_acteurs_world_cafe.pdf",
+      "project_path": "project_protocol_hack/montreal/cartes_acteurs_world_cafe.pdf",
+      "sha256": "beb3c84121d59be167c16cf1bcf1ebfc0989796c7a7c781709e7c05fc315e9a8"
+    },
+    "means": {
+      "file": "cartes_moyens_world_cafe.pdf",
+      "project_path": "project_protocol_hack/montreal/cartes_moyens_world_cafe.pdf",
+      "sha256": "c4903b73489e7a1a6711ac00cd4c6330480254106580522df6e88a6b9dddeb2f"
+    },
+    "outcomes": {
+      "file": "cartes_finalites_resultats.pdf",
+      "project_path": "project_protocol_hack/montreal/cartes_finalites_resultats.pdf",
+      "sha256": "5d44343ad979025caca01c5fdebcd863670f368f8404a28a6ffe91079762a060"
+    }
+  },
+  "catalogues": {
+    "actor": {
+      "A01": {
+        "id": "A01",
+        "title": "Institution culturelle",
+        "description": "Musées, bibliothèques, archives et organismes patrimoniaux.",
+        "source": "actor",
+        "page": 1
+      },
+      "A02": {
+        "id": "A02",
+        "title": "Pouvoir public",
+        "description": "Ministères, administrations et autorités.",
+        "source": "actor",
+        "page": 1
+      },
+      "A03": {
+        "id": "A03",
+        "title": "Recherche",
+        "description": "Chercheuses, chercheurs et équipes scientifiques.",
+        "source": "actor",
+        "page": 1
+      },
+      "A04": {
+        "id": "A04",
+        "title": "Mouvement des communs",
+        "description": "Réseaux et collectifs engagés pour les savoirs partagés.",
+        "source": "actor",
+        "page": 1
+      },
+      "A05": {
+        "id": "A05",
+        "title": "Financeur",
+        "description": "Organismes publics ou privés capables de soutenir une initiative.",
+        "source": "actor",
+        "page": 1
+      },
+      "A06": {
+        "id": "A06",
+        "title": "Responsable d’un commun",
+        "description": "Personne ou organisation chargée de préserver une ressource partagée.",
+        "source": "actor",
+        "page": 1
+      },
+      "A07": {
+        "id": "A07",
+        "title": "Organisation internationale",
+        "description": "Instances multilatérales et forums.",
+        "source": "actor",
+        "page": 1
+      },
+      "A08": {
+        "id": "A08",
+        "title": "Conception / développement",
+        "description": "Personnes qui conçoivent des outils, services et infrastructures.",
+        "source": "actor",
+        "page": 1
+      },
+      "A09": {
+        "id": "A09",
+        "title": "Société civile",
+        "description": "Associations, collectifs citoyens et groupes d’intérêt public.",
+        "source": "actor",
+        "page": 1
+      },
+      "A10": {
+        "id": "A10",
+        "title": "Entreprise d’IA",
+        "description": "Acteur qui développe ou déploie des systèmes d’IA.",
+        "source": "actor",
+        "page": 1
+      },
+      "A11": {
+        "id": "A11",
+        "title": "Exploitation / maintenance",
+        "description": "Équipes responsables du fonctionnement des services.",
+        "source": "actor",
+        "page": 1
+      },
+      "A12": {
+        "id": "A12",
+        "title": "Artiste / créateur·rice",
+        "description": "Personnes qui créent et produisent des œuvres culturelles.",
+        "source": "actor",
+        "page": 1
+      },
+      "A13": {
+        "id": "A13",
+        "title": "Expertise technique",
+        "description": "Spécialistes chargés de réaliser et vérifier les solutions.",
+        "source": "actor",
+        "page": 1
+      }
+    },
+    "means": {
+      "M01": {
+        "id": "M01",
+        "title": "Cartographie / documentation",
+        "description": "Recenser et documenter les ressources, pratiques et initiatives existantes.",
+        "source": "means",
+        "page": 1
+      },
+      "M02": {
+        "id": "M02",
+        "title": "Définition d’un standard ou protocole",
+        "description": "Formuler des règles communes et des spécifications interopérables.",
+        "source": "means",
+        "page": 1
+      },
+      "M03": {
+        "id": "M03",
+        "title": "Expérimentation / pilote",
+        "description": "Mettre une proposition à l’épreuve dans un contexte limité.",
+        "source": "means",
+        "page": 1
+      },
+      "M04": {
+        "id": "M04",
+        "title": "Concertation / consultation",
+        "description": "Recueillir les points de vue et construire des positions partagées.",
+        "source": "means",
+        "page": 1
+      },
+      "M05": {
+        "id": "M05",
+        "title": "Mobilisation / plaidoyer",
+        "description": "Rassembler des soutiens et défendre une demande commune.",
+        "source": "means",
+        "page": 1
+      },
+      "M06": {
+        "id": "M06",
+        "title": "Formation ou élargissement d’une coalition",
+        "description": "Réunir de nouveaux partenaires autour d’un objectif commun.",
+        "source": "means",
+        "page": 1
+      },
+      "M07": {
+        "id": "M07",
+        "title": "Prototype / infrastructure",
+        "description": "Construire un premier outil ou une composante technique partagée.",
+        "source": "means",
+        "page": 1
+      },
+      "M08": {
+        "id": "M08",
+        "title": "Accord / convention / contrat",
+        "description": "Formaliser les engagements, droits et responsabilités des parties.",
+        "source": "means",
+        "page": 1
+      },
+      "M09": {
+        "id": "M09",
+        "title": "Prise de contact / mise en relation",
+        "description": "Relier des personnes et institutions aux capacités complémentaires.",
+        "source": "means",
+        "page": 1
+      },
+      "M10": {
+        "id": "M10",
+        "title": "Partage ou ouverture de données",
+        "description": "Rendre des ressources accessibles selon des conditions définies.",
+        "source": "means",
+        "page": 1
+      },
+      "M11": {
+        "id": "M11",
+        "title": "Évolution réglementaire",
+        "description": "Proposer une modification des règles applicables.",
+        "source": "means",
+        "page": 1
+      },
+      "M12": {
+        "id": "M12",
+        "title": "Financement",
+        "description": "Mobiliser les ressources financières nécessaires à l’action.",
+        "source": "means",
+        "page": 1
+      },
+      "M13": {
+        "id": "M13",
+        "title": "Communication publique",
+        "description": "Rendre une initiative visible auprès de publics identifiés.",
+        "source": "means",
+        "page": 1
+      },
+      "M14": {
+        "id": "M14",
+        "title": "Évaluation / preuve",
+        "description": "Produire des éléments permettant de vérifier les effets d’une action.",
+        "source": "means",
+        "page": 1
+      },
+      "M15": {
+        "id": "M15",
+        "title": "Décision institutionnelle",
+        "description": "Obtenir un engagement ou une décision d’une organisation compétente.",
+        "source": "means",
+        "page": 1
+      },
+      "M16": {
+        "id": "M16",
+        "title": "Veille et comparaison internationale",
+        "description": "Examiner les politiques, pratiques et initiatives existantes dans différents pays.",
+        "source": "means",
+        "page": 1
+      },
+      "M17": {
+        "id": "M17",
+        "title": "Cartographie et interdépendances",
+        "description": "Repérer institutions, relations, tensions, projets voisins et alliances possibles.",
+        "source": "means",
+        "page": 2
+      },
+      "M18": {
+        "id": "M18",
+        "title": "Groupe de travail interdisciplinaire",
+        "description": "Réunir des acteurs pour définir un projet commun et ses exigences.",
+        "source": "means",
+        "page": 2
+      },
+      "M19": {
+        "id": "M19",
+        "title": "Consultation itérative",
+        "description": "Alterner cartographie, consultation et concertation pour préciser progressivement les enjeux.",
+        "source": "means",
+        "page": 2
+      },
+      "M20": {
+        "id": "M20",
+        "title": "Validation juridique préalable",
+        "description": "Vérifier la faisabilité juridique d’une mise en commun de données.",
+        "source": "means",
+        "page": 2
+      },
+      "M21": {
+        "id": "M21",
+        "title": "Définition des usages et utilisateurs autorisés",
+        "description": "Préciser les niveaux d’accès, les usages acceptables et les conditions de réciprocité.",
+        "source": "means",
+        "page": 2
+      },
+      "M22": {
+        "id": "M22",
+        "title": "Institutions pilotes volontaires",
+        "description": "Tester une proposition avec des établissements et des jeux de données réels.",
+        "source": "means",
+        "page": 2
+      },
+      "M23": {
+        "id": "M23",
+        "title": "Prototype minimal",
+        "description": "Développer une première version, la tester, recueillir les retours et l’améliorer.",
+        "source": "means",
+        "page": 2
+      },
+      "M24": {
+        "id": "M24",
+        "title": "Communauté apprenante",
+        "description": "Organiser formations, mentorat, accompagnement international et apprentissage par la pratique.",
+        "source": "means",
+        "page": 2
+      },
+      "M25": {
+        "id": "M25",
+        "title": "Indicateurs d’impact mutualisés",
+        "description": "Définir des critères communs et évolutifs pour évaluer les résultats.",
+        "source": "means",
+        "page": 2
+      },
+      "M26": {
+        "id": "M26",
+        "title": "Infrastructure fédérée transnationale",
+        "description": "Relier des infrastructures existantes par des standards ouverts, en préservant leur autonomie.",
+        "source": "means",
+        "page": 2
+      },
+      "M27": {
+        "id": "M27",
+        "title": "Financement conditionnel et pérenne",
+        "description": "Lier les financements à des exigences de partage, de correction et de maintenance durable.",
+        "source": "means",
+        "page": 2
+      },
+      "M28": {
+        "id": "M28",
+        "title": "Représentation et négociation internationale",
+        "description": "Construire une position commune et la porter auprès des gouvernements, instances internationales et entreprises d’IA.",
+        "source": "means",
+        "page": 2
+      },
+      "M29": {
+        "id": "M29",
+        "title": "Espace sécurisé d’expérimentation",
+        "description": "Créer un environnement protégé pour tester, apprendre et ajuster les pratiques.",
+        "source": "means",
+        "page": 2
+      },
+      "M30": {
+        "id": "M30",
+        "title": "Programme public de soutien",
+        "description": "Mettre en place un dispositif de soutien aux communs de données culturelles et à l’IA responsable.",
+        "source": "means",
+        "page": 2
+      }
+    },
+    "finality": {
+      "F01": {
+        "id": "F01",
+        "title": "Changer un rapport de force",
+        "description": "Renforcer le pouvoir de négociation du collectif face aux acteurs dominants.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "F02": {
+        "id": "F02",
+        "title": "Éliminer une dépendance technique",
+        "description": "Retrouver la maîtrise des outils, des données et des infrastructures essentielles.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "F03": {
+        "id": "F03",
+        "title": "Augmenter la réciprocité",
+        "description": "Mieux partager la valeur économique et les bénéfices de découvrabilité.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "F04": {
+        "id": "F04",
+        "title": "Renforcer les capacités en IA",
+        "description": "Développer les compétences, l’autonomie et la littératie en intelligence artificielle.",
+        "source": "outcomes",
+        "page": 1
+      }
+    },
+    "result": {
+      "R01": {
+        "id": "R01",
+        "title": "Un laboratoire d’expérimentation",
+        "description": "Un espace commun pour tester et partager usages, preuves et résultats.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R02": {
+        "id": "R02",
+        "title": "Un standard",
+        "description": "Des règles communes pour encadrer les usages ou organiser leur mutualisation.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R03": {
+        "id": "R03",
+        "title": "Un nouveau protocole agentique",
+        "description": "Des règles d’interaction entre agents et ressources.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R04": {
+        "id": "R04",
+        "title": "Une nouvelle licence",
+        "description": "Des conditions explicites de réutilisation, d’accès et de réciprocité.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R05": {
+        "id": "R05",
+        "title": "Un nouveau règlement, une loi",
+        "description": "Un cadre juridique pour fixer des droits, des obligations et des garanties.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R06": {
+        "id": "R06",
+        "title": "Une infrastructure partagée",
+        "description": "Des outils et services communs pour héberger, relier ou échanger des données.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R07": {
+        "id": "R07",
+        "title": "Une communauté apprenante",
+        "description": "Un réseau de formation continue, d’entraide et de partage d’expertises.",
+        "source": "outcomes",
+        "page": 1
+      },
+      "R08": {
+        "id": "R08",
+        "title": "Un espace de données",
+        "description": "Un environnement pour découvrir et échanger des données, règles communes.",
+        "source": "outcomes",
+        "page": 1
+      }
+    }
+  },
+  "blank_cards": {
+    "A+01": {
+      "id": "A+01",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 1
+    },
+    "A+02": {
+      "id": "A+02",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 1
+    },
+    "A+03": {
+      "id": "A+03",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 1
+    },
+    "A+04": {
+      "id": "A+04",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+05": {
+      "id": "A+05",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+06": {
+      "id": "A+06",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+07": {
+      "id": "A+07",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+08": {
+      "id": "A+08",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+09": {
+      "id": "A+09",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+10": {
+      "id": "A+10",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+11": {
+      "id": "A+11",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+12": {
+      "id": "A+12",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+13": {
+      "id": "A+13",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+14": {
+      "id": "A+14",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+15": {
+      "id": "A+15",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+16": {
+      "id": "A+16",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+17": {
+      "id": "A+17",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+18": {
+      "id": "A+18",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "A+19": {
+      "id": "A+19",
+      "title": null,
+      "description": "Qui manque ? Quel rôle pourrait jouer cet acteur ?",
+      "source": "actor",
+      "page": 2
+    },
+    "F+01": {
+      "id": "F+01",
+      "title": null,
+      "description": "Quelle transformation collective voulons-nous obtenir ?",
+      "source": "outcomes",
+      "page": 1
+    },
+    "F+02": {
+      "id": "F+02",
+      "title": null,
+      "description": "Quelle transformation collective voulons-nous obtenir ?",
+      "source": "outcomes",
+      "page": 1
+    },
+    "R+01": {
+      "id": "R+01",
+      "title": null,
+      "description": "Que voulons-nous faire émerger durablement ?",
+      "source": "outcomes",
+      "page": 1
+    },
+    "R+02": {
+      "id": "R+02",
+      "title": null,
+      "description": "Que voulons-nous faire émerger durablement ?",
+      "source": "outcomes",
+      "page": 1
+    }
+  },
+  "workshop_selections": [],
+  "requirements": {
+    "access-rules": {
+      "label": "Règles d’accès communes",
+      "criterion": "Une trace d’accord entre détenteurs et utilisateurs précise les usages permis, les niveaux d’accès et la réciprocité."
+    },
+    "access-pilot": {
+      "label": "Essai documenté des règles d’accès",
+      "criterion": "Un rapport d’essai décrit les données utilisées, les règles évaluées, les décisions d’accès et les limites observées."
+    },
+    "agent-protocol": {
+      "label": "Protocole agentique testé",
+      "criterion": "Un protocole testé décrit l’identification de l’agent, l’autorisation ou le refus et la trace de la décision."
+    },
+    "public-mandate": {
+      "label": "Mandat public explicite",
+      "criterion": "Une décision attribuée à une autorité compétente engage un chantier réglementaire ou porte une proposition précise."
+    },
+    "federation-agreement": {
+      "label": "Convention entre institutions pilotes",
+      "criterion": "Une convention de deux institutions au moins précise les ressources à relier, l’autonomie, les coûts et les responsabilités de maintenance."
+    },
+    "value-evidence": {
+      "label": "Preuve de valeur et de réciprocité",
+      "criterion": "Une évaluation documente les bénéfices du commun, ses coûts et les acteurs disposés à contribuer."
+    },
+    "sustainable-funding": {
+      "label": "Engagement de financement durable",
+      "criterion": "Une décision précise la source, la durée et les conditions du financement et de la maintenance."
+    },
+    "expertise-map": {
+      "label": "Cartographie des besoins et des expertises",
+      "criterion": "Une cartographie associe des besoins institutionnels précis à des expertises disponibles et indique comment établir le contact."
+    },
+    "mentoring-network": {
+      "label": "Mise en relation par la pratique",
+      "criterion": "Une trace de mise en relation identifie un besoin, une personne capable d’y répondre et une activité de formation ou de mentorat convenue."
+    }
+  },
+  "missions": [
+    {
+      "id": "S09",
+      "title": "Les savoirs là où ils manquent",
+      "need": "Les compétences existent, mais elles sont inégalement réparties et difficiles d’accès entre institutions.",
+      "target": "Les institutions qui manquent de compétences sont mises en relation avec des personnes capables de les transmettre par la pratique.",
+      "structural_result": {
+        "id": "R09",
+        "title": "Réseau de formation, de mentorat et d’engagement"
+      },
+      "principal_means": [
+        {
+          "id": "M09",
+          "title": "Mise en relation ciblée des besoins et des expertises sur les communs de données et l’IA"
+        }
+      ],
+      "provenance": {
+        "kind": "workshop_source_card",
+        "source": "scenario",
+        "page": 1
+      },
+      "rationale": "Mettre en relation les besoins et les expertises pour rendre les compétences accessibles par la pratique.",
+      "actors": [
+        "A01",
+        "A03",
+        "A04",
+        "A13"
+      ],
+      "complementary_means": [
+        "M01",
+        "M24"
+      ],
+      "finalities": [
+        "F04"
+      ],
+      "generic_results": [
+        "R07"
+      ],
+      "requirements": [
+        "expertise-map",
+        "mentoring-network"
+      ],
+      "status": "open",
+      "version": 1
+    },
+    {
+      "id": "S02",
+      "title": "Ouvrir sans renoncer",
+      "need": "Les institutions veulent ouvrir leurs données, mais divergent sur les usages permis, les droits et la réciprocité.",
+      "target": "Des règles communes d’accès et de réutilisation sont adoptées pour être testées.",
+      "structural_result": {
+        "id": "R02",
+        "title": "Standard commun d’accès différencié aux données"
+      },
+      "principal_means": [
+        {
+          "id": "M18",
+          "title": "Groupe de co-conception réunissant détenteurs et utilisateurs des données"
+        }
+      ],
+      "provenance": {
+        "kind": "workshop_source_card",
+        "source": "scenario",
+        "page": 1
+      },
+      "rationale": "Trouver des règles que détenteurs et utilisateurs peuvent appliquer ensemble dans un essai.",
+      "actors": [
+        "A01",
+        "A06",
+        "A08",
+        "A12"
+      ],
+      "complementary_means": [
+        "M20",
+        "M21",
+        "M22"
+      ],
+      "finalities": [
+        "F03"
+      ],
+      "generic_results": [
+        "R02",
+        "R04"
+      ],
+      "requirements": [
+        "access-rules",
+        "access-pilot"
+      ],
+      "status": "open",
+      "version": 1
+    },
+    {
+      "id": "S03",
+      "title": "Les agents à la porte",
+      "need": "Les accès automatisés se multiplient, sans règles communes pour identifier les agents, autoriser leurs actions et établir les responsabilités.",
+      "target": "Une interaction testée permet d’autoriser, limiter, vérifier ou refuser un accès, avec une trace de la décision.",
+      "structural_result": {
+        "id": "R03",
+        "title": "Protocole d’interaction entre agents IA et ressources culturelles"
+      },
+      "principal_means": [
+        {
+          "id": "M03",
+          "title": "Laboratoire de tests : agents, règles d’accès et données réelles ou synthétiques"
+        }
+      ],
+      "provenance": {
+        "kind": "workshop_source_card",
+        "source": "scenario",
+        "page": 2
+      },
+      "rationale": "Éprouver les décisions d’accès des agents dans un environnement où leurs actions peuvent être tracées.",
+      "actors": [
+        "A01",
+        "A08",
+        "A10",
+        "A13"
+      ],
+      "complementary_means": [
+        "M02",
+        "M14",
+        "M29"
+      ],
+      "finalities": [
+        "F04"
+      ],
+      "generic_results": [
+        "R01",
+        "R03"
+      ],
+      "requirements": [
+        "access-pilot",
+        "agent-protocol"
+      ],
+      "status": "open",
+      "version": 1
+    },
+    {
+      "id": "S04",
+      "title": "Le pouvoir de changer les règles",
+      "need": "Les besoins sont reconnus, mais les pouvoirs et les responsabilités sont dispersés entre espaces politiques et réglementaires.",
+      "target": "Une autorité compétente prend un engagement, ouvre un chantier réglementaire ou porte une proposition précise.",
+      "structural_result": {
+        "id": "R04",
+        "title": "Nouvelle politique publique, réglementation ou loi"
+      },
+      "principal_means": [
+        {
+          "id": "M05",
+          "title": "Mobilisation autour d’un mandat public explicite"
+        }
+      ],
+      "provenance": {
+        "kind": "workshop_source_card",
+        "source": "scenario",
+        "page": 2
+      },
+      "rationale": "Relier un besoin reconnu à une autorité capable d’ouvrir un chantier public.",
+      "actors": [
+        "A02",
+        "A04",
+        "A07",
+        "A09"
+      ],
+      "complementary_means": [
+        "M11",
+        "M15",
+        "M28"
+      ],
+      "finalities": [
+        "F01"
+      ],
+      "generic_results": [
+        "R05"
+      ],
+      "requirements": [
+        "public-mandate"
+      ],
+      "status": "open",
+      "version": 1
+    },
+    {
+      "id": "S05",
+      "title": "L’infrastructure commune",
+      "need": "Les institutions peuvent relier leurs systèmes, mais qui décide des règles, des coûts, de la maintenance et des responsabilités ?",
+      "target": "Au moins deux institutions conviennent de connecter leurs ressources, avec une autonomie et des responsabilités définies.",
+      "structural_result": {
+        "id": "R05",
+        "title": "Espace fédéré de données culturelles"
+      },
+      "principal_means": [
+        {
+          "id": "M08",
+          "title": "Convention commune de gouvernance et d’interopérabilité"
+        }
+      ],
+      "provenance": {
+        "kind": "workshop_source_card",
+        "source": "scenario",
+        "page": 3
+      },
+      "rationale": "Coordonner les règles et la maintenance pour que des institutions autonomes puissent relier leurs ressources.",
+      "actors": [
+        "A01",
+        "A06",
+        "A08",
+        "A11"
+      ],
+      "complementary_means": [
+        "M07",
+        "M22",
+        "M26"
+      ],
+      "finalities": [
+        "F02"
+      ],
+      "generic_results": [
+        "R06",
+        "R08"
+      ],
+      "requirements": [
+        "access-rules",
+        "federation-agreement"
+      ],
+      "status": "open",
+      "version": 1
+    },
+    {
+      "id": "S08",
+      "title": "Il ne manque que l’argent",
+      "need": "Manque d’incitatif à payer pour l’usage des communs de données.",
+      "target": "Une boucle de réciprocité économique.",
+      "structural_result": {
+        "id": "R08",
+        "title": "Financement durable d’un commun"
+      },
+      "principal_means": [
+        {
+          "id": "M25",
+          "title": "Preuve de valeur et et émergence d’un marché lisible"
+        }
+      ],
+      "provenance": {
+        "kind": "workshop_source_card",
+        "source": "scenario",
+        "page": 3
+      },
+      "rationale": "Relier la valeur créée par le commun à des contributions capables de soutenir sa maintenance.",
+      "actors": [
+        "A02",
+        "A05",
+        "A06",
+        "A11"
+      ],
+      "complementary_means": [
+        "M12",
+        "M14",
+        "M27"
+      ],
+      "finalities": [
+        "F03"
+      ],
+      "generic_results": [],
+      "requirements": [
+        "value-evidence",
+        "sustainable-funding"
+      ],
+      "status": "open",
+      "version": 1
+    }
+  ]
+}

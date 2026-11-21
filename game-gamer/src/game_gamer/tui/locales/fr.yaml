@@ -13,6 +13,15 @@ contact:
   delivery_title: ENVOI DE L’INVITATION
   message: Message d’invitation
 history:
+  summary:
+    mission_join: '{actor} a rejoint une mission'
+    mission_propose: '{actor} a proposé une contribution à la mission'
+    mission_commit: '{actor} a offert une contribution à la mission'
+    mission_challenge: '{actor} a contesté la définition de la mission'
+    mission_explore: '{actor} a consulté l’activité de la mission'
+    mission_accept: '{actor} a accepté une offre'
+    mission_verify: '{actor} a vérifié un résultat de la mission'
+    mission_revise: '{actor} a approuvé une révision de la mission'
   title: Historique
 navigation:
   ecosystem:

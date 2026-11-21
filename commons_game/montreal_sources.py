@@ -22,7 +22,7 @@ def _normalise(name):
 
 
 def _identity(name):
-    return 'montreal-2026:person:' + hashlib.sha256(_normalise(name).encode()).hexdigest()[:24]
+    return 'montreal-2026:person:' + hashlib.sha256(unicodedata.normalize('NFC', name.strip()).encode()).hexdigest()[:24]
 
 
 def _read(path, delimiter, fields):
@@ -72,6 +72,8 @@ def import_montreal_network(game, sources, *, identities=None, dry_run=False):
     require(before['configuration']['world']['scenario'] == 'montreal-commons', 'montreal_world_required')
     saved = before['configuration'].get(LAYER)
     require(saved is None or saved['digests'] == sources['digests'], 'montreal_source_snapshot_conflict')
+    if saved is not None:
+        sources = {key: value for key, value in saved.items() if key != 'identities'}
     overrides = identities if identities is not None else {}
     require(isinstance(overrides, dict) and overrides.keys() <= sources['names'].keys(),
             'unknown_montreal_source_identity')
@@ -86,6 +88,11 @@ def import_montreal_network(game, sources, *, identities=None, dry_run=False):
         candidates = sorted(matches[_normalise(names[0])])
         if key in overrides:
             actor = overrides[key]
+            previous = saved['identities'][key] if saved else {}
+            if previous.get('review_status') in {'matched', 'created', 'rejected'}:
+                require(previous['actor_id'] == actor, 'source_review_is_final')
+                bindings[key] = previous
+                continue
             require(actor is None or isinstance(actor, str) and actor in people
                     and canonical(before, actor) == actor and people[actor]['status'] == 'active',
                     'invalid_montreal_actor_binding')
@@ -93,20 +100,21 @@ def import_montreal_network(game, sources, *, identities=None, dry_run=False):
         elif saved is not None:
             bindings[key] = saved['identities'][key]
         else:
-            bindings[key] = {'actor_id': candidates[0] if len(candidates) == 1 else None,
-                             'method': 'unique_full_name' if len(candidates) == 1 else 'pending_review',
+            bindings[key] = {'actor_id': None, 'method': 'pending_review',
                              'candidates': candidates}
 
     dataset = {**sources, 'identities': bindings}
     unresolved = [{'source_id': key, 'names': sources['names'][key], 'candidate_actor_ids': value['candidates'],
-                   'status': 'ambiguous' if len(value['candidates']) > 1 else 'unmatched'}
-                  for key, value in bindings.items() if value['actor_id'] is None]
+                   'status': 'ambiguous' if len(value['candidates']) > 1 else
+                   'suggested' if value['candidates'] else 'unmatched'}
+                  for key, value in bindings.items() if resolved_actor(value) is None
+                  and value.get('review_status') != 'rejected']
     connections = sources['connections']
     statements = sources['statements']
     pairs = Counter((row['source_id'], row['target_id']) for row in connections)
     profile_counts = Counter(row['person_id'] for row in statements)
     report = {'ok': True, 'layer': LAYER, 'nodes': len(bindings), 'edges': len(connections),
-              'statements': len(statements), 'matched': len(bindings)-len(unresolved),
+              'statements': len(statements), 'matched': sum(resolved_actor(value) is not None for value in bindings.values()),
               'unmatched': sum(row['status'] == 'unmatched' for row in unresolved),
               'ambiguous': sum(row['status'] == 'ambiguous' for row in unresolved),
               'duplicate_edges': sum(count-1 for count in pairs.values()),
@@ -122,6 +130,11 @@ def import_montreal_network(game, sources, *, identities=None, dry_run=False):
     return report
 
 
+def resolved_actor(binding):
+    """Historic name-only suggestions remain available as evidence for review."""
+    return None if binding.get('method') == 'unique_full_name' else binding['actor_id']
+
+
 def project_topology(world, graph):
     """Use roster IDs where resolved and source-only IDs for unresolved participants."""
     dataset = world['configuration'].get(LAYER)
@@ -131,7 +144,9 @@ def project_topology(world, graph):
     nodes, edges, omitted = [], [], []
     endpoints = {}
     for source_id, binding in dataset['identities'].items():
-        actor = binding['actor_id']
+        actor = resolved_actor(binding)
+        if binding.get('review_status') == 'rejected':
+            continue
         if actor is None:
             name = dataset['names'][source_id][0]
             nodes.append({'id': source_id, 'kind': 'person', 'label': name,
@@ -160,5 +175,6 @@ def profile_statements(world, participant):
     dataset = world['configuration'].get(LAYER, {})
     bindings = dataset.get('identities', {})
     sources = {key for key, binding in bindings.items()
-               if (canonical(world, binding['actor_id']) if binding['actor_id'] else key) == participant}
+               if binding.get('review_status') != 'rejected'
+               and canonical(world, resolved_actor(binding) or key) == participant}
     return [row for row in dataset.get('statements', ()) if row['person_id'] in sources]

@@ -21,6 +21,7 @@ from .network import (
 from .screen import Cancelled, Screen, inspector, run_screens
 from .text import label
 from .viewport import LineViewport, action_form, run_curses, supported
+from .visual import graph_pages
 
 _SHORTCUTS = {'y': {'accept', 'respond_contact', 'respond_invitation'}, 'j': {'amend'},
               'R': {'reject', 'respond_contact', 'respond_invitation'}, 'X': {'withdraw', 'withdraw_contact'}}
@@ -208,10 +209,13 @@ class TerminalGame:
         lines = [t('network.selected_centre', value=self.name(selected), value_2=self.name(route.target)),
                  t('network.visible_nodes_background', entries_count=len(entries), full_node_count=visual['full_node_count'], value=mode.title()),
                  t('network.experimental_3d') if visual['three_d'] else t('network.planar')]
+        page = graph_pages(visual['offset'], visual['total'], 8)
+        if page:
+            lines.append(page)
         screen = self.list_screen(t('network.ecosystem_network'), entries, lines)
         screen.footer = t('network.enter_inspect_tab_view_s')
         if route.region != 'explore' and self.height >= 14 and self.width >= 24 and not isinstance(self.viewport, LineViewport):
-            canvas, spans = draw_graph(visual, self.width - 2, self.height - 11, selected=selected, plain=self.plain,
+            canvas, spans = draw_graph(visual, self.width - 2, self.height - 8 - len(lines), selected=selected, plain=self.plain, emphasise=True,
                                        background=mode, angle=route.extra.get('angle', 0.),
                                        yaw=route.extra.get('angle', 0.), pitch=route.extra.get('pitch', 0.),
                                        zoom=route.extra.get('zoom', 1.))
@@ -405,8 +409,8 @@ class TerminalGame:
             extra['pitch'] = extra.get('pitch', 0.) + (.2 if key == '}' else -.2)
         elif key in {'+', '-'}:
             extra['zoom'] = max(.4, min(2., extra.get('zoom', 1.) * (1.2 if key == '+' else 1/1.2)))
-        elif key in {'[', ']'}:
-            extra['offset'] = max(0, extra.get('offset', 0) + (8 if key == ']' else -8))
+        elif key in {'[', ']', 'left', 'right'}:
+            extra['offset'] = max(0, extra.get('offset', 0) + (8 if key in {']', 'right'} else -8))
             route.index = 0
         elif key == 'f' and screen.entries:
             route.target = screen.entries[route.index][1][1]

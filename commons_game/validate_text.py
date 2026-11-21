@@ -16,7 +16,7 @@ from .scenario import SCENARIOS
 
 HOST_FILES = (
     '__main__', 'commands', 'curation_panel', 'curator', 'exercises', 'fullscreen',
-    'global_history', 'montreal_network', 'play', 'player', 'presentation', 'reconstruction',
+    'global_history', 'mission_ui', 'montreal_network', 'play', 'player', 'presentation', 'profile_editor', 'reconstruction',
     'reconstruction_filters', 'reconstruction_transitions', 'scenario_catalogue', 'server', 'tui',
 )
 HOST = Path('commons_game')
